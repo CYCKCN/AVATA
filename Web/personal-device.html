@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+				<script src="vue.js" type="text/javascript" charset="UTF-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div id="example-1">
+				<div style="margin-top:20px;">
+					<h2>What device do you bring?</h2>
+					<input type="radio" id="one" value="Macbook" v-model="picked">
+					<label for="one">Macbook</label>
+					<br>
+					<input type="radio" id="two" value="Windows" v-model="picked">
+					<label for="two">Windows laptop</label>
+					<br>
+					<input type="radio" id="three" value="None" v-model="picked">
+					<label for="three">None</label>
+					<br>
+					<span>Picked: {{ picked }}</span>
+				</div>
+				<br />
+				<div class="subbtn">
+					<button @click="submit">
+						<a href="room-device.html">Submit</a>
+					</button>
+				</div>
+				
+			</div>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					picked : ""
+				},
+				methods:{
+					submit : function () {
+						console.log(this.picked);
+								
+					}
+				}
+			})
+		</script>
+			
+		<style type="text/css">
+		.subbtn button{
+			background-color: #ED6E2C;
+			color: white;
+			padding: 10px 12px;
+			font-size: 12px;
+			border-radius: 5px;
+			
+		}
+		.subbtn a{
+			color: white;
+			padding: 10px 12px;
+			text-decoration: none;
+		}
+		</style>
+	</body>
+</html>
