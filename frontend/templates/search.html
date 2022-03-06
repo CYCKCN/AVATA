@@ -1,10 +1,32 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<style>
+	body{
+		background-color: #ED6E2C;
+	}
+	.logo{
+		height: 250px;
+		border-radius: 150px;
+		
+	}
+	.search{
+		color: black;
+		text-decoration: none;
+		font-size: 12px;
+	}
+	.input{
+		width: 200px;
+	}
+</style>
 {% endblock %}
 
 {% block content %}
 <form method="post">
-
+    <div id="searchBox">
+        <img class="logo" src="{{url_for('static',filename='images/Logo.jpg')}}" />
+        <input class="input" type="text" placeholder="Room number" name="room_id" />
+        <input class="search" type="submit" value="Search">
+    </div>
 </form>
 {% endblock %}

@@ -46,7 +46,14 @@ def demo():
 
     return render_template('demo.html',dic=dic)
 
+@app.route("/search", methods=['POST','GET'])
+def search():
+    room_id=''
+    if request.method == "POST":
+        room_id=request.form.get('room_id')
+        return room_id
 
+    return render_template('search.html',room_id=room_id)
 
 
 if __name__ == "__main__":
