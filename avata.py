@@ -1,6 +1,7 @@
 import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask import Flask
+from easydict import EasyDict
 
 PATH_templates='frontend/templates'
 PATH_static='frontend/static'
