@@ -44,7 +44,7 @@ def demo():
 
         return device
 
-    return render_template('demo.html',dic=dic)
+    return render_template('device.html',dic=dic)
 
 @app.route("/search", methods=['POST','GET'])
 def search():
