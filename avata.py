@@ -1,10 +1,12 @@
-from os import device_encoding
+import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask import Flask
 
+PATH_templates='frontend/templates'
+PATH_static='frontend/static'
 
-app = Flask(__name__)
-
+app = Flask(__name__, template_folder=PATH_templates, static_folder=PATH_static)
+#app = Flask(__name__)
 
 @app.route("/")
 def hello():
