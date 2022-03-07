@@ -33,7 +33,7 @@ dic={#1080*1920
     }
 }
 
-@app.route("/demo", methods=['POST','GET'])
+@app.route("/device", methods=['POST','GET'])
 def demo():
     if request.method == "POST":
         confirm=request.form.get('confirm')
