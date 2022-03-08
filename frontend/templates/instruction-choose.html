@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+.full{
+    width:100%;
+    height:100%;
+}
+.head{
+    width:100%;
+    height:7%;
+    background-color: #ED6E2C;
+}
+.head span{
+    transform: translate(-50%,0);
+    position: absolute;
+    top: 1%;
+    left: 50%;
+    color: white;
+    font-size: 200%;
+}
+.image{
+    transform: translate(-50%,0);
+    position: absolute;
+    left: 50%;
+    top: 12%;
+    width: 95%;
+    height: 50%;
+}
+.image img{
+    width:100%;
+    height:100%;
+    z-index: 0;
+}
+.text{
+    transform: translate(-50%,0);
+    position: absolute;
+    left: 50%;
+    top: 65%;
+    width: 95%;
+    border: 3px;
+}
+.text span{
+    color: #ED6E2C;
+    font-size: 170%;
+    padding-left: 5px;
+}
+input{
+    z-index: 1;
+    height: 30px;
+    width: 30px;
+    background-color: rgba(255, 255, 255, 0);
+    border-color: #ED6E2C;
+    border-width: 2px;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<form method="post" class="full">
+    <div class="full">
+        <div class="head">
+            <span>Map</p>
+        </div>
+        <div class="image">
+            <img src="{{image_path}}">
+            {% for i, d in dic.items() %}
+            <input is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
+            {% endfor %}
+        </div>
+        <div class="text">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ED6E2C" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+            <span>Choose the place you want to go</span>
+        </div>
+    </div>
+</form>
+
+<script>
+class LocateInput extends HTMLInputElement{
+    constructor(){
+    super();
+    }
+    connectedCallback(){
+        this.style.position="absolute";
+        this.style.top=this.getAttribute('top');
+        this.style.left=this.getAttribute('left');
+    }
+}
+customElements.define('locate-input', LocateInput, {extends: 'input'});
+</script>
+{% endblock %}
+
+
+
