@@ -1,4 +1,3 @@
-from fileinput import filename
 import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask import Flask
@@ -65,8 +64,21 @@ def instructor_choose():
         return name
     
     image_path=url_for('static',filename='images/grey.jpg')
-
     return render_template('instruction-choose.html',dic=demo_dic(300,300), image_path=image_path)
+
+@app.route("/instruction", methods=['POST','GET'])
+def instruction():
+    if request.method == "POST":
+        return "submit"
+
+    title="guide title"
+    guide={}
+    img=['grey.jpg','grey.jpg','grey.jpg']
+    text=['text1','text2','text3']
+    step_num=len(img)
+    for i in range(step_num):
+        guide[text[i]]=url_for('static',filename='images/'+img[i])
+    return render_template('instruction.html',title=title,guide=guide)
 
 
 if __name__ == "__main__":
