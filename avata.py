@@ -33,6 +33,15 @@ def demo_dic(H=1080,W=1920):
     }
     return dic
 
+@app.route("/login", methods=['POST','GET'])
+def login():
+    if request.method == "POST":
+        email = request.form.get('email')
+        code = request.form.get('code')
+        return email + '\n' + code
+
+    return render_template('login.html')
+
 @app.route("/device", methods=['POST','GET'])
 def demo():
     if request.method == "POST":
