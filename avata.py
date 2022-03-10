@@ -66,6 +66,22 @@ def search():
 
     return render_template('search.html',room_id=room_id)
 
+@app.route("/room", methods=['POST','GET'])
+def room():
+    if request.method == "POST":
+
+        return ""
+
+    return ""
+
+@app.route("/personal-device", methods=['POST','GET'])
+def personal_device():
+    if request.method == "POST":
+
+        return ""
+
+    return ""
+
 @app.route("/instruction-choose", methods=['POST','GET'])
 def instructor_choose():
     if request.method == "POST":
