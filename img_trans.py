@@ -19,8 +19,11 @@ def image_decoder(encoded_image: str, save_path: str = "write.png"):
 if __name__ == '__main__':
     print("Testing file image encoder and decoder...")
 
-    img_str = image_encoder("frontend\static\images\logo.jpg")
-    image_decoder(img_str)
+    img_str = image_encoder("frontend\static\images\demo-ieda\Macbook\Apple-flow.MOV")
+    image_decoder(img_str,'write.mp4')
+
+    #img_str = image_encoder("frontend\static\images\logo.jpg")
+    #image_decoder(img_str)
 
     '''
     img = open("frontend\static\images\logo.jpg","rb")
