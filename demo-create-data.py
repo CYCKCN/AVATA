@@ -3,7 +3,7 @@ import json
 
 import img_trans
 
-ROOT=os.getcwd()
+ROOT=os.path.join(os.getcwd(),'frontend','static')
 if not os.path.exists(os.path.join(ROOT,'_temp')):
     os.mkdir(os.path.join(ROOT,'_temp'))
 
