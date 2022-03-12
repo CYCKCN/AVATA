@@ -3,6 +3,8 @@ from flask import Blueprint, render_template, redirect, url_for, request
 from flask import Flask
 from easydict import EasyDict
 
+import demo_utils
+
 PATH_templates='frontend/templates'
 PATH_static='frontend/static'
 
@@ -81,12 +83,15 @@ def personal_device():
         return ""
 
     return ""
-
+Personal=[]
 @app.route("/instruction-choose", methods=['POST','GET'])
 def instructor_choose():
     if request.method == "POST":
         name=request.form.get('input')
-        return name
+        global Personal
+        Personal=demo_utils.create_queue(os.getcwd(),'win')
+        #print(Personal)
+        return redirect(url_for('instruction'))
     
     image_path=url_for('static',filename='images/grey.jpg')
     return render_template('instruction-choose.html',dic=demo_dic(300,300), image_path=image_path)
@@ -94,8 +99,14 @@ def instructor_choose():
 @app.route("/instruction", methods=['POST','GET'])
 def instruction():
     if request.method == "POST":
-        return "submit"
+        global Personal
+        if len(Personal)==0:
+            return "finish"
+        else: 
+            guide=Personal.pop(0)
+            return render_template('instruction.html',title="Guide",guide=guide)
 
+    '''
     title="guide title"
     guide={}
     img=['grey.jpg','grey.jpg','grey.jpg']
@@ -103,7 +114,11 @@ def instruction():
     step_num=len(img)
     for i in range(step_num):
         guide[text[i]]=url_for('static',filename='images/'+img[i])
-    return render_template('instruction.html',title=title,guide=guide)
+    '''
+
+    guide=Personal.pop(0)
+
+    return render_template('instruction.html',title="Guide",guide=guide)
 
 
 if __name__ == "__main__":
