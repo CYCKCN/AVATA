@@ -18,7 +18,7 @@ room = {
                 2:img_trans.image_encoder('frontend\static\images\demo-ieda\Macbook\Control-Box-3.jpeg')
             },
             'text':{
-                0:'Find the control box on the lectern and press “System On”',
+                0:'Find the control box on the lectern and press "System On"',
                 1:'Select as shown in the picture (the projector needs time to be ready, please wait)',
                 2:'Continue to set up at your Apple laptop'
             },
@@ -31,7 +31,7 @@ room = {
                 1:img_trans.image_encoder('frontend\static\images\demo-ieda\Macbook\Apple-2.mp4')
             },
             'text':{
-                0:'Select “Screen Mirroring” - “ielm conference”',
+                0:'Select "Screen Mirroring" - "ielm conference"',
                 1:'Enter the AirPlay code'
             },
             'type':'.mp4'
@@ -46,7 +46,7 @@ room = {
                 2:img_trans.image_encoder('frontend\static\images\demo-ieda\Windows laptop\Lectern-3.jpeg')
             },
             'text':{
-                0:'Find the control box on the lectern and press “System On”',
+                0:'Find the control box on the lectern and press "System On"',
                 1:'Select as shown in the picture (the projector needs time to be ready, please wait)',
                 2:'Continue to set up at the conference table'
             },
@@ -63,7 +63,7 @@ room = {
             'text':{
                 0:'Find the HDMI cable underneath the conference table',
                 1:'Plug the HDMI cable into your laptop',
-                2:'Press “Fn” and “F7” on your laptop',
+                2:'Press "Fn" and "F7" on your laptop',
                 3:'Select “Duplicate” on the pop-up window'
             },
             'type':'.jpg'
@@ -78,7 +78,7 @@ room = {
                 2:img_trans.image_encoder('frontend\static\images\demo-ieda\\None\p3.jpg')
             },
             'text':{
-                0:'Find the control box on the lectern and press “System On”',
+                0:'Find the control box on the lectern and press "System On"',
                 1:'Select as shown in the picture (the projector needs time to be ready, please wait)',
                 2:'The devices are ready for your presentation'
             },
