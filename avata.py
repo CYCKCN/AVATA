@@ -70,7 +70,8 @@ def demo():
                 device[i]=request.form.get(d['name'])
             else: device[i]=''
 
-        return device
+        #return device
+        return redirect(url_for('instructor_choose'))
 
     return render_template('device.html',dic=demo_dic())
 
