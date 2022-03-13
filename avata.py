@@ -35,6 +35,21 @@ def demo_dic(H=1080,W=1920):
     }
     return dic
 
+def demo_dic1(H=500,W=450):
+    dic={#1080*1920
+        0:{
+            'name':'d1',
+            'v':str(int(H*0.2))+'px',
+            'u':str(int(W*0.75))+'px'
+        },
+        1:{
+            'name':'d2',
+            'v':str(int(H*0.7))+'px',
+            'u':str(int(W*0.2))+'px'
+        }
+    }
+    return dic
+
 @app.route("/login", methods=['POST','GET'])
 def login():
     if request.method == "POST":
@@ -93,8 +108,8 @@ def instructor_choose():
         #print(Personal)
         return redirect(url_for('instruction'))
     
-    image_path=url_for('static',filename='images/grey.jpg')
-    return render_template('instruction-choose.html',dic=demo_dic(300,300), image_path=image_path)
+    image_path=url_for('static',filename='images/room-choose.jpg')
+    return render_template('instruction-choose.html',dic=demo_dic1(), image_path=image_path)
 
 @app.route("/instruction", methods=['POST','GET'])
 def instruction():
