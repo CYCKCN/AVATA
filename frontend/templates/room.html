@@ -68,5 +68,62 @@
 {% endblock %}
 
 {% block content %}
+<div id="app" class="bar">
+	<a class="quit" href="search">Back</a>
+	<a class="user">{[userEmail]}</a>
+</div>
 
+<div id="overlay">
+	<div class="confirmBox">
+		<h3>Do you want to quit the room?</h3>
+		<form class="form-inline">
+			<a onclick="off()">Cancel</a>
+			<a href="room">Confirm</a>
+		</form>
+	</div>
+</div>
+<div>
+	
+<div id="room">
+	<img class="roomPic" src="{{url_for('static',filename='images/grey.JPG')}}" />
+	<h2>Room {[roomNo]}</h2>
+	<h4>{[roomLoc]}</h4>
+</div>
+
+<a class="enter" href="personal-device">Enter</a>
+
+<script>
+Vue.createApp({
+  data() {
+    return {
+		userEmail : "cici@ust.hk"
+    }
+  },
+  delimiters: ['{[', ']}'],
+  methods: {
+
+  }
+}).mount('#app')
+
+Vue.createApp({
+  data() {
+    return {
+		roomNo : "4223",
+		roomLoc: "Academic Buidling 4/F, Lift 23"
+    }
+  },
+  delimiters: ['{[', ']}'],
+  methods: {
+
+  }
+}).mount('#room')
+	
+function on() {
+	document.getElementById("overlay").style.display = "block";
+}
+
+function off() {
+	document.getElementById("overlay").style.display = "none";
+}
+</script>
 {% endblock %}

@@ -90,7 +90,7 @@ def room():
 
         return ""
 
-    return ""
+    return render_template('room.html')
 
 @app.route("/personal-device", methods=['POST','GET'])
 def personal_device():
@@ -98,7 +98,8 @@ def personal_device():
 
         return ""
 
-    return ""
+    return render_template('personal-device.html')
+
 Personal=[]
 @app.route("/instruction-choose", methods=['POST','GET'])
 def instructor_choose():

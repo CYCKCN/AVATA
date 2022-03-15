@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+	.subbtn button{
+		background-color: #ED6E2C;
+		color: white;
+		padding: 10px 12px;
+		font-size: 12px;
+		border-radius: 5px;
+		
+	}
+	.subbtn a{
+		color: white;
+		padding: 10px 12px;
+		text-decoration: none;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="app">
+	<div id="example-1">
+		<div style="margin-top:20px;">
+			<h2>What device do you bring?</h2>
+			<input type="radio" id="one" value="Macbook" v-model="picked">
+			<label for="one">Macbook</label>
+			<br>
+			<input type="radio" id="two" value="Windows" v-model="picked">
+			<label for="two">Windows laptop</label>
+			<br>
+			<input type="radio" id="three" value="None" v-model="picked">
+			<label for="three">None</label>
+			<br>
+			<span>Picked: {[ picked ]}</span>
+		</div>
+		<br />
+		<div class="subbtn">
+			<button @click="submit">
+				<a href="device">Submit</a>
+			</button>
+		</div>
+		
+	</div>
+</div>
+<script>
+Vue.createApp({
+  data() {
+    return {
+		picked : ""
+    }
+  },
+  delimiters: ['{[', ']}'],
+  methods: {
+	submit : function () {
+		console.log(this.picked);				
+	}
+  }
+}).mount('#app')
+
+</script>
+{% endblock %}
