@@ -5,37 +5,89 @@
 	body{
 		background-color: #ED6E2C;
 	}
-	.logo{
-		position: relative;
-		top: 100px;
-		padding-left: 60px;
-		height: 250px;
-		border-radius: 150px;
-		
+	.logo {
+		position: absolute;
+		top: 15vh;
+		padding-left: 20vw;
+		width: 80vw;
+		height: auto;
+		/* border-radius: 150px; */
+	}
+	.input {
+		position: absolute;
+		top: 50vh;
+		width: 70vw;
+		height: 5vh;
+		left: 10vw;
+		font-size: 4vh;
+		padding: 0 2.5vw;
+		border-radius: 0.5vh;
+	}
+	#searchBtn {
+		position: absolute;
+		top: 50.2vh;
+		width: 10vw;
+		height: 5vh;
+		left: 82vw;
 	}
 	.search{
-		color: black;
-		text-decoration: none;
-		font-size: 12px;
-		position: relative;
-		top:120px;
-		left: 50px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		opacity: 0;
+		height: 10vw;
+		width: 5vh;
+		z-index: 10;
 	}
-	.input{
-		position: relative;
-		top:120px;
-		width: 200px;
-		left: 50px;
+	.icon {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 10vw;
+		width: 5vh;
+	}
+	#searchemail {
+		position: absolute;
+		top: 5vh;
+		right: 5vw;
+		height: 3vh;
+		width: 30vw;
+		background-color: white;
+		color: #000;
+		border-radius: 3vh;
+		font-size: 1.5vh;
+		padding: 0.2vh 2.5vw;
+		font-weight: bold;
 	}
 </style>
 {% endblock %}
 
 {% block content %}
-<form method="post">
+<form method="post" id="search">
+	<div id="searchemail">{[userEmail]}</div>
     <div id="searchBox">
         <img class="logo" src="{{url_for('static',filename='images/Logo.jpg')}}" />
         <input class="input" type="text" placeholder="Room number" name="room_id" />
-        <input class="search" type="submit" value="Search">
+        <div id="searchBtn">
+			<input class="search" type="submit" value="Search">
+			<svg class="icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M14.5 5C9.25329 5 5 9.25329 5 14.5C5 19.7467 9.25329 24 14.5 24C19.7467 24 24 19.7467 24 14.5C24 9.25329 19.7467 5 14.5 5ZM3 14.5C3 8.14873 8.14873 3 14.5 3C20.8513 3 26 8.14873 26 14.5C26 20.8513 20.8513 26 14.5 26C8.14873 26 3 20.8513 3 14.5Z" fill="white"/>
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M21.2177 21.2179C21.6082 20.8274 22.2414 20.8274 22.6319 21.2179L28.7069 27.2929C29.0974 27.6834 29.0974 28.3166 28.7069 28.7071C28.3164 29.0976 27.6832 29.0976 27.2927 28.7071L21.2177 22.6321C20.8272 22.2416 20.8272 21.6084 21.2177 21.2179Z" fill="white"/>
+			</svg>
+		</div>	
     </div>
 </form>
+
+<script>
+	Vue.createApp({
+	  data() {
+		return {
+		  userEmail: 'rose@gmail.com'
+		}
+	  },
+	  delimiters: ['{[', ']}'],  // Fix bug: Avoid Mustache syntax conflict in Vue and flask.jinjia2
+	  methods: {
+	  }
+	}).mount('#search')
+	</script>
 {% endblock %}

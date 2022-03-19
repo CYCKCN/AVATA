@@ -80,7 +80,7 @@ def search():
     room_id=''
     if request.method == "POST":
         room_id=request.form.get('room_id')
-        return room_id
+        return redirect(url_for('room'))
 
     return render_template('search.html',room_id=room_id)
 
