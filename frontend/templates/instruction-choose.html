@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<!--
 <style>
 .full{
     width:100%;
@@ -58,6 +59,66 @@ input{
     color: rgba(255, 255, 255, 0);
 }
 </style>
+-->
+<style>
+::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+}
+.full{
+    width:100%;
+    background-color:FloralWhite;
+}
+.head{
+    width:100%;
+    height:60px;
+    background-color:#ED6E2C;
+    text-align: center;
+}
+.head span{
+    color: white;
+    font-size: 20pt;
+    position: relative;
+    top:10px;
+}
+.choose{
+    width:100%;
+    max-width: 960px;
+    padding: 0 16px;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color:white;
+}
+.image{
+    width: 100%;
+    position: relative;
+}
+.image img{
+    width:100%;
+    border: white;
+    border-radius: 30px;
+    margin-bottom: 10px;
+    z-index: 0;
+}
+.text{
+    width: 100%;
+}
+.text span{
+    color: #ED6E2C;
+    font-size: 150%;
+    margin-left: 5px;
+}
+input{
+    z-index: 1;
+    height: 30px;
+    width: 30px;
+    background-color: rgba(255, 255, 255, 0);
+    border-color: #ED6E2C;
+    border-width: 3px;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0);
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -66,17 +127,19 @@ input{
         <div class="head">
             <span>Map</p>
         </div>
-        <div class="image">
-            <img src="{{image_path}}">
-            {% for i, d in dic.items() %}
-            <input is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
-            {% endfor %}
-        </div>
-        <div class="text">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ED6E2C" class="bi bi-search" viewBox="0 0 16 16">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-            </svg>
-            <span>Choose the place you want to go</span>
+        <div class="choose">
+            <div class="image">
+                <img src="{{image_path}}">
+                {% for i, d in dic.items() %}
+                <input is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
+                {% endfor %}
+            </div>
+            <div class="text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ED6E2C" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+                <span>Choose the place you want to go</span>
+            </div>
         </div>
     </div>
 </form>
