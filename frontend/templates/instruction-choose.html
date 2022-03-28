@@ -66,13 +66,17 @@ input{
 }
 .full{
     width:100%;
-    background-color:FloralWhite;
+    height:100%;
+    background-color:FloralWhite; 
 }
 .head{
+    position: fixed;
+    top: 0;
     width:100%;
     height:60px;
     background-color:#ED6E2C;
     text-align: center;
+    z-index: 2;
 }
 .head span{
     color: white;
@@ -82,8 +86,9 @@ input{
 }
 .choose{
     width:100%;
+    height:100%;
     max-width: 960px;
-    padding: 0 16px;
+    padding: 50px 16px;
     margin-top: 50px;
     margin-left: auto;
     margin-right: auto;
