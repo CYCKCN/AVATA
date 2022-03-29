@@ -4,11 +4,11 @@
 {% endblock %}
 
 {% block content %}
-<form id="login" method="post">
-    <div id="user">
-        <div id="user-txt">Welcome to sign in!</div>
-        <input id="input-email" v-model="userEmail" name="email" placeholder="Please enter your email">
-        <input id="btn-confirm" type='submit' name="confirm" value="Confirm">
+<form id="login-code" method="post">
+    <div id="code">
+        <div id="code-txt">A verification code has sent to your email: {{userEmail}}</div>
+        <input id="input-code" v-model="userCode" name="code" placeholder="Please enter the verification code">
+        <input id="btn-sign" type='submit' name="sign" value="Sign In">
     </div>
 </form>
 
@@ -17,34 +17,35 @@
 Vue.createApp({
   data() {
     return {
-        userEmail: 'rose@gmail.com',
+        userEmail: '',
+        userCode: ''
     }
   },
   delimiters: ['{[', ']}'],  // Fix bug: Avoid Mustache syntax conflict in Vue and flask.jinjia2
   methods: {
   }
-}).mount('#login')
+}).mount('#login-code')
 </script>
 
 <style>
-#user{
+#code{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     width: 100vw;
-    height: 40vh;
+    height: 35vh;
     padding: 5vh 7vw;
 }
 
-#user-txt{
+#code-txt{
     width: 100%;
     height: 3vh;
     font-size: 4vw;
     font-weight: bold;
 }
 
-#input-email{
+#input-code{
     margin-top: 5vh;
     width: 100%;
     height: 3vh;
@@ -54,7 +55,7 @@ Vue.createApp({
     border-bottom: solid 0.1vw gray;
 }
 
-#btn-confirm{
+#btn-sign{
     margin-top: 5vh;
     width: 100%;
     height: 3vh;
@@ -63,31 +64,6 @@ Vue.createApp({
     color: white;
     font-size: 3vw;
     border-radius: 1.5vh;
-}
-
-#input-code{
-    position: absolute;
-    left: 0;
-    top: 4vh;
-    width: 80%;
-    height: 3vh;
-    border: solid 5px #ed6e2c;
-    border-radius: 5%;
-    font-size: 3rem;
-    padding: 0 5%;
-}
-
-#btn-sign{
-    position: absolute;
-    left: 0;
-    top: 15vh;
-    width: 25%;
-    height: 3vh;
-    border: solid 5px #ed6e2c;
-    border-radius: 5%;
-    font-size: 3rem;
-    background-color: #ed6e2c;
-    color: white;
 }
 </style>
 {% endblock %}

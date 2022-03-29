@@ -69,10 +69,19 @@ def demo_dic1(H=500,W=450):
 def login():
     if request.method == "POST":
         email = request.form.get('email')
-        code = request.form.get('code')
-        return email + '\n' + code
+        if email:
+            return redirect(url_for('verification', email=email))
 
     return render_template('login.html')
+
+@app.route("/verification/<email>", methods=['POST','GET'])
+def verification(email):
+    if request.method == "POST":
+        code = request.form.get('code')
+        if code:
+            return redirect(url_for('search'))
+
+    return render_template('verification-code.html', userEmail=email)
 
 @app.route("/device", methods=['POST','GET'])
 def demo():
