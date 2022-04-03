@@ -1,26 +1,57 @@
 import os
 import time
+import cv2 as cv
 from pprint import pprint
 
 from cv2 import line
 from flask import Blueprint, render_template, redirect, url_for, request
 
+PERSONAL_TYPE=['mac','win','none']
+
 class ROOM:
-    def __init__(self,room_id='room1'):
-        self.__debug=False
+    def __init__(self,debug=False,oscwd=os.getcwd()):
+        self.oscwd=oscwd
+        self.__debug=debug
+        self.Root=''
+        self.room_id=''
 
-        self.ROOT=os.path.join(os.getcwd(),'frontend','static','images','test',room_id)
-        self.room_id=room_id
-
-        self.image_360=url_for('static',filename='images/test/'+room_id+'/360.png')\
-                        if not self.__debug else 'images/test/'+room_id+'/360.png'
+        self.image_360=None
         self.image_360_deivces=None
 
         self.choose=None
         self.choose_devices=None
         self.choose_personal=None
 
+        self.choose_devices_=None
+
         self.guides=None
+
+        self.guide_queque=[]
+        self.guide_device=None
+        self.guide_queque_size=0
+    
+    def __call__(self, room_id='room1'):
+        self.Root=os.path.join(self.oscwd,'frontend','static','images','test',room_id)
+        
+        self.room_id=room_id
+
+        self.image_360=url_for('static',filename='images/test/'+room_id+'/360.png')\
+                        if not self.__debug else 'images/test/'+room_id+'/360.png'
+        '''
+        self.image_360_deivces=None
+
+        self.choose=None
+        self.choose_devices=None
+        self.choose_personal=None
+
+        self.choose_devices_=None
+
+        self.guides=None
+
+        self.guide_queque=[]
+        self.guide_device=None
+        self.guide_queque_size=0
+        '''
 
     def __read_360_txt(self,path):
         lines=[]
@@ -33,7 +64,7 @@ class ROOM:
     def __read_guide_txt(self):
         L={}
         for p in self.choose_personal:
-            root=os.path.join(self.ROOT,p,'text.txt')
+            root=os.path.join(self.Root,p,'text.txt')
             lines=[]
             f = open(root)
             for line in f:
@@ -43,8 +74,36 @@ class ROOM:
             L[p]=lines
         return L
 
+    def create_guide_queue(self,device):
+        self.guide_device=device
+        g=self.guides[device]
+        q=[]
+        for _, d in g.items():
+            q.append(d['guide'])
+        self.guide_queque=q
+        self.guide_queque_size=len(q)
+
+    def pop_guide_queue(self):
+        index=self.guide_queque_size-len(self.guide_queque)
+        self.guides[self.guide_device][index]['finish']=1
+        return self.guide_queque.pop(0)
+
+    def choose_devices_relative(self):
+        img=cv.imread(os.path.join(self.Root,'360.png'))
+        V, U, _=img.shape
+        devices={}
+        for i,_d in self.choose_devices.items():
+            device={}
+            d=_d.copy()
+            device['name']=d['name']
+            device['v']=str(int(int(d['v'].replace('px',''))/V*100))+'%'
+            device['u']=str(int(int(d['u'].replace('px',''))/U*100))+'%'
+            devices[i]=device
+        self.choose_devices_=devices
+        return devices
+
     def set_data_choose_devices(self):#database->devices.html
-        root=os.path.join(self.ROOT,'360.txt')
+        root=os.path.join(self.Root,'360.txt')
         lines=self.__read_360_txt(root)
         devices={}
         for i in range(len(lines)):
@@ -57,7 +116,7 @@ class ROOM:
         self.image_360_deivces=devices
         return devices
 
-    def get_data_choose_devices(self,request):#devices.html->database
+    def get_data_choose_devices(self):#devices.html->database
         choose=[]
         for _, d in self.image_360_deivces.items():
             if request.form.get(d['name']):
@@ -71,10 +130,10 @@ class ROOM:
             if d['name'] in self.choose:
                 choose_devices[len(choose_devices)]=self.image_360_deivces[i]
         self.choose_devices=choose_devices
-        return choose_devices
+        #return choose_devices
 
     def set_data_instruction(self):#database->instruction(-choose).html
-        #root=os.path.join(self.ROOT,self.choose_personal,'text.txt')
+        #root=os.path.join(self.Root,self.choose_personal,'text.txt')
         #lines=self.__read_guide_txt()
         #print(lines)
         L=self.__read_guide_txt()
@@ -141,7 +200,7 @@ class ROOM:
 
             guides[self.choose[i]]=guide.copy()
         self.guides=guides
-        return guides
+        return guides, self.choose_devices
 
 if __name__ == '__main__':
     '''
@@ -177,7 +236,8 @@ if __name__ == '__main__':
             lines.append(line.replace('\n',''))
     print(lines)
     '''
-    room=ROOM('room1')
+    room=ROOM(debug=True)
+    room('room1')
     #print(room.image_360)
     devices=room.set_data_choose_devices()
     #pprint(devices)
@@ -190,5 +250,11 @@ if __name__ == '__main__':
     pprint(guides)
     print(_e)
 
-
+    #print(room.choose_devices_relative())
+    room.create_guide_queue('device001')
+    pprint(room.guide_queque)
+    print('')
+    pprint(room.pop_guide_queue())
+    print('')
+    pprint(room.guides)
     
