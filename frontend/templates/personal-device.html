@@ -24,7 +24,7 @@
 	.user{
 		float: right;
 	}
-	.subbtn button{
+	.subbtn input{
 		position: absolute;
 		top: 60vh;
 		right: 10vw;
@@ -76,6 +76,7 @@
 {% endblock %}
 
 {% block content %}
+<form method="post">
 <div id="app">
 	<div id="app" class="bar">
 		<a class="quit" href="search">Quit</a>
@@ -85,28 +86,32 @@
 		<div class="person-device" style="margin-top:20px;">
 			<h2 class="perdev-question">What device do you bring?</h2>
 		    <div class="perdev-ans">
-				<input class="pick" type="radio" check="checked" id="one" value="Macbook" v-model="picked">
+				<input class="pick" type="radio" check="checked" id="one" name="mac" value="Macbook" v-model="picked">
 				<label class="text" for="one">Macbook</label>
 			</div>
 			<div class="perdev-ans">
-				<input class="pick" type="radio" id="two" value="Windows" v-model="picked">
+				<input class="pick" type="radio" id="two" name="win" value="Windows" v-model="picked">
 				<label class="text" for="two">Windows laptop</label>
 			</div>
 			<div class="perdev-ans">
-				<input class="pick" type="radio" id="three" value="None" v-model="picked">
+				<input class="pick" type="radio" id="three" name="none" value="None" v-model="picked">
 				<label class="text" for="three">None</label>
 			</div>
 			<span class="picked">Picked: {[ picked ]}</span>
 		</div>
 		<br />
 		<div class="subbtn">
+			<!--
 			<button @click="submit">
 				<a href="device">Next</a>
 			</button>
+			-->
+			<input type="submit"  class="enter" name="input" value="Next">
 		</div>
 		
 	</div>
 </div>
+</form>
 <script>
 Vue.createApp({
   data() {
