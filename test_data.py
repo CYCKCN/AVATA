@@ -37,21 +37,6 @@ class ROOM:
 
         self.image_360=url_for('static',filename='images/test/'+room_id+'/360.png')\
                         if not self.__debug else 'images/test/'+room_id+'/360.png'
-        '''
-        self.image_360_deivces=None
-
-        self.choose=None
-        self.choose_devices=None
-        self.choose_personal=None
-
-        self.choose_devices_=None
-
-        self.guides=None
-
-        self.guide_queque=[]
-        self.guide_device=None
-        self.guide_queque_size=0
-        '''
 
     def __read_360_txt(self,path):
         lines=[]
@@ -143,39 +128,6 @@ class ROOM:
         for i in range(len(self.choose)):
             guide={}
             for p, lines in L.items():
-                '''
-                pos_guide=0
-                g={}
-
-                
-                for j in range(pos_line,len(lines)):
-                    device_name=lines[j].split('_')[0]
-                    guide_name=lines[j].split('_')[1]
-                    image=lines[j].split(' ')[0]
-                    text=lines[j].split(' ')[1]
-                    if device_name == self.choose[i]:
-                        if not guide_name == 'guide'+str(pos_guide+1):
-                            pos_guide+=1
-                            pprint(g)
-                            guide[len(guide)]={
-                                'finish':0,
-                                'guide':g.copy()
-                            }
-                            g={}
-                        g[text]=url_for('static',
-                        filename='images/test/'+self.room_id+'/'+p+'/'+image+'.png')\
-                            if not self.__debug else 'images/test/'+self.room_id+'/'+p+'/'+image+'.png'
-
-                    else: 
-                        print(device_name)
-                        pos_line=j
-                        break
-                pprint(g)
-                guide[len(guide)]={
-                    'finish':0,
-                    'guide':g.copy()
-                }
-                '''
                 cur_device_guide=[]
                 for j in range(len(lines)):
                     device_name=lines[j].split('_')[0]
