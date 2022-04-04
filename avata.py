@@ -220,11 +220,11 @@ def instruction():
             return redirect(url_for('instructor_choose'))
         else:
             guide=CURRENT_ROOM.pop_guide_queue()
-            return render_template('instruction.html',title="Guide",guide=guide)
+            return render_template('instruction.html',title="Guide of "+CURRENT_ROOM.guide_device,guide=guide)
 
     guide=CURRENT_ROOM.pop_guide_queue()
-    return render_template('instruction.html',title="Guide",guide=guide)
+    return render_template('instruction.html',title="Guide of "+CURRENT_ROOM.guide_device,guide=guide)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
