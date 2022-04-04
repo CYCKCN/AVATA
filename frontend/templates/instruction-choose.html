@@ -115,14 +115,25 @@ input{
 }
 input{
     z-index: 1;
-    height: 30px;
-    width: 30px;
+    height: 6vw;
+    width: 6vw;
     background-color: rgba(255, 255, 255, 0);
     border-color: #ED6E2C;
     border-width: 3px;
     border-radius: 50%;
     color: rgba(255, 255, 255, 0);
+    transform: translate(-50%, -50%);
 }
+.active{
+    border-color: #00FF00;
+}
+
+.choose-txt{
+    color: yellow;
+    font-size: 48px;
+    transform: translate(-50%, -50%);
+}
+
 </style>
 {% endblock %}
 
@@ -136,7 +147,12 @@ input{
             <div class="image">
                 <img src="{{image_path}}">
                 {% for i, d in dic.items() %}
-                <input is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
+                    {% if d.clicked == 'n' %}
+                        <input is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
+                    {% else %}
+                        <input class="active" is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
+                    {% endif %}
+                    <div id="txt-{{d.name}}" class="choose-txt">{{d.name}}</div>
                 {% endfor %}
             </div>
             <div class="text">
@@ -158,6 +174,18 @@ class LocateInput extends HTMLInputElement{
         this.style.position="absolute";
         this.style.top=this.getAttribute('top');
         this.style.left=this.getAttribute('left');
+
+        var objs = JSON.parse('{{ dic | tojson | safe}}')
+        console.log(objs)
+
+        for(let i = 0; i < Object.keys(objs).length; i++)
+        {
+            let obj = objs[i]
+            let txtDiv=document.getElementById("txt-" + obj.name)  // label
+            txtDiv.style.position='absolute'
+            txtDiv.style.top=obj.v;
+            txtDiv.style.left=obj.u;
+        }
     }
 }
 customElements.define('locate-input', LocateInput, {extends: 'input'});

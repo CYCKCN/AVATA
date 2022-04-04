@@ -35,7 +35,7 @@ def demo_dic(H=1080,W=1920):
     }
     return dic
 
-def demo_dic1(H=500,W=450):
+# def demo_dic1(H=500,W=450):
     '''
     dic={#1080*1920
         0:{
@@ -50,20 +50,22 @@ def demo_dic1(H=500,W=450):
         }
     }
     '''
-    dic={#1080*1920
-        0:{
-            'name':'d1',
-            'v':'20%',
-            'u':'75%'
-        },
-        1:{
-            'name':'d2',
-            'v':'70%',
-            'u':'20%'
-        }
+demo_dic1={#1080*1920
+    0:{
+        'name':'1',
+        'v':'20%',
+        'u':'75%',
+        'clicked':'n'  # y:clicked; n:not clicked (original state)
+    },
+    1:{
+        'name':'2',
+        'v':'70%',
+        'u':'20%',
+        'clicked':'n'
     }
+}
 
-    return dic
+#    return dic
 
 @app.route("/login", methods=['POST','GET'])
 def login():
@@ -132,17 +134,20 @@ def instructor_choose():
         global Personal
         Personal=demo_utils.create_queue(os.getcwd(),'win')
         #print(Personal)
-        return redirect(url_for('instruction'))
+        return redirect(url_for('instruction', idx=name))
     
-    image_path=url_for('static',filename='images/room-choose.jpg')
-    return render_template('instruction-choose.html',dic=demo_dic1(), image_path=image_path)
+    image_path=url_for('static',filename='images/demo-ieda/short.png')
+    return render_template('instruction-choose.html',dic=demo_dic1, image_path=image_path)
 
-@app.route("/instruction", methods=['POST','GET'])
-def instruction():
+@app.route("/instruction/<idx>", methods=['POST','GET'])
+def instruction(idx):
     if request.method == "POST":
         global Personal
         if len(Personal)==0:
-            return "finish"
+            for _, elem in demo_dic1.items():
+                if(elem['name']==idx):
+                    elem['clicked']='y'
+            return redirect(url_for('instructor_choose'))
         else: 
             guide=Personal.pop(0)
             return render_template('instruction.html',title="Guide",guide=guide)
