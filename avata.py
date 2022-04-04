@@ -18,60 +18,6 @@ CURRENT_ROOM=ROOM(oscwd=os.getcwd())
 def hello():
     return 'hello'
 
-'''
-def demo_dic(H=1080,W=1920):
-    dic={#1080*1920
-        0:{
-            'name':'d1',
-            'v':str(int(H*0.2))+'px',
-            'u':str(int(W*0.2))+'px'
-        },
-        1:{
-            'name':'d2',
-            'v':str(int(H*0.8))+'px',
-            'u':str(int(W*0.3))+'px'
-        },
-        2:{
-            'name':'d3',
-            'v':str(int(H*0.1))+'px',
-            'u':str(int(W*0.6))+'px'
-        }
-    }
-    return dic
-
-# def demo_dic1(H=500,W=450):
-'''
-dic={#1080*1920
-    0:{
-        'name':'d1',
-        'v':str(int(H*0.2))+'px',
-        'u':str(int(W*0.75))+'px'
-    },
-    1:{
-        'name':'d2',
-        'v':str(int(H*0.7))+'px',
-        'u':str(int(W*0.2))+'px'
-    }
-}
-'''
-demo_dic1={#1080*1920
-    0:{
-        'name':'1',
-        'v':'20%',
-        'u':'75%',
-        'clicked':'n'  # y:clicked; n:not clicked (original state)
-    },
-    1:{
-        'name':'2',
-        'v':'70%',
-        'u':'20%',
-        'clicked':'n'
-    }
-}
-
-    return dic
-'''
-
 @app.route("/login", methods=['POST','GET'])
 def login():
     if request.method == "POST":
