@@ -37,6 +37,20 @@ class ROOM:
 
         self.image_360=url_for('static',filename='images/test/'+room_id+'/360.png')\
                         if not self.__debug else 'images/test/'+room_id+'/360.png'
+        self.image_360_deivces=None
+
+        self.choose=None
+        self.choose_devices=None
+        self.choose_personal=None
+
+        self.choose_devices_=None
+
+        self.guides=None
+
+        self.guide_queque=[]
+        self.guide_device=None
+        self.guide_queque_size=0
+        
 
     def __read_360_txt(self,path):
         lines=[]
