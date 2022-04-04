@@ -86,15 +86,15 @@
 		<div class="person-device" style="margin-top:20px;">
 			<h2 class="perdev-question">What device do you bring?</h2>
 		    <div class="perdev-ans">
-				<input class="pick" type="radio" check="checked" id="one" name="mac" value="Macbook" v-model="picked">
+				<input class="pick" type="checkbox" check="checked" id="one" name="mac" value="Macbook" v-model="picked">
 				<label class="text" for="one">Macbook</label>
 			</div>
 			<div class="perdev-ans">
-				<input class="pick" type="radio" id="two" name="win" value="Windows" v-model="picked">
+				<input class="pick" type="checkbox" id="two" name="win" value="Windows" v-model="picked">
 				<label class="text" for="two">Windows laptop</label>
 			</div>
 			<div class="perdev-ans">
-				<input class="pick" type="radio" id="three" name="none" value="None" v-model="picked">
+				<input class="pick" type="checkbox" id="three" name="none" value="None" v-model="picked">
 				<label class="text" for="three">None</label>
 			</div>
 			<span class="picked">Picked: {[ picked ]}</span>
@@ -116,7 +116,7 @@
 Vue.createApp({
   data() {
     return {
-		picked : "",
+		picked : [],
 		userEmail : "rose@gmail.com"
     }
   },
