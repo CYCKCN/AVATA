@@ -18,6 +18,7 @@ CURRENT_ROOM=ROOM(oscwd=os.getcwd())
 def hello():
     return 'hello'
 
+'''
 def demo_dic(H=1080,W=1920):
     dic={#1080*1920
         0:{
@@ -39,20 +40,7 @@ def demo_dic(H=1080,W=1920):
     return dic
 
 def demo_dic1(H=500,W=450):
-    '''
-    dic={#1080*1920
-        0:{
-            'name':'d1',
-            'v':str(int(H*0.2))+'px',
-            'u':str(int(W*0.75))+'px'
-        },
-        1:{
-            'name':'d2',
-            'v':str(int(H*0.7))+'px',
-            'u':str(int(W*0.2))+'px'
-        }
-    }
-    '''
+
     dic={#1080*1920
         0:{
             'name':'d1',
@@ -67,6 +55,7 @@ def demo_dic1(H=500,W=450):
     }
 
     return dic
+'''
 
 @app.route("/login", methods=['POST','GET'])
 def login():
