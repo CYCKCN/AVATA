@@ -82,12 +82,19 @@ class ROOM:
         self.guide_queque=q
         self.guide_queque_size=len(q)
 
+        for _, d in self.choose_devices_.items():
+            if d['name']==device:
+                d['clicked']='y'
+
     def pop_guide_queue(self):
         index=self.guide_queque_size-len(self.guide_queque)
         self.guides[self.guide_device][index]['finish']=1
         return self.guide_queque.pop(0)
 
     def choose_devices_relative(self):
+        if not self.choose_devices_==None:
+            return self.choose_devices_
+
         img=cv.imread(os.path.join(self.Root,'360.png'))
         V, U, _=img.shape
         devices={}
@@ -97,6 +104,7 @@ class ROOM:
             device['name']=d['name']
             device['v']=str(int(int(d['v'].replace('px',''))/V*100))+'%'
             device['u']=str(int(int(d['u'].replace('px',''))/U*100))+'%'
+            device['clicked']='n'
             devices[i]=device
         self.choose_devices_=devices
         return devices
