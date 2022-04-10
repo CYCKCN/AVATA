@@ -162,7 +162,8 @@ def instructor_choose():
     
     img=CURRENT_ROOM.image_360
     dic=CURRENT_ROOM.choose_devices_relative()
-    return render_template('instruction-choose.html',dic=dic, image_path=img)
+    order=CURRENT_ROOM.get_guide_order()
+    return render_template('instruction-choose.html',dic=dic, image_path=img, order=order)
 
 @app.route("/instruction", methods=['POST','GET'])
 def instruction():
