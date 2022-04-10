@@ -136,7 +136,7 @@ def instructor_choose():
         #print(Personal)
         return redirect(url_for('instruction', idx=name))
     
-    image_path=url_for('static',filename='images/demo-ieda/short.png')
+    image_path=url_for('static',filename='images/demo-ieda/thin2.png')
     return render_template('instruction-choose.html',dic=demo_dic1, image_path=image_path)
 
 @app.route("/instruction/<idx>", methods=['POST','GET'])

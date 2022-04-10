@@ -73,23 +73,22 @@ input{
     position: fixed;
     top: 0;
     width:100%;
-    height:60px;
+    height:3vh;
     background-color:#ED6E2C;
     text-align: center;
     z-index: 2;
 }
 .head span{
     color: white;
-    font-size: 20pt;
+    font-size: 2vh;
     position: relative;
-    top:10px;
 }
 .choose{
     width:100%;
     height:100%;
-    max-width: 960px;
+    max-width: 90vw;
     padding: 50px 16px;
-    margin-top: 50px;
+    margin-top: 1.8vh;
     margin-left: auto;
     margin-right: auto;
     background-color:white;
@@ -108,29 +107,35 @@ input{
 .text{
     width: 100%;
 }
+.icon{
+    transform: scale(3, 3) translate(25%, -20%);
+}
 .text span{
     color: #ED6E2C;
-    font-size: 150%;
-    margin-left: 5px;
+    font-size: 4vw;
+    margin-left: 4vw;
 }
 input{
     z-index: 1;
-    height: 6vw;
-    width: 6vw;
-    background-color: rgba(255, 255, 255, 0);
+    height: 12vw;
+    width: 20vw;
+    border-radius: 3vw;
+    background-color: rgba(237, 110, 44, 0.3);
+    /* rgba(237, 110, 44, 0.3) */
     border-color: #ED6E2C;
     border-width: 3px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
     color: rgba(255, 255, 255, 0);
     transform: translate(-50%, -50%);
 }
 .active{
     border-color: #00FF00;
+    background-color: rgba(0, 255, 0, 0.3)
 }
 
 .choose-txt{
     color: yellow;
-    font-size: 48px;
+    font-size: 6vw;
     transform: translate(-50%, -50%);
 }
 
@@ -156,7 +161,7 @@ input{
                 {% endfor %}
             </div>
             <div class="text">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ED6E2C" class="bi bi-search" viewBox="0 0 16 16">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ED6E2C" class="bi bi-search" viewBox="0 0 16 16">
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                 </svg>
                 <span>Choose the place you want to go</span>
