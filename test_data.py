@@ -159,14 +159,29 @@ class ROOM:
 
                 for j in range(step_num):
                     g={}
+                    g_index=0
                     for k in range(len(cur_device_guide)):
                         cur_name=int(cur_device_guide[k].split('_')[1].replace('guide',''))
                         if cur_name==j+1:
-                            image=cur_device_guide[k].split(' ')[0]
+                            name=cur_device_guide[k].split(' ')[0]
                             text=cur_device_guide[k].split(' ')[1]
+                            file_type=cur_device_guide[k].split(' ')[2]
+                            if file_type=='video': name=name+'.mp4'
+                            else: name=name+'.png'
+                            g[g_index]={
+                                'text':text,
+                                'type':file_type,
+                                'name':url_for('static',
+                                    filename='images/test/'+self.room_id+'/'+p+'/'+name)\
+                                    if not self.__debug else 'images/test/'+self.room_id+'/'+p+'/'+name
+                            }
+                            g_index+=1
+                            '''
                             g[text]=url_for('static',
                             filename='images/test/'+self.room_id+'/'+p+'/'+image+'.png')\
                                 if not self.__debug else 'images/test/'+self.room_id+'/'+p+'/'+image+'.png'
+                            '''
+                            
                     guide[len(guide)]={
                         'finish':0,
                         'guide':g.copy()
