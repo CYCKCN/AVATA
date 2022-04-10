@@ -36,23 +36,6 @@ def verification(email):
 
     return render_template('verification-code.html', userEmail=email)
 
-'''
-@app.route("/device", methods=['POST','GET'])
-def demo():
-    if request.method == "POST":
-        confirm=request.form.get('confirm')
-        device={}
-        dic_=demo_dic()
-        for i, d in dic_.items():
-            if request.form.get(d['name']):
-                device[i]=request.form.get(d['name'])
-            else: device[i]=''
-
-        #return device
-        return redirect(url_for('instructor_choose'))
-
-    return render_template('device.html',dic=demo_dic())
-'''
 @app.route("/device", methods=['POST','GET'])
 def device():
     #global CURRENT_ROOM
@@ -73,24 +56,6 @@ def search():
         return redirect(url_for('room'))
 
     return render_template('search.html',room_id=room_id)
-
-'''
-@app.route("/room", methods=['POST','GET'])
-def room():
-    if request.method == "POST":
-
-        return ""
-
-    return render_template('room.html')
-
-@app.route("/personal-device", methods=['POST','GET'])
-def personal_device():
-    if request.method == "POST":
-
-        return ""
-
-    return render_template('personal-device.html')
-'''
 
 @app.route("/room", methods=['POST','GET'])
 def room():
@@ -117,40 +82,6 @@ def personal_device():
         return redirect(url_for('instructor_choose'))
 
     return render_template('personal-device.html')
-
-
-'''
-Personal=[]
-@app.route("/instruction-choose", methods=['POST','GET'])
-def instructor_choose():
-    if request.method == "POST":
-        name=request.form.get('input')
-        global Personal
-        Personal=demo_utils.create_queue(os.getcwd(),'win')
-        #print(Personal)
-        return redirect(url_for('instruction', idx=name))
-    
-    image_path=url_for('static',filename='images/demo-ieda/short.png')
-    return render_template('instruction-choose.html',dic=demo_dic1, image_path=image_path)
-
-@app.route("/instruction/<idx>", methods=['POST','GET'])
-def instruction(idx):
-    if request.method == "POST":
-        global Personal
-        if len(Personal)==0:
-            for _, elem in demo_dic1.items():
-                if(elem['name']==idx):
-                    elem['clicked']='y'
-            return redirect(url_for('instructor_choose'))
-        else: 
-            guide=Personal.pop(0)
-            return render_template('instruction.html',title="Guide",guide=guide)
-
-    guide=Personal.pop(0)
-
-    return render_template('instruction.html',title="Guide",guide=guide)
-
-'''
 
 @app.route("/instruction-choose", methods=['POST','GET'])
 def instructor_choose():
