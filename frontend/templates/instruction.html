@@ -93,7 +93,7 @@
     width:100%;
     margin-bottom: 60px;
 }
-.guide img{
+.guide img, .guide video{
     width:100%;
     border: white;
     border-radius: 30px;
@@ -134,6 +134,7 @@ input:hover{
             <span>{{title}}</p>
         </div>
         <div class="guide">
+            <!--
             {% for text, img in guide.items() %}
             <div>
                 <img src="{{img}}"> 
@@ -142,6 +143,28 @@ input:hover{
                 </svg>
                 <span>{{text}}</span>
             </div>    
+            {% endfor %}
+            
+            <div>
+                <video controls>
+                    <source src="{{url_for('static', filename='_temp/demo-data/mac/_1_0_.mp4')}}" type="video/mp4">
+                </video>
+            </div>
+            -->
+            {% for i, g in guide.items() %}
+                <div>
+                {% if g.type == 'video' %}
+                    <video controls>
+                        <source src="{{g.name}}" type="video/mp4">
+                    </video>
+                {% else %}
+                <img src="{{g.name}}"> 
+                {% endif %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ED6E2C" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                </svg>
+                <span>{{g.text}}</span>
+                </div>
             {% endfor %}
         </div>
         <input type="submit" name="input" value="√">

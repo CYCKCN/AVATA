@@ -2,6 +2,10 @@
 
 {% block head %}
 <style>
+	.form{
+		width:100%;
+    	height:100%;
+	}
 	.bar {
 		/* overflow: hidden; */
 		background-color: #ED6E2C;
@@ -95,30 +99,37 @@
 {% endblock %}
 
 {% block content %}
-<div id="app" class="bar">
-	<a class="quit" href="search">Back</a>
-	<a class="user">{[userEmail]}</a>
-</div>
-
-<div id="overlay">
-	<div class="confirmBox">
-		<h3>Do you want to quit the room?</h3>
-		<form class="form-inline">
-			<a onclick="off()">Cancel</a>
-			<a href="room">Confirm</a>
-		</form>
+<form method="post">
+	<div id="app" class="bar">
+		<a class="quit" href="search">Back</a>
+		<!--<a class="user">{[userEmail]}</a>-->
+		<a class="user">cici@ust.hk</a>
 	</div>
-</div>
-<div>
-	
-<div id="room">
-	<img class="roomPic" src="{{url_for('static',filename='images/demo-ieda/360-1.jpg')}}" />
-	<h2 class="roomNo">Room {[roomNo]}</h2>
-	<h4 class="roomLoc">{[roomLoc]}</h4>
-</div>
+	<!--
+	<div id="overlay">
+		<div class="confirmBox">
+			<h3>Do you want to quit the room?</h3>
+			<form class="form-inline">
+				<a onclick="off()">Cancel</a>
+				<a href="room">Confirm</a>
+			</form>
+		</div>
+	</div>-->
 
-<a class="enter" href="personal-device">Enter</a>
+		
+	<div id="room">
+		<img class="roomPic" src="{{url_for('static',filename='images/demo-ieda/360-1.jpg')}}" />
+		<!--
+		<h2 class="roomNo">Room {[roomNo]}</h2>
+		<h4 class="roomLoc">{[roomLoc]}</h4>-->
+		<h2 class="roomNo">Room 4223</h2>
+		<h4 class="roomLoc">Academic Buidling 4/F, Lift 23</h4>
+	</div>
 
+	<!--<a class="enter" href="personal-device">Enter</a>-->
+	<input type="submit"  class="enter" name="input" value="Enter">
+</form>
+<!--
 <script>
 Vue.createApp({
   data() {
@@ -144,7 +155,9 @@ Vue.createApp({
 
   }
 }).mount('#room')
-	
+</script>
+-->
+<script>
 function on() {
 	document.getElementById("overlay").style.display = "block";
 }

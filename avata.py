@@ -4,6 +4,7 @@ from flask import Flask
 from easydict import EasyDict
 
 import demo_utils
+from test_data import ROOM, PERSONAL_TYPE
 
 PATH_templates='frontend/templates'
 PATH_static='frontend/static'
@@ -11,61 +12,11 @@ PATH_static='frontend/static'
 app = Flask(__name__, template_folder=PATH_templates, static_folder=PATH_static)
 #app = Flask(__name__)
 
+CURRENT_ROOM=ROOM(oscwd=os.getcwd())
+
 @app.route("/")
 def hello():
     return 'hello'
-
-def demo_dic(H=1080,W=1920):
-    dic={#1080*1920
-        0:{
-            'name':'d1',
-            'v':str(int(H*0.2))+'px',
-            'u':str(int(W*0.2))+'px'
-        },
-        1:{
-            'name':'d2',
-            'v':str(int(H*0.8))+'px',
-            'u':str(int(W*0.3))+'px'
-        },
-        2:{
-            'name':'d3',
-            'v':str(int(H*0.1))+'px',
-            'u':str(int(W*0.6))+'px'
-        }
-    }
-    return dic
-
-# def demo_dic1(H=500,W=450):
-    '''
-    dic={#1080*1920
-        0:{
-            'name':'d1',
-            'v':str(int(H*0.2))+'px',
-            'u':str(int(W*0.75))+'px'
-        },
-        1:{
-            'name':'d2',
-            'v':str(int(H*0.7))+'px',
-            'u':str(int(W*0.2))+'px'
-        }
-    }
-    '''
-demo_dic1={#1080*1920
-    0:{
-        'name':'1',
-        'v':'20%',
-        'u':'75%',
-        'clicked':'n'  # y:clicked; n:not clicked (original state)
-    },
-    1:{
-        'name':'2',
-        'v':'70%',
-        'u':'20%',
-        'clicked':'n'
-    }
-}
-
-#    return dic
 
 @app.route("/login", methods=['POST','GET'])
 def login():
@@ -85,6 +36,7 @@ def verification(email):
 
     return render_template('verification-code.html', userEmail=email)
 
+'''
 @app.route("/device", methods=['POST','GET'])
 def demo():
     if request.method == "POST":
@@ -100,6 +52,18 @@ def demo():
         return redirect(url_for('instructor_choose'))
 
     return render_template('device.html',dic=demo_dic())
+'''
+@app.route("/device", methods=['POST','GET'])
+def device():
+    #global CURRENT_ROOM
+    if request.method == "POST":
+        CURRENT_ROOM.get_data_choose_devices()
+        return redirect(url_for('personal_device'))
+
+    dic=CURRENT_ROOM.set_data_choose_devices()
+    img=CURRENT_ROOM.image_360
+    #print(dic)
+    return render_template('device.html',dic=dic,img=img)
 
 @app.route("/search", methods=['POST','GET'])
 def search():
@@ -110,6 +74,7 @@ def search():
 
     return render_template('search.html',room_id=room_id)
 
+'''
 @app.route("/room", methods=['POST','GET'])
 def room():
     if request.method == "POST":
@@ -125,7 +90,36 @@ def personal_device():
         return ""
 
     return render_template('personal-device.html')
+'''
 
+@app.route("/room", methods=['POST','GET'])
+def room():
+    if request.method == "POST":
+        request.form.get('input')
+        #global CURRENT_ROOM
+        CURRENT_ROOM(room_id='room1')
+        return redirect(url_for('device'))
+
+    return render_template('room.html')
+
+@app.route("/personal-device", methods=['POST','GET'])
+def personal_device():
+    if request.method == "POST":
+        device=[]
+        for d in PERSONAL_TYPE:
+            if request.form.get(d):
+                device.append(d)
+
+        #global CURRENT_ROOM
+        CURRENT_ROOM.get_data_personal_device(device)
+        CURRENT_ROOM.set_data_instruction()
+
+        return redirect(url_for('instructor_choose'))
+
+    return render_template('personal-device.html')
+
+
+'''
 Personal=[]
 @app.route("/instruction-choose", methods=['POST','GET'])
 def instructor_choose():
@@ -152,20 +146,38 @@ def instruction(idx):
             guide=Personal.pop(0)
             return render_template('instruction.html',title="Guide",guide=guide)
 
-    '''
-    title="guide title"
-    guide={}
-    img=['grey.jpg','grey.jpg','grey.jpg']
-    text=['text1','text2','text3']
-    step_num=len(img)
-    for i in range(step_num):
-        guide[text[i]]=url_for('static',filename='images/'+img[i])
-    '''
-
     guide=Personal.pop(0)
 
     return render_template('instruction.html',title="Guide",guide=guide)
 
+'''
+
+@app.route("/instruction-choose", methods=['POST','GET'])
+def instructor_choose():
+    #global CURRENT_ROOM
+    if request.method == "POST":
+        device=request.form.get('input')
+        CURRENT_ROOM.create_guide_queue(device)
+        return redirect(url_for('instruction'))
+    
+    img=CURRENT_ROOM.image_360
+    dic=CURRENT_ROOM.choose_devices_relative()
+    return render_template('instruction-choose.html',dic=dic, image_path=img)
+
+@app.route("/instruction", methods=['POST','GET'])
+def instruction():
+    #global CURRENT_ROOM
+    guide=None
+    if request.method == "POST":
+        if len(CURRENT_ROOM.guide_queque)==0:
+            return redirect(url_for('instructor_choose'))
+        else:
+            guide=CURRENT_ROOM.pop_guide_queue()
+            return render_template('instruction.html',title="Guide of "+CURRENT_ROOM.guide_device,guide=guide)
+
+    guide=CURRENT_ROOM.pop_guide_queue()
+    return render_template('instruction.html',title="Guide of "+CURRENT_ROOM.guide_device,guide=guide)
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",debug=True)
+    app.run(host='0.0.0.0',debug=True)
