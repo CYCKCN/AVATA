@@ -12,45 +12,48 @@ class ROOM:
     def __init__(self,debug=False,oscwd=os.getcwd()):
         self.oscwd=oscwd
         self.__debug=debug
-        self.Root=''
+        self.ROOT=''
         self.room_id=''
 
         self.image_360=None
         self.image_360_deivces=None
+        self.image_360_deivces_related=None
 
         self.choose=None
         self.choose_devices=None
         self.choose_personal=None
 
-        self.choose_devices_=None
+        self.choose_devices_related=None
 
         self.guides=None
 
         self.guide_queque=[]
         self.guide_device=None
         self.guide_queque_size=0
+        self.guide_device_order=None
     
     def __call__(self, room_id='room1'):
-        self.Root=os.path.join(self.oscwd,'frontend','static','images','test',room_id)
+        self.ROOT=os.path.join(self.oscwd,'frontend','static','images','test',room_id)
         
         self.room_id=room_id
 
         self.image_360=url_for('static',filename='images/test/'+room_id+'/mid.png')\
                         if not self.__debug else 'images/test/'+room_id+'/mid.png'
         self.image_360_deivces=None
+        self.image_360_deivces_related=None
 
         self.choose=None
         self.choose_devices=None
         self.choose_personal=None
 
-        self.choose_devices_=None
+        self.choose_devices_related=None
 
         self.guides=None
 
         self.guide_queque=[]
         self.guide_device=None
         self.guide_queque_size=0
-        
+        self.guide_device_order=None
 
     def __read_360_txt(self,path):
         lines=[]
@@ -63,7 +66,7 @@ class ROOM:
     def __read_guide_txt(self):
         L={}
         for p in self.choose_personal:
-            root=os.path.join(self.Root,p,'text.txt')
+            root=os.path.join(self.ROOT,p,'text.txt')
             lines=[]
             f = open(root)
             for line in f:
@@ -82,7 +85,7 @@ class ROOM:
         self.guide_queque=q
         self.guide_queque_size=len(q)
 
-        for _, d in self.choose_devices_.items():
+        for _, d in self.choose_devices_related.items():
             if d['name']==device:
                 d['clicked']='y'
 
@@ -92,10 +95,10 @@ class ROOM:
         return self.guide_queque.pop(0)
 
     def choose_devices_relative(self):
-        if not self.choose_devices_==None:
-            return self.choose_devices_
+        if not self.choose_devices_related==None:
+            return self.choose_devices_related
 
-        img=cv.imread(os.path.join(self.Root,'360.png'))
+        img=cv.imread(os.path.join(self.ROOT,'360.png'))
         V, U, _=img.shape
         devices={}
         for i,_d in self.choose_devices.items():
@@ -106,11 +109,11 @@ class ROOM:
             device['u']=str(int(int(d['u'].replace('px',''))/U*100))+'%'
             device['clicked']='n'
             devices[i]=device
-        self.choose_devices_=devices
+        self.choose_devices_related=devices
         return devices
 
-    def set_data_choose_devices(self):#database->devices.html
-        root=os.path.join(self.Root,'360.txt')
+    def set_data_choose_devices(self,use_related=False):#database->devices.html
+        root=os.path.join(self.ROOT,'360.txt')
         lines=self.__read_360_txt(root)
         devices={}
         for i in range(len(lines)):
@@ -121,7 +124,23 @@ class ROOM:
             device['u']=line[2]+'px'
             devices[i]=device
         self.image_360_deivces=devices
-        return devices
+
+        img=cv.imread(os.path.join(self.ROOT,'360.png'))
+        V, U, _=img.shape
+        devices_related={}
+        for i in range(len(lines)):
+            device_related={}
+            line=lines[i].split(' ')
+            device_related['name']=line[0]
+            device_related['v']=str(int(int(line[1])/V*100))+'%'
+            device_related['u']=str(int(int(line[2])/U*100))+'%'
+            devices_related[i]=device_related
+        self.image_360_deivces_related=devices_related
+
+        if use_related:
+            return devices_related
+        else:
+            return devices
 
     def get_data_choose_devices(self):#devices.html->database
         choose=[]
@@ -129,6 +148,7 @@ class ROOM:
             if request.form.get(d['name']):
                 choose.append(request.form.get(d['name']))
         self.choose=choose
+        self.guide_device_order=choose
 
     def get_data_personal_device(self,personal):#personal-device.html->database
         self.choose_personal=personal
@@ -140,7 +160,7 @@ class ROOM:
         #return choose_devices
 
     def set_data_instruction(self):#database->instruction(-choose).html
-        #root=os.path.join(self.Root,self.choose_personal,'text.txt')
+        #root=os.path.join(self.ROOT,self.choose_personal,'text.txt')
         #lines=self.__read_guide_txt()
         #print(lines)
         L=self.__read_guide_txt()
@@ -190,6 +210,19 @@ class ROOM:
             guides[self.choose[i]]=guide.copy()
         self.guides=guides
         return guides, self.choose_devices
+    
+    def set_guide_order(self,order):
+        self.guide_device_order=order
+
+    def get_guide_order(self):
+        text=''
+        for i, d in enumerate(self.guide_device_order):
+            text+=d
+            if not i+1==len(self.guide_device_order):
+                text+=' -> ' 
+
+        return text
+
 
 if __name__ == '__main__':
     '''
@@ -239,7 +272,7 @@ if __name__ == '__main__':
     pprint(guides)
     print(_e)
 
-    #print(room.choose_devices_relative())
+    #print(room.choose_devices_relatedrelative())
     room.create_guide_queue('device001')
     pprint(room.guide_queque)
     print('')

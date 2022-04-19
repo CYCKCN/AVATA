@@ -1,13 +1,13 @@
 import base64
 
-def image_encoder(image_path: str) -> str:
+def image_encoder(image_path: str) -> str: #enocde video or image to string
     img = open(image_path,"rb")
     img_encode = base64.b64encode(img.read())
     img.close()
     img_string = img_encode.decode('utf-8')
     return img_string
 
-def image_decoder(encoded_image: str, save_path: str = "write.png"):
+def image_decoder(encoded_image: str, save_path: str = "write.png"): #decode string from encoder
     img_encode = encoded_image.encode('utf-8')
     img = base64.b64decode(img_encode)
     out = open(save_path,"wb")
