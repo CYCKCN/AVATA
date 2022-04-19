@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask import Flask
 from easydict import EasyDict
+from pprint import pp, pprint
 
 import demo_utils
 from test_data import ROOM, PERSONAL_TYPE
@@ -43,7 +44,7 @@ def device():
         CURRENT_ROOM.get_data_choose_devices()
         return redirect(url_for('personal_device'))
 
-    dic=CURRENT_ROOM.set_data_choose_devices()
+    dic=CURRENT_ROOM.set_data_choose_devices(use_related=True)
     img=CURRENT_ROOM.image_360
     #print(dic)
     return render_template('device.html',dic=dic,img=img)
@@ -92,8 +93,11 @@ def instructor_choose():
         return redirect(url_for('instruction'))
     
     img=CURRENT_ROOM.image_360
-    dic=CURRENT_ROOM.choose_devices_relative()
+    dic=CURRENT_ROOM.choose_devices_relative(use_related=False)
     order=CURRENT_ROOM.get_guide_order()
+    #pprint(dic)
+    #pprint(CURRENT_ROOM.image_360_deivces)
+    #pprint(CURRENT_ROOM.image_360_deivces_related)
     return render_template('instruction-choose.html',dic=dic, image_path=img, order=order)
 
 @app.route("/instruction", methods=['POST','GET'])
