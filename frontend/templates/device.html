@@ -89,7 +89,7 @@
   </div>
   <div id="long-img" style='position:absolute; top:3vh; left:0; background-color:gray; height: 80%; width: 100%; overflow-y: scroll; overflow-x: scroll;' @mousedown="move($event)">
       <!--<img style='position:absolute;height:100%;' src="{{url_for('static',filename='images/demo-ieda/360-1.JPG')}}">-->
-      <img style='position:absolute;height:100%;' src="{{img}}">
+      <img style='position:absolute;height:100%;' src="{{img}}" id="image">
       {% for i, d in dic.items() %}
       <div id="el-device-{{d.name}}" class="device" onclick="enlarge($(this))">
         <input id="el-ckb" onclick="stopPropagation(event)" is="locate-input" type='checkbox' name="{{d.name}}" value="{{d.name}}" v-model="device_name" top="{{d.v}}" left="{{d.u}}">
@@ -168,23 +168,32 @@ class LocateInput extends HTMLInputElement{
     super();
   }
   connectedCallback(){
-    var objs = JSON.parse('{{ dic | tojson | safe}}')
-    console.log(objs)
+    var objs = JSON.parse('{{ dic | tojson | safe}}');
+    console.log(objs);
 
     for(let i = 0; i < Object.keys(objs).length; i++)
     {
-      let obj = objs[i]
-      let parentDiv=document.getElementById("el-device-" + obj.name)  // label
-      parentDiv.style.position='absolute'
-      parentDiv.style.top=obj.v;
-      parentDiv.style.left=obj.u;
-      parentDiv.style.width='450px'
-      parentDiv.style.height='125px'
-      parentDiv.style.padding='15px 20px'
-      parentDiv.style.border='1px solid #111' 
-      parentDiv.style.borderRadius='1.5rem'
-      parentDiv.style.backgroundColor='rgb(255,255,255,0.2)'
-      parentDiv.style.fontSize='4em'
+      let obj = objs[i];
+      let parentDiv=document.getElementById("el-device-" + obj.name) ; // label
+
+      let img=document.getElementById('image');
+      var img_u=img.offsetWidth;
+      var img_v=img.offsetHeight
+      var u=parseInt((obj.u).replace('%',''))/100*img_u+'px';
+      var v=parseInt((obj.v).replace('%',''))/100*img_v+'px';
+
+      parentDiv.style.position='absolute';
+      //parentDiv.style.top=obj.v;
+      //parentDiv.style.left=obj.u;
+      parentDiv.style.top=v;
+      parentDiv.style.left=u;
+      parentDiv.style.width='450px';
+      parentDiv.style.height='125px';
+      parentDiv.style.padding='15px 20px';
+      parentDiv.style.border='1px solid #111' ;
+      parentDiv.style.borderRadius='1.5rem';
+      parentDiv.style.backgroundColor='rgb(255,255,255,0.2)';
+      parentDiv.style.fontSize='4em';
     }
   
 

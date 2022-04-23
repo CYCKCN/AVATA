@@ -94,7 +94,7 @@ class ROOM:
         self.guides[self.guide_device][index]['finish']=1
         return self.guide_queque.pop(0)
 
-    def choose_devices_relative(self):
+    def choose_devices_relative(self,use_related=True):
         if not self.choose_devices_related==None:
             return self.choose_devices_related
 
@@ -105,8 +105,12 @@ class ROOM:
             device={}
             d=_d.copy()
             device['name']=d['name']
-            device['v']=str(int(int(d['v'].replace('px',''))/V*100))+'%'
-            device['u']=str(int(int(d['u'].replace('px',''))/U*100))+'%'
+            if use_related:
+                device['v']=str(int(int(d['v'].replace('px',''))/V*100))+'%'
+                device['u']=str(int(int(d['u'].replace('px',''))/U*100))+'%'
+            else:
+                device['v']=d['v']
+                device['u']=d['u']
             device['clicked']='n'
             devices[i]=device
         self.choose_devices_related=devices
