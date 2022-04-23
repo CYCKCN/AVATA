@@ -37,8 +37,8 @@ class ROOM:
         
         self.room_id=room_id
 
-        self.image_360=url_for('static',filename='images/test/'+room_id+'/mid.png')\
-                        if not self.__debug else 'images/test/'+room_id+'/mid.png'
+        self.image_360=url_for('static',filename='images/test/'+room_id+'/360-1.jpg')\
+                        if not self.__debug else 'images/test/'+room_id+'/360-1.jpg'
         self.image_360_deivces=None
         self.image_360_deivces_related=None
 
