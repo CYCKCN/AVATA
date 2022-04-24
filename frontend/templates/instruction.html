@@ -2,70 +2,66 @@
 
 {% block head %}
 <style>
-::-webkit-scrollbar {
-    display: none; /* for Chrome, Safari, and Opera */
-}
-.full{
-    width:100%;
-    min-height: 100vh;
-    background-color:FloralWhite;
-}
-.head{
-    position: fixed;
-    top: 0;
-    width:100%;
-    height:3vh;
-    background-color:#ED6E2C;
-    text-align: center;
-}
-.head span{
-    color: white;
-    font-size: 2vh;
-    position: relative;
-}
-.guide{
-    width: 100%;
-    max-width: 90vw;
-    padding: 1.8vh 0;
-    margin-top: 1.5vh;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: white;
-}
-.guide div{
-    width:100%;
-    margin-bottom: 60px;
-}
-.guide img, .guide video{
-    width:100%;
-    border: white;
-    border-radius: 30px;
-    margin-bottom: 10px;
-}
-.guide span{
-    color:#ED6E2C;
-    margin-left: 6vw;
-    font-size: 4vw;
-    word-break: break-word;
-}
-.icon{
-    transform: scale(3, 3) translate(25%, 80%);
-}
-input{
-    position: fixed;
-    width: 10vw;
-    height: 10vw;
-    right: 5vw;
-    bottom: 1.5vh;
-    background-color: #ed702cab;
-    border: #ED6E2C;
-    border-radius: 50%;
-    color: white;
-    font-size: 2vh;
-}
-input:hover{
-    background-color: #ed702c;
-}
+    /* 页面的CSS:1.header部分 */
+    .bar {
+        position: absolute;
+        background-color: white;
+        height: 5vh;
+        z-index: 100;
+        width: 100vw;
+    }
+    .roomname{
+        font-size: 3vh;
+        text-align: center;
+    }
+    .quit{
+        height: 4vh;
+        width: 4vh;
+        margin-right: 2vw;
+        position: absolute;
+        top: 0.2vh;
+        left: 90vw;
+    }
+    /* 页面的CSS:2.主要部分 */
+    .guide{
+        position: absolute;
+        width: 100vw;
+        margin-top: 5vh;
+        height: 95vh;
+    }
+    .guide div{
+        width:100%;
+    }
+    .guide img, .guide video{
+        width:100%;
+        border: white;
+        border-radius: 30px;
+        margin-bottom: 10px;
+    }
+    .guide span{
+        color:#0074BC;
+        margin-left: 6vw;
+        font-size: 4vw;
+        word-break: break-word;
+    }
+    .icon{
+        transform: scale(3, 3) translate(25%, 80%);
+    }
+    input{
+        position: fixed;
+        width: 10vw;
+        height: 10vw;
+        right: 5vw;
+        bottom: 1.5vh;
+        background-color: #0074BC;
+        border: #0074BC;
+        border-radius: 50%;
+        color: white;
+        font-size: 2vh;
+    }
+    input:hover{
+        background-color: #0074BC;
+    }
 </style>
 
 {% endblock %}
@@ -73,29 +69,30 @@ input:hover{
 {% block content %}
 
 <form method="post" class="full">
-    <div class="full">
-        <div class="head">
-            <span>{{title}}</p>
-        </div>
-        <div class="guide">
-            {% for i, g in guide.items() %}
-                <div>
-                {% if g.type == 'video' %}
-                    <video controls>
-                        <source src="{{g.name}}" type="video/mp4">
-                    </video>
-                {% else %}
-                <img src="{{g.name}}"> 
-                {% endif %}
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ED6E2C" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
-                </svg>
-                <span>{{g.text}}</span>
-                </div>
-            {% endfor %}
-        </div>
-        <input type="submit" name="input" value="√">
+    <div class="bar">
+        <div class="roomname">Room 5554</div>
+        <a class="aclass" href="search">
+            <svg class="quit" width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M27.7087 32.0835H7.29199C6.90522 32.0835 6.53429 31.9299 6.2608 31.6564C5.9873 31.3829 5.83366 31.012 5.83366 30.6252V18.9585H2.91699L16.4678 5.40623C16.6033 5.27063 16.7641 5.16307 16.9411 5.08968C17.1182 5.01629 17.308 4.97852 17.4996 4.97852C17.6912 4.97852 17.881 5.01629 18.0581 5.08968C18.2351 5.16307 18.3959 5.27063 18.5314 5.40623L32.0837 18.9585H29.167V30.6252C29.167 31.012 29.0134 31.3829 28.7399 31.6564C28.4664 31.9299 28.0954 32.0835 27.7087 32.0835ZM14.5837 21.8752H20.417V29.1669H26.2503V17.2494L17.5003 8.49935L8.75033 17.2494V29.1669H14.5837V21.8752Z" fill="black"/>
+            </svg>
+        </a>
+      </div>
     </div>
+    <div class="guide">
+        {% for i, g in guide.items() %}
+            <div>
+            {% if g.type == 'video' %}
+                <video controls>
+                    <source src="{{g.name}}" type="video/mp4">
+                </video>
+            {% else %}
+            <img src="{{g.name}}"> 
+            {% endif %}
+            <span>{{g.text}}</span>
+            </div>
+        {% endfor %}
+    </div>
+    <input type="submit" name="input" value="√">
 </form>
 
 {% endblock %}

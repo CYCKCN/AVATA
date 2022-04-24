@@ -24,7 +24,7 @@ def login():
     if request.method == "POST":
         email = request.form.get('email')
         if email:
-            return redirect(url_for('verification', email=email))
+            return redirect(url_for('search'))
 
     return render_template('login.html')
 
