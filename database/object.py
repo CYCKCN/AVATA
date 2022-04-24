@@ -1,17 +1,22 @@
+from pymongo.mongo_client import MongoClient
+import datetime
+
 class Account(object):
-    def __init__(self, email, rmid):
+    def __init__(self, email, password, identity="USER"):
         self.email = email
-        self.rmid = rmid
-        self.check_identity()
+        self.password = password
+        self.identity = identity
 
-    def check_identity(self):
-        if "ust.hk" in self.email:
-            self.identity = "USER"
-            self.request = False
-        else:
-            self.identity = "GUEST"
-            self.request = True
+    def change_identity(self, identity):
+        self.identity = identity
 
+class Room(object):
+    def __init__(self, room_name, image):
+        self.room_name = room_name # 4223 / ISD works
+        self.location = image
+        self.booking = {}
+        self.available = {}
+    
 
 class Device(object):
     def __init__(self, name, t, loc=None, status=False):
