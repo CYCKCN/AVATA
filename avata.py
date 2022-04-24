@@ -24,21 +24,21 @@ def login():
     if request.method == "POST":
         email = request.form.get('email')
         if email:
-            return redirect(url_for('search'))
+            return redirect(url_for('verification', email=email))
 
     return render_template('login.html')
 
-# @app.route("/verification/<email>", methods=['POST','GET'])
-# def verification(email):
-#     if request.method == "POST":
-#         code = request.form.get('code')
-#         if code:
-#             return redirect(url_for('search'))
+@app.route("/verification/<email>", methods=['POST','GET'])
+def verification(email):
+    if request.method == "POST":
+        code = request.form.get('code')
+        if code:
+            return redirect(url_for('search'))
 
-#     return render_template('verification-code.html', userEmail=email)
+    return render_template('verification-code.html', userEmail=email)
 
-@app.route("/device", methods=['POST','GET'])
-def device():
+@app.route("/device/<room_id>", methods=['POST','GET'])
+def device(room_id):
     #global CURRENT_ROOM
     if request.method == "POST":
         CURRENT_ROOM.get_data_choose_devices()
@@ -54,19 +54,28 @@ def search():
     room_id=''
     if request.method == "POST":
         room_id=request.form.get('room_id')
-        return redirect(url_for('room'))
+        return redirect(url_for('room',room_id=room_id))
 
     return render_template('search.html',room_id=room_id)
 
-@app.route("/room", methods=['POST','GET'])
-def room():
+@app.route("/room/<room_id>", methods=['POST','GET'])
+def room(room_id):
     if request.method == "POST":
-        request.form.get('input')
-        #global CURRENT_ROOM
-        CURRENT_ROOM(room_id='room1')
-        return redirect(url_for('device'))
+        CURRENT_ROOM(room_id=room_id)
+        if request.form.get('enter'):
+            return redirect(url_for('device',room_id=CURRENT_ROOM.room_id))
+        elif request.form.get('book'):
+            return redirect(url_for('booking',room_name='5554'))
 
     return render_template('room.html')
+
+@app.route("/booking/<room_name>", methods=['POST','GET'])
+def booking(room_name):
+    if request.method == "POST":
+
+        return 
+
+    return render_template('booking.html',room=room_name)
 
 @app.route("/personal-device", methods=['POST','GET'])
 def personal_device():

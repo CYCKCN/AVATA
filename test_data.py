@@ -1,12 +1,40 @@
+from calendar import calendar
 import os
 import time
+import gridfs
 import cv2 as cv
 from pprint import pprint
+from datetime import datetime
 
 from cv2 import line
 from flask import Blueprint, render_template, redirect, url_for, request
 
+import database.booking as room_booking
+
 PERSONAL_TYPE=['mac','win','none']
+MONTH_ABBR={
+    1:'Jan',
+    2:'Feb',
+    3:'Mar',
+    4:'Apr',
+    5:'May',
+    6:'June',
+    7:'July',
+    8:'Aug',
+    9:'Sept',
+    10:'Oct',
+    11:'Nov',
+    12:'Dec'
+}
+WEEK_ABBR={
+    1:'Mon',
+    2:'Tue',
+    3:'Wed',
+    4:'Thu',
+    5:'Fri',
+    6:'Sat',
+    7:'Sun'
+}
 
 class ROOM:
     def __init__(self,debug=False,oscwd=os.getcwd()):
@@ -31,7 +59,17 @@ class ROOM:
         self.guide_device=None
         self.guide_queque_size=0
         self.guide_device_order=None
-    
+
+        self.db=room_booking.connection("AVATA")
+        self.fs=gridfs.GridFS(self.db)
+        self.db_roomone=None
+
+        self.today_date=\
+            list(map(int,(datetime.today().strftime('%Y %m %d')+' '+str(datetime.today().weekday())).split(' ')))
+        self.booking_week=None
+        self.booking_time=room_booking.time
+
+
     def __call__(self, room_id='room1'):
         self.ROOT=os.path.join(self.oscwd,'frontend','static','images','test',room_id)
         
@@ -54,6 +92,9 @@ class ROOM:
         self.guide_device=None
         self.guide_queque_size=0
         self.guide_device_order=None
+
+        self.db_roomone=room_booking.findroomone(self.db['rooms'], room_id)
+
 
     def __read_360_txt(self,path):
         lines=[]
@@ -226,6 +267,17 @@ class ROOM:
                 text+=' -> ' 
 
         return text
+
+    def set_booking_week(self):
+        booking={}
+        _,month_days=calendar.monthrange(self.today_date[0],self.today_date[1])
+        for i in range(7):
+            week=(self.today_date[3]+i)%7
+            day=self.today_date[2]+i
+            if day>month_days: day=day-month_days
+            booking[WEEK_ABBR[week]]=day
+        self.booking_week=booking
+        return booking
 
 
 if __name__ == '__main__':
