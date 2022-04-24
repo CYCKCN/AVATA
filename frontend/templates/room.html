@@ -2,18 +2,19 @@
 
 {% block head %}
 <style>
+	/* 弹窗的CSS */
 	#overlay {
-	  position: fixed;
-	  display: none;
-	  width: 100%;
-	  height: 100%;
-	  top: 0;
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
-	  background-color: rgba(0,0,0,0.5);
-	  z-index: 2;
-	  cursor: pointer;
+		position: fixed;
+		display: none;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0,0,0,0.5);
+		z-index: 2;
+		cursor: pointer;
 	}
 	.confirmBox{
 		width: 70%;
@@ -32,6 +33,7 @@
 		color: white;
 		text-decoration: none;
 	}
+	/* 页面的CSS:1.header部分 */
 	.bar {
 		position: absolute;
 		background-color: white;
@@ -49,6 +51,7 @@
 		width: 4vh;
 		margin-right: 2vw;
 	}
+	/* 页面的CSS:2.主要部分 */
 	#roommain{
 		position: absolute;
 		width: 100vw;
@@ -70,7 +73,6 @@
 		left: 7%;
 		color: white;
 	}
-
 	.roomLoc {
 		position: relative;
 		font-size: 2.2vh;
@@ -79,6 +81,7 @@
 		bottom: 12%;
 		left: 7%;
 	}
+	/* 页面的CSS:3.右下角按钮部分 */
 	.enter{
 		position: relative;
 		height: 5vh;
@@ -112,19 +115,6 @@
 		height: 5vh;
 		width: 5vh;
 	}
-	/* .enter {
-		background-color: #ED6E2C;
-		border-radius: 1vw;
-		color: white;
-		text-decoration: none;
-		position: absolute;
-		top: 85vh;
-		left: 75vw;
-		height: 3vh;
-		width: 18vw;
-		font-size: 2vh;
-		text-align: center;
-	} */
 </style>
 {% endblock %}
 
@@ -146,9 +136,7 @@
 				<a href="room">Confirm</a>
 			</form>
 		</div>
-	</div>-->
-
-		
+	</div>-->	
 	<div id="roommain">
 		<img class="roomPic" src="{{url_for('static',filename='images/test/room5554/IMG5554_BIG.png')}}" />
 		<h2 class="roomNo">Room 5554</h2>
@@ -166,16 +154,12 @@
 		</a>
 		<div class="book-txt">Book</div>
 	</div>
-
-	
-	<!-- <input type="submit"  class="enter" name="input" value="Enter"> -->
 </form>
 
 <script>
 Vue.createApp({
   data() {
     return {
-		userEmail : "cici@ust.hk"
     }
   },
   delimiters: ['{[', ']}'],
@@ -187,8 +171,6 @@ Vue.createApp({
 Vue.createApp({
   data() {
     return {
-		roomNo : "4223",
-		roomLoc: "Academic Buidling 4/F, Lift 23"
     }
   },
   delimiters: ['{[', ']}'],
