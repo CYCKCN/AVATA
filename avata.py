@@ -62,6 +62,7 @@ def search():
 def room():
     if request.method == "POST":
         request.form.get('input')
+        print(request.form.get('enter'))
         #global CURRENT_ROOM
         CURRENT_ROOM(room_id='room1')
         return redirect(url_for('device'))

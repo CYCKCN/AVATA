@@ -2,112 +2,91 @@
 
 {% block head %}
 <style>
-    
-.full{
-    width:100%;
-    height:100%;
-    background-color:FloralWhite; 
-}
-.head{
-    position: fixed;
-    top: 0;
-    width:100%;
-    height:3vh;
-    background-color:#ED6E2C;
-    text-align: center;
-    z-index: 2;
-}
-.head span{
-    color: white;
-    font-size: 2vh;
-    position: relative;
-}
-.choose{
-    width:100%;
-    /* height:100%; */
-    /* max-width: 90vw; */
-    padding: 50px 16px;
-    margin-top: 1.8vh;
-    margin-left: auto;
-    margin-right: auto;
-    background-color:white;
-}
-.image{
-    width: 100%;
-    position: relative;
-    overflow-y: scroll; 
-    overflow-x: scroll;
-}
-.image img{
-    /* width:100%; */
-    height: 80vh;
-    border: white;
-    border-radius: 30px;
-    margin-bottom: 10px;
-    z-index: 0;
-}
-.text{
-    width: 100%;
-}
-.icon{
-    transform: scale(3, 3) translate(25%, -20%);
-}
-.text span{
-    color: #ED6E2C;
-    font-size: 4vw;
-    margin-left: 4vw;
-}
-input{
-    z-index: 1;
-    height: 8vw;
-    width: 20vw;
-    border-radius: 3vw;
-    background-color: rgba(237, 110, 44, 0.3);
-    /* rgba(237, 110, 44, 0.3) */
-    border-color: #ED6E2C;
-    border-width: 3px;
-    /* border-radius: 50%; */
-    color: rgba(255, 255, 255, 0);
-    transform: translate(-50%, -50%);
-}
-.active{
-    border-color: #00FF00;
-    background-color: rgba(0, 255, 0, 0.3)
-}
-
-.choose-txt{
-    color: yellow;
-    font-size: 6vw;
-    transform: translate(-50%, -50%);
-}
-
+    /* 页面的CSS:1.header部分 */
+    .bar {
+        position: absolute;
+        background-color: white;
+        height: 5vh;
+        z-index: 100;
+        width: 100vw;
+    }
+    .roomname{
+        font-size: 3vh;
+        text-align: center;
+    }
+    .quit{
+        height: 4vh;
+        width: 4vh;
+        margin-right: 2vw;
+        position: absolute;
+        top: 0.2vh;
+        left: 90vw;
+    }
+    /* 页面的CSS:2.主要部分 */
+    .choose{
+        position: absolute;
+        width: 100%;
+        margin-top: 5vh;
+    }
+    .chooseimg{
+        height: 95vh;
+        z-index: 0;
+    }
+    /* 页面的CSS:2.1顺序设备控件 */
+    input{
+        z-index: 1;
+        height: 12vw;
+        width: 12vw;
+        border-radius: 50%;
+        background-color: #0074BC;
+        border-color: #0074BC;
+        border-width: 3px;
+        /* border-radius: 50%; */
+        color: rgba(255, 255, 255, 0);
+        transform: translate(-50%, -50%);
+    }
+    .choose-txt{
+        color: white;
+        font-size: 6vw;
+        z-index: 2;
+        transform: translate(-50%, -50%);
+    }
+    /* 页面的CSS:3.最下部提示文字的部分 */
+    .text{
+        width: 100%;
+        position: absolute;
+        bottom: 3%;
+        margin: 4vw;
+    }
+    .text span{
+        color: white;
+        font-size: 4vw;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <form method="post" class="full">
-    <div class="full">
-        <div class="head">
-            <span>Map</p>
-        </div>
-        <div class="choose">
-            <div class="image">
-                <img src="{{image_path}}">
-                {% for i, d in dic.items() %}
-                    {% if d.clicked == 'n' %}
-                        <input is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
-                    {% else %}
-                        <input class="active" is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
-                    {% endif %}
-                    <div id="txt-{{d.name}}" class="choose-txt">{{d.name[-1]}}</div>
-                {% endfor %}
-            </div>
-            <div class="text">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ED6E2C" class="bi bi-search" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+    <div class="bar">
+        <div class="roomname">Room 5554</div>
+        <a class="aclass" href="search">
+                <svg class="quit" width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M27.7087 32.0835H7.29199C6.90522 32.0835 6.53429 31.9299 6.2608 31.6564C5.9873 31.3829 5.83366 31.012 5.83366 30.6252V18.9585H2.91699L16.4678 5.40623C16.6033 5.27063 16.7641 5.16307 16.9411 5.08968C17.1182 5.01629 17.308 4.97852 17.4996 4.97852C17.6912 4.97852 17.881 5.01629 18.0581 5.08968C18.2351 5.16307 18.3959 5.27063 18.5314 5.40623L32.0837 18.9585H29.167V30.6252C29.167 31.012 29.0134 31.3829 28.7399 31.6564C28.4664 31.9299 28.0954 32.0835 27.7087 32.0835ZM14.5837 21.8752H20.417V29.1669H26.2503V17.2494L17.5003 8.49935L8.75033 17.2494V29.1669H14.5837V21.8752Z" fill="black"/>
                 </svg>
-                <span>Please choose the devices in this order: {{order}}</span>
-            </div>
+            </a>
+      </div>
+    <div class="choose">
+        <img class="chooseimg" src="{{image_path}}">
+        {% for i, d in dic.items() %}
+            {% if d.clicked == 'n' %}
+                <input is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
+            {% else %}
+                <input class="active" is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
+            {% endif %}
+            <div id="txt-{{d.name}}" class="choose-txt">{{d.name[-1]}}</div>
+        {% endfor %}
+        <div class="text">
+            <span>Please choose the devices in this order: {{order}}</span>
         </div>
     </div>
 </form>
