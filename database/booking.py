@@ -62,10 +62,10 @@ def checkavailable(db, name, date, format_data):
         if t in day[date]: continue
         time_data = date + " " + t[:2] + ':' + t[2:] + ':00'
         # print(time_data)
-        print(datetime.strptime(time_data, format_data))
+        #print(datetime.strptime(time_data, format_data))
 
 def bookroom(db, name, date, format_data):
-    checkavailable(db, roomone['_id'], time_data, format_data)
+    checkavailable(db, roomone['_id'], date, format_data)
     room = db.find_one({"_id": name})
     day = room["available"]
     ft, tt, user = map(str, input("from time & to time & use id: 0800 0900 ust.hk\n").split())
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     rooms = db['rooms']
     fs = gridfs.GridFS(db)
 
-    createnewroom(fs, rooms, 'ieda.jpg', ["IEDA Conference Room", "5554"])
+    #createnewroom(fs, rooms, 'ieda.jpg', ["IEDA Conference Room", "5554"])
 
     # roomlist = findroomlist(rooms, "5554")
     roomone = findroomone(rooms, "5554")
