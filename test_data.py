@@ -1,4 +1,4 @@
-from calendar import calendar
+from calendar import calendar, monthrange
 import os
 import time
 import gridfs
@@ -42,6 +42,7 @@ class ROOM:
         self.__debug=debug
         self.ROOT=''
         self.room_id=''
+        self.user=''
 
         self.image_360=None
         self.image_360_deivces=None
@@ -67,11 +68,14 @@ class ROOM:
         self.today_date=\
             list(map(int,(datetime.today().strftime('%Y %m %d')+' '+str(datetime.today().weekday())).split(' ')))
         self.booking_week=None
-        self.booking_time=room_booking.time
+        self.booking_time=[t[:2]+' : '+t[2:] for t in room_booking.time]
+        self.booking_occupy=None
+        self.booking_access_date=[]
+        self.booking_result=None
 
-
-    def __call__(self, room_id='room1'):
+    def __call__(self, room_id='room1', user='test'):
         self.ROOT=os.path.join(self.oscwd,'frontend','static','images','test',room_id)
+        self.user=user
         
         self.room_id=room_id
 
@@ -94,6 +98,7 @@ class ROOM:
         self.guide_device_order=None
 
         self.db_roomone=room_booking.findroomone(self.db['rooms'], room_id)
+        self.booking_occupy=None
 
 
     def __read_360_txt(self,path):
@@ -270,14 +275,80 @@ class ROOM:
 
     def set_booking_week(self):
         booking={}
-        _,month_days=calendar.monthrange(self.today_date[0],self.today_date[1])
+        _,month_days=monthrange(self.today_date[0],self.today_date[1])
         for i in range(7):
             week=(self.today_date[3]+i)%7
             day=self.today_date[2]+i
             if day>month_days: day=day-month_days
             booking[WEEK_ABBR[week]]=day
+
+            if self.today_date[2]+i>month_days: #didn't consider next year
+                date="{:d}/{:0>2d}/{:0>2d}".format(self.today_date[0],
+                    self.today_date[1]+1,
+                    self.today_date[2]+i-month_days)
+            else:
+                date="{:d}/{:0>2d}/{:0>2d}".format(self.today_date[0],
+                    self.today_date[1],
+                    self.today_date[2]+i)
+            self.booking_access_date.append(date)
+
         self.booking_week=booking
+
         return booking
+
+    def set_booking_occupy(self):
+        occupy={}
+        name=self.db_roomone['_id']
+        room = self.db['rooms'].find_one({"_id": name})
+        day = room["available"]
+
+        for t in room_booking.time:
+            for d in self.booking_access_date:
+                _t=t[:2]+' : '+t[2:]
+                _d=int(d.split('/')[2])
+                if not day.get(d) is None and t in day[d]:
+                    occupy[(_t,_d)]='y'
+                else:
+                    occupy[(_t,_d)]='n'
+        
+        self.booking_occupy=occupy
+        return occupy
+
+    def get_booking_result(self):
+        for k, v in self.booking_occupy.items():
+            t,d=k
+            if v=='y': continue
+            if request.form.get(f"time-{d}-{t}"):
+                time_data="{:d}/{:0>2d}/{:0>2d}".format(self.today_date[0],self.today_date[1],d)
+                clock=t.replace(' : ','')
+                self.db_bookroom(self.db['rooms'],self.db_roomone['_id'],time_data,clock)
+
+    def db_bookroom(self, db, name, date, clock, format_data="%Y/%m/%d %H:%M:%S"):
+        time=room_booking.time
+        room_booking.checkavailable(db, self.db_roomone['_id'], date, format_data)
+        room = db.find_one({"_id": name})
+        day = room["available"]
+        #ft, tt, user = map(str, input("from time & to time & use id: 0800 0900 ust.hk\n").split())
+        ft=clock
+        tt=time[time.index(ft)+1]
+        user=self.user
+        for i in range(time.index(ft), time.index(tt)):
+            if time[i] in day[date]: 
+                print("Not Available Time")
+                return 
+        for i in range(time.index(ft), time.index(tt)): day[date].append(time[i])
+        db.update_one({"_id": name}, {'$set': {'available': day}})
+        booking = room['booking']
+        if booking.get(user) is None: 
+            booking[user] = [[ft, tt]]
+            db.update_one({"_id": name}, {'$set': {'booking': booking}})
+        else:
+            booking[user].append([[ft, tt]])
+            db.update_one({"_id": name}, {'$set': {'booking': booking}})
+        return 
+
+
+
 
 
 if __name__ == '__main__':
