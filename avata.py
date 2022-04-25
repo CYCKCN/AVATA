@@ -72,8 +72,13 @@ def room(room_id):
 @app.route("/booking/<room_name>", methods=['POST','GET'])
 def booking(room_name):
     if request.method == "POST":
-
-        return 
+        if request.form.get('back'):
+            return redirect(url_for('room',room_id=room_name))
+        elif request.form.get('home'):
+            return render_template('search.html',room_id=room_name)
+        elif request.form.get('book'):
+            CURRENT_ROOM.get_booking_result()
+            return  redirect(url_for('room',room_id=room_name))
 
     time=CURRENT_ROOM.booking_time
     week=CURRENT_ROOM.set_booking_week()
