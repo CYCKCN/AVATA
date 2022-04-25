@@ -2,10 +2,10 @@ import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask import Flask
 from easydict import EasyDict
-from pprint import pp, pprint
+from pprint import pprint
 
 import demo_utils
-from test_data import ROOM, PERSONAL_TYPE
+from test_data import ROOM, PERSONAL_TYPE, MONTH_ABBR
 
 PATH_templates='frontend/templates'
 PATH_static='frontend/static'
@@ -66,7 +66,7 @@ def room(room_id):
             return redirect(url_for('device',room_id=CURRENT_ROOM.room_id))
         elif request.form.get('book'):
             return redirect(url_for('booking',room_name='5554'))
-
+    
     return render_template('room.html')
 
 @app.route("/booking/<room_name>", methods=['POST','GET'])
@@ -75,7 +75,12 @@ def booking(room_name):
 
         return 
 
-    return render_template('booking.html',room=room_name)
+    time=CURRENT_ROOM.booking_time
+    week=CURRENT_ROOM.set_booking_week()
+    month=MONTH_ABBR[CURRENT_ROOM.today_date[1]]
+    year=CURRENT_ROOM.today_date[0]
+    occupy=CURRENT_ROOM.set_booking_occupy()
+    return render_template('booking.html',room=room_name,time=time,week=week,month=month,year=year,occupy=occupy)
 
 @app.route("/personal-device", methods=['POST','GET'])
 def personal_device():
