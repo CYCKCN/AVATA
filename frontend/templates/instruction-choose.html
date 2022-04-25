@@ -106,7 +106,7 @@ class LocateInput extends HTMLInputElement{
         this.style.left=this.getAttribute('left');
 
         var objs = JSON.parse('{{ dic | tojson | safe}}')
-        console.log(objs)
+        //console.log(objs)
 
         for(let i = 0; i < Object.keys(objs).length; i++)
         {
