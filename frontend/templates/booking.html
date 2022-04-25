@@ -2,13 +2,201 @@
 
 {% block head %}
 <style>
+form{
+    position:absolute;
+    top: 0;
+	left: 0;
+	width: 100%;
+    height: 100%;
+    border: 0;
+}
+/* header */
+.header{
+    position: relative;
+    height: 6.5vh;
+    background-color: #F5F5F5;
+    text-align: center;
+    padding-top:1vh;
+}
+.header-name{
+    font-size: 2.8vh;
+	color: black;
+}
+.header-back{
+    position: absolute;
+    top:0;
+    height: 100%;
+    width: 6.5vh;
+}
+.header-back input{
+    width: 100%;
+    height: 100%;
+    background-color:rgba(0, 0, 0, 0.5);
+    border: 0;
+}
+.header-home{
+    position: absolute;
+    top:0;
+    right:0;
+    height: 100%;
+    width: 6.5vh;
+}
+.header-home input{
+    width: 100%;
+    height: 100%;
+    background-color:rgba(0, 0, 0, 0.5);
+    border: 0;
+}
+/* date */
+.date{
+    position: relative;
+    height: 8vh;
+    background-color: #F5F5F5;
+    border-top: 2px solid black;
+}
+.date-ym{
+    position: absolute;
+    height: 100%;
+    width: 8vh;
+    text-align: center;
+    padding-top: 1vh;
+}
+.date-text1{
+    font-size: 1.7vh;
+	color: black;
+    z-index: 2;
+}
+.date-text2{
+    font-size: 2.2vh;
+	color: black;
+    z-index: 2;
+}
+.date-week{
+    position: absolute;
+    right:0;
+    height: 100%;
+    width: 80vw;
+    text-align: center;
+    padding-top: 1vh;
 
+}
+.date-week div{
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    right: 2vw;
+    margin-left: 4vw;
+}
+.date-body{
+    position: absolute;
+    bottom: 0;
+    height: 85.5vh;
+    width: 100vw;
+    overflow-y: scroll;
+    border-top: 0.8vh solid #F5F5F5;
+}
+.date-time{
+    float: left;
+    width: 9vh;
+    border-top: 1px solid rgba(255, 255, 255, 0);
+    border-right: 2px solid gray;
+    text-align: center;
+}
+.date-time p{
+    margin-bottom: 2vh;
+}
+.date-choose{
+    float: left;
+    left: 0;
+    width: 80vw;
+    height: 132vh;
+}
+.unoccupy{
+    height: 100%;
+    width: 100%;
+    appearance: none;
+}
+.unoccupy:checked{
+    background-color:#FFD400;
+    opacity: 0.8;
+}
+.occupy{
+    height: 100%;
+    width: 100%;
+    appearance: none;
+    background-color:#cccccc;
+}
+th,td{
+    border: 0.5px solid rgb(197, 197, 197);
+}
+.book{
+    position: absolute;
+    width:12vw;
+    height:12vw;
+    right:10vw;
+    bottom: 10vw;
+    background-color:rgba(0, 0, 0, 0.5);
+}
+.book input{
+    width:100%;
+    height: 100%;
+    appearance: none;
+    opacity: 0;
+}
 </style>
 {% endblock %}
 
 {% block content %}
-<form method="post" >
-{{room}}
+<form method="post">
+    <div class="header">
+        <p class="header-name">Room 5554</p>
+        <div class="header-back">
+            <input type="submit" name="back" value=" "> 
+        </div>
+        <div class="header-home">
+            <input type="submit" name="home" value=" "> 
+        </div>
+    </div>
+    <div class="date">
+        <div class="date-ym">
+            <p class="date-text1">{{year}}</p>
+            <h1 class="date-text2"><b>{{month}}</b></h1>
+        </div>
+        <div class="date-week">
+        {% for w, d in week.items() %}
+            <div>
+                <p class="date-text1">{{w}}</p>
+                <h1 class="date-text2"><b>{{d}}</b></h1>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    <div class="date-body">
+        <div class="date-time">
+        {% for t in time %}
+            <p class="date-text1">{{t}}</p>
+        {% endfor %}
+        </div>
+        <table class="date-choose">
+        {% for t in time %}
+            <tr>
+            {% for w, d in week.items() %}
+                <td>
+                    {% if occupy[t,d]=='n' %}
+                    <input type="checkbox" name="time-{{d}}-{{t}}" value=" " class="unoccupy">
+                    {% else %}
+                    <input type="checkbox" name="time-{{d}}-{{t}}" value=" " class="occupy" disabled>
+                    {% endif %}
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <div class="book">
+        <input type="submit" name="book" value="">
+    </div>
 </form>
 {% endblock %}
 
