@@ -87,7 +87,7 @@
             {% else %}
                 <input class="active" is="locate-input" type='submit' name="input" value="{{d.name}}" top="{{d.v}}" left="{{d.u}}">
             {% endif %}
-            <div id="txt-{{d.name}}" class="choose-txt">{{d.name[-1]}}</div>
+            <div id="txt-{{d.name}}" class="choose-txt"  onclick="enlarge($(this))">{{d.name[-1]}}</div>
         {% endfor %}
         <div class="text">
             <span>Please choose the devices in this order: {{order}}</span>
@@ -96,6 +96,12 @@
 </form>
 
 <script>
+function enlarge($t){
+  console.log($t)
+  console.log($t.prev())
+  $t.prev().click();
+}
+
 class LocateInput extends HTMLInputElement{
     constructor(){
     super();

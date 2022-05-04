@@ -68,11 +68,75 @@
         height: 5vh;
         width: 5vh;
     }
+    .confirm-logo{
+        height: 5vh;
+        width: 5vh;
+        top: 88%;
+        left: 85%;
+        position: absolute;
+    }
+    /* 彈窗CSS */
+    #overlay {
+        display: none;
+        position: absolute;
+        left: 16vw;
+        top: 27vh;
+        box-shadow: 2vw 2vw 2vw rgba(0, 0, 0, 0.25);
+    }
+    .person-device {
+        background:#f5f5f5;
+        width: 72vw;
+        height: 44vh;
+        z-index: 1;
+        overflow: auto;
+    }
+    .close{
+        width: 5vw;
+        height: 5vw;
+        position: relative;
+        top: 2vh;
+        left: 88%;
+    }
+    .perdev-question{
+        position: relative;
+        top: 5vh;
+        left: 8%;
+        font-size: 2.7vh;
+        font-weight: 700;
+    }
+    .pick{
+        transform: scale(5,5) translate(0.5vw, -0.1vh);
+    }
+    .text{
+        padding: 0 6vw;
+    }
+    .perdev-ans{
+        position: relative;
+        top: 7vh;
+        left: 14%;
+        padding: 0.8vh 0;
+        font-size: 2.3vh;
+    }
+    .subbtn{
+        position: relative;
+        top: 11vh;
+        left: 10%;
+    }
+    .subbtn input{
+        width: 60vw;
+        height: 6.5vh;
+        font-size: 2.5vh;
+        background-color: white;
+        border: 0.8vw solid #0074BC;
+        border-radius: 3.25vh;
+    }
+
 </style>
 {% endblock %}
 
 {% block content %}
 <form id="app" method="post">
+  <!-- 标题栏 -->
   <div class="bar">
     <div class="roomname">Room 5554</div>
     <a class="aclass" href="search">
@@ -91,7 +155,7 @@
       </div>
       {% endfor %}
       <!-- 右侧按钮组件 -->
-      <a class="per-dev" onclick="document.getElementById('app').submit();">
+      <a class="per-dev" onclick="on();">
       <!-- <a class="per-dev" :onclick="change2()"> -->
         <svg class="logo" width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M21.5625 40.3125H40.3125V4.6875H13.125V14.0625" stroke="white" stroke-width="4" stroke-linejoin="round"/>
@@ -100,26 +164,48 @@
         </svg>  
       </a>
       <div class="per-dev-txt">Personal Device</div>
-      <a class="confirm" onclick="document.getElementById('app').submit();">
-        <svg class="logo" width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2.8125 22.5C2.8125 26.3938 3.96715 30.2002 6.13044 33.4378C8.29373 36.6754 11.3685 39.1988 14.9659 40.6889C18.5633 42.179 22.5218 42.5689 26.3408 41.8092C30.1598 41.0496 33.6678 39.1745 36.4212 36.4212C39.1745 33.6678 41.0496 30.1598 41.8092 26.3408C42.5689 22.5218 42.179 18.5633 40.6889 14.9659C39.1988 11.3685 36.6754 8.29373 33.4378 6.13044C30.2002 3.96715 26.3938 2.8125 22.5 2.8125C17.2786 2.8125 12.271 4.88671 8.57884 8.57884C4.88671 12.271 2.8125 17.2786 2.8125 22.5ZM11.25 21.0938H28.3359L20.4891 13.2089L22.5 11.25L33.75 22.5L22.5 33.75L20.4891 31.7433L28.3359 23.9062H11.25V21.0938Z" fill="white"/>
-        </svg>                
+      <input class="confirm" type="submit" name="confirm" value="Confirm" style="background: transparent; z-index: 100;">
+      <svg class="confirm-logo" width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.8125 22.5C2.8125 26.3938 3.96715 30.2002 6.13044 33.4378C8.29373 36.6754 11.3685 39.1988 14.9659 40.6889C18.5633 42.179 22.5218 42.5689 26.3408 41.8092C30.1598 41.0496 33.6678 39.1745 36.4212 36.4212C39.1745 33.6678 41.0496 30.1598 41.8092 26.3408C42.5689 22.5218 42.179 18.5633 40.6889 14.9659C39.1988 11.3685 36.6754 8.29373 33.4378 6.13044C30.2002 3.96715 26.3938 2.8125 22.5 2.8125C17.2786 2.8125 12.271 4.88671 8.57884 8.57884C4.88671 12.271 2.8125 17.2786 2.8125 22.5ZM11.25 21.0938H28.3359L20.4891 13.2089L22.5 11.25L33.75 22.5L22.5 33.75L20.4891 31.7433L28.3359 23.9062H11.25V21.0938Z" fill="white"/>
+      </svg>                
       </a>
       <div class="confirm-txt">Confirm</div>
   </div>
   <!-- <input class="btn" type="submit" name="previous" value="Previous" style="position: absolute; left: 10%; bottom: 8%;">
   <input class="btn" type="submit" name="confirm" value="Upload" style="position: absolute; right: 10%; bottom: 8%;"> -->
-  	
-	<!-- <div id="overlay" v-if="isOverlayOpen">
-		<div class="confirmBox">
-			<h3>Do you want to quit the room?</h3>
-			<form class="form-inline">
-				<a onclick="off()">Cancel</a>
-				<a href="room">Confirm</a>
-			</form>
+  
+  <!-- 弹窗组件 -->
+  <!-- <form class="form-inline">
+    <a onclick="off()">Cancel</a>
+    <a href="room">Confirm</a>
+  </form> -->
+	<div id="overlay">
+		<div class="person-device">
+      <a onclick="off()">
+        <svg class="close" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.0625 14.0625L0.9375 0.9375M0.9375 14.0625L14.0625 0.9375L0.9375 14.0625Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>          
+      </a>
+			<h2 class="perdev-question">What device do you bring?</h2>
+		    <div class="perdev-ans">
+				<input class="pick" type="checkbox" check="checked" id="one" name="mac" value="Macbook">
+				<label class="text" for="one">Macbook</label>
+			</div>
+			<div class="perdev-ans">
+				<input class="pick" type="checkbox" id="two" name="win" value="Windows">
+				<label class="text" for="two">Windows laptop</label>
+			</div>
+			<div class="perdev-ans">
+				<input class="pick" type="checkbox" id="three" name="none" value="None">
+				<label class="text" for="three">None</label>
+      </div>
+      <div class="subbtn">
+        <input type="submit" class="enter" name="personal" value="Save">
+      </div>
 		</div>
-	</div>	 -->
+	</div>	
 </form>
+
 <script>
 function enlarge($t){
   $t.children("input").click();

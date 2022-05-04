@@ -41,8 +41,18 @@ def verification(email):
 def device(room_id):
     #global CURRENT_ROOM
     if request.method == "POST":
-        CURRENT_ROOM.get_data_choose_devices()
-        return redirect(url_for('personal_device'))
+        personal = request.form.get('personal')
+        confirm = request.form.get('confirm')  # how to run confirm button
+        if personal:
+            device=[]
+            for d in PERSONAL_TYPE:
+                if request.form.get(d):
+                    device.append(d)
+
+            CURRENT_ROOM.get_data_choose_devices()
+            CURRENT_ROOM.get_data_personal_device(device)
+            CURRENT_ROOM.set_data_instruction()
+            return redirect(url_for('instructor_choose'))
 
     dic=CURRENT_ROOM.set_data_choose_devices(use_related=True)
     img=CURRENT_ROOM.image_360
