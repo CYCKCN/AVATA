@@ -29,10 +29,14 @@ form{
     width: 6.5vh;
 }
 .header-back input{
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color:rgba(0, 0, 0, 0.5);
+    background-color:rgba(0, 0, 0, 0);
     border: 0;
+    z-index: 5;
 }
 .header-home{
     position: absolute;
@@ -42,10 +46,14 @@ form{
     width: 6.5vh;
 }
 .header-home input{
+    position: absolute;
+    top:0;
+    right:0;
     width: 100%;
     height: 100%;
-    background-color:rgba(0, 0, 0, 0.5);
+    background-color:rgba(0, 0, 0, 0);
     border: 0;
+    z-index: 5;
 }
 /* date */
 .date{
@@ -135,14 +143,30 @@ th,td{
     height:12vw;
     right:10vw;
     bottom: 10vw;
-    background-color:rgba(0, 0, 0, 0.5);
+    background-color:rgba(0, 0, 0, 0);
 }
 .book input{
+    position: absolute;
+    top: 0;
+    left: 0;
     width:100%;
     height: 100%;
     appearance: none;
     opacity: 0;
+    z-index: 5;
 }
+
+img{
+    position: relative;
+    transform: translate(-55%,-55%);
+    top: 0;
+    top: 50%;
+    left: 50%;
+    width:80%;
+    height: 80%;
+    z-index: 1;
+}
+
 </style>
 {% endblock %}
 
@@ -151,9 +175,11 @@ th,td{
     <div class="header">
         <p class="header-name">Room 5554</p>
         <div class="header-back">
+            <img src="{{url_for('static',filename='back.png')}}">
             <input type="submit" name="back" value=" "> 
         </div>
         <div class="header-home">
+            <img src="{{url_for('static',filename='home.png')}}">
             <input type="submit" name="home" value=" "> 
         </div>
     </div>
@@ -195,6 +221,7 @@ th,td{
         </table>
     </div>
     <div class="book">
+        <img src="{{url_for('static',filename='yes.png')}}">
         <input type="submit" name="book" value=" ">
     </div>
 </form>
