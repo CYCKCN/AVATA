@@ -144,5 +144,16 @@ def instruction():
     return render_template('instruction.html',title="Guide of "+CURRENT_ROOM.guide_device,guide=guide)
 
 
+@app.route("/code", methods=['POST','GET'])
+def code():
+    if request.method == "POST":
+        text = request.form.get('text')
+        code = request.form.get('code')
+        if text or code:
+            return "<h1>" + text + " " + code + "</h1>"
+
+    return render_template('code.html')
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0',debug=True)
