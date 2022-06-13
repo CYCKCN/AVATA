@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <!--
+    <p>Username</p>
+    <input name="username" type="text" placeholder="" required>
+    <p>Email</p>
+    <input name="email" type="text" placeholder="" required>
+    <p>Room</p>
+    <input name="room" type="text" placeholder="" required>
+    <p>Password</p>
+    <input name="password" type="password" placeholder="" required>
+    <p>Role</p>
+    <input name="roles" type="checkbox">
+    -->
+    <p>Username</p>
+    {{ form.username }}
+    <p>Email</p>
+    {{ form.email }}
+    <p>Room</p>
+    {{ form.room }}
+    <p>Password</p>
+    {{ form.password }}
+    {{ form.hidden_tag() }}
+    <p>Role</p>
+    {% for subfield in form.roles %}
+        <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+        </tr>
+    {% endfor %}
+    {% if exist %}
+        <p>User has registered, please login.</p>
+    {% endif %}
+
+    <br><input name="submit" type="submit" value="submit">
+    <br><input name="login" type="submit" value="login">
+
+</form>
+
+{% endblock %}

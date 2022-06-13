@@ -1,7 +1,0 @@
-_0_0_ Find the control box on the lectern and press "System On"
-_0_1_ Select as shown in the picture (the projector needs time to be ready, please wait)
-_0_2_ Continue to set up at the conference table
-_1_0_ Find the HDMI cable underneath the conference table
-_1_1_ Plug the HDMI cable into your laptop
-_1_2_ Press "Fn" and "F7" on your laptop
-_1_3_ Select ¡°Duplicate¡± on the pop-up window

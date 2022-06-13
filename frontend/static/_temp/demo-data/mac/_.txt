@@ -1,5 +1,0 @@
-_0_0_ Find the control box on the lectern and press "System On"
-_0_1_ Select as shown in the picture (the projector needs time to be ready, please wait)
-_0_2_ Continue to set up at your Apple laptop
-_1_0_ Select "Screen Mirroring" - "ielm conference"
-_1_1_ Enter the AirPlay code
