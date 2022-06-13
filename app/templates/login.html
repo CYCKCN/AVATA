@@ -25,6 +25,8 @@
         {{ form.hidden_tag() }}
         <!-- <input class="input-ans" v-model="userPwd" type="password" name="pwd" placeholder=""> -->
         <input id="btn-confirm" type='submit' name="confirm" value="Log In">
+        <!--<input type='submit' name="register" value="register">-->
+        <p><a href='{{ url_for("authen.register") }}'>Register</a></p>
     </div>
 </form>
 <!--
