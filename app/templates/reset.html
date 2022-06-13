@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <!-- 
+        NOTES:
+        If you want to change the style or add class attribute of eg. {{ form.username }} , 
+        you can directly think "username" as id="username".
+        Thus, just use id to styling this tag:
+        #username{
+            ...
+        }
+     -->
+    <p>Username</p>
+    {{ form.username }}
+    <p>Email</p>
+    {{ form.email }}
+    <p>Room</p>
+    {{ form.room }}
+    <p>Password</p>
+    {{ form.password }}
+    {{ form.hidden_tag() }}
+    <p>Role</p>
+    {% for subfield in form.roles %}
+        <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+        </tr>
+    {% endfor %}
+    {% if exist %}
+        <p>User has registered, please login.</p>
+    {% endif %}
+
+    <br><input name="submit" type="submit" value="submit">
+    <!--<br><input name="login" type="submit" value="login">-->
+    <p><a href='{{ url_for("authen.login") }}'>Login</a></p>
+
+</form>
+
+{% endblock %}
