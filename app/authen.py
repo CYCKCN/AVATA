@@ -11,6 +11,7 @@ from flask_login import login_user, logout_user, current_user
 # if not current_user.is_authenticated: return redirect(url_for('authen.login'))
 # Or use:
 # @check_login
+# -by shaun
 
 def check_login(f):
     @wraps(f)
@@ -74,6 +75,7 @@ def register():
     return render_template('register.html', form=form, exist=False)
 
 @authen_blue.route('/logout')
+@check_login
 def logout():
     logout_user()
     return redirect(url_for('authen.login'))
