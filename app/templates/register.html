@@ -5,18 +5,15 @@
 
 {% block content %}
 <form method="post">
-    <!--
-    <p>Username</p>
-    <input name="username" type="text" placeholder="" required>
-    <p>Email</p>
-    <input name="email" type="text" placeholder="" required>
-    <p>Room</p>
-    <input name="room" type="text" placeholder="" required>
-    <p>Password</p>
-    <input name="password" type="password" placeholder="" required>
-    <p>Role</p>
-    <input name="roles" type="checkbox">
-    -->
+    <!-- 
+        NOTES:
+        If you want to change the style or add class attribute of eg. {{ form.username }} , 
+        you can directly think "username" as id="username".
+        Thus, just use id to styling this tag:
+        #username{
+            ...
+        }
+     -->
     <p>Username</p>
     {{ form.username }}
     <p>Email</p>
@@ -38,7 +35,8 @@
     {% endif %}
 
     <br><input name="submit" type="submit" value="submit">
-    <br><input name="login" type="submit" value="login">
+    <!--<br><input name="login" type="submit" value="login">-->
+    <p><a href='{{ url_for("authen.login") }}'>Login</a></p>
 
 </form>
 
