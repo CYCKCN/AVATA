@@ -1,4 +1,4 @@
-from genericpath import exists
+from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_user import login_required
 from .models import RegisterForm, LoginForm, User
@@ -9,7 +9,16 @@ from flask_login import login_user, logout_user, current_user
 # Don't use @login_required, it will lead to strange problems...
 # Use
 # if not current_user.is_authenticated: return redirect(url_for('authen.login'))
-# to instead
+# Or use:
+# @check_login
+
+def check_login(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated: 
+            return redirect(url_for('authen.login'))
+        return f(*args, **kwargs)
+    return wrapper
 
 authen_blue=Blueprint('authen',__name__,url_prefix='/authen')
 
@@ -69,11 +78,16 @@ def logout():
     logout_user()
     return redirect(url_for('authen.login'))
 
-@authen_blue.route('/secret', methods=['POST','GET'])
-def secret():
-    if not current_user.is_authenticated: 
-        return redirect(url_for('authen.login'))
+@authen_blue.route('/change-password', methods=['POST','GET'])
+@check_login
+def reset():
+    if request.method=="POST":
+        return ''
+    return render_template('reset.html')
 
+@authen_blue.route('/secret', methods=['POST','GET'])
+@check_login
+def secret():
     if request.method=='POST':
         return redirect(url_for('hello'))
     return 'secret page'
