@@ -6,6 +6,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import user_manager
 from flask_login import login_user, logout_user, current_user
 
+# Don't use @login_required, it will lead to strange problems...
+# Use
+# if not current_user.is_authenticated: return redirect(url_for('authen.login'))
+# to instead
+
 authen_blue=Blueprint('authen',__name__,url_prefix='/authen')
 
 @authen_blue.route('/')
@@ -19,9 +24,6 @@ def login():
 
     form=LoginForm()
     if request.method=='POST':
-        if request.form.get('register'):
-            return redirect(url_for('authen.register'))
-
         if form.validate():
             email=form.email.data
             password=form.password.data
@@ -42,10 +44,6 @@ def login():
 def register():
     form=RegisterForm()
     if request.method=='POST':
-
-        if request.form.get('login'):
-            return redirect(url_for('authen.login'))
-        
         if form.validate():
             username=form.username.data
             email=form.email.data
@@ -65,6 +63,11 @@ def register():
                 
 
     return render_template('register.html', form=form, exist=False)
+
+@authen_blue.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('authen.login'))
 
 @authen_blue.route('/secret', methods=['POST','GET'])
 def secret():
