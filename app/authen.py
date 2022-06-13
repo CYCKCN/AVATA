@@ -19,6 +19,9 @@ def login():
 
     form=LoginForm()
     if request.method=='POST':
+        if request.form.get('register'):
+            return redirect(url_for('authen.register'))
+
         if form.validate():
             email=form.email.data
             password=form.password.data
