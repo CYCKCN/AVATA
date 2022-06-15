@@ -42,7 +42,10 @@ def login():
             if exist:
                 if check_password_hash(exist['password'], password):
                     login_user(exist)
-                    return redirect(url_for('authen.secret'))
+                    if exist['roles']=='ADMIN':
+                        return redirect(url_for('admin.main'))
+                    else:
+                        return redirect(url_for('authen.secret'))
                 else:
                     return render_template('login.html', form=form, pass_right=False, register=False)
             else:

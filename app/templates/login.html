@@ -5,6 +5,16 @@
 
 {% block content %}
 <form method="post">
+    <!-- 
+        NOTES:
+        If you want to change the style or add class attribute of eg. {{ form.username }} , 
+        you can directly think "username" as id="username".
+        Thus, just use id to styling this tag:
+        #username{
+            ...
+        }
+        -by shaun
+     -->
     <div id="user">
         {% if not pass_right %}
             <p class="user-txt">Password is not correct!</p>
