@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request
+from .authen import check_login
 
 admin_blue=Blueprint('admin',__name__,url_prefix='/admin')
 
@@ -12,6 +13,8 @@ def logout():
 
 @admin_blue.route("/login", methods=['POST','GET'])
 def login():
+    #plz use /authen/login to login to /admin/main -by shaun
+    #you can register a admin account to access /admin/main
     if request.method == "POST":
         text = request.form.get('email')
         password = request.form.get('pwd')
@@ -21,6 +24,7 @@ def login():
     return render_template('admin_login.html')
 
 @admin_blue.route("/main", methods=['POST','GET'])
+@check_login #plz use wrapper function @check_login where you want user to login
 def main():
     if request.method == "POST":
         room_id=request.form.get('room_id')
