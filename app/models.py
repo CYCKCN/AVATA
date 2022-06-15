@@ -34,7 +34,7 @@ class User(db.Document, UserMixin):
 
 from flask_wtf import FlaskForm
 import wtforms
-from wtforms.validators import InputRequired, Email, Length
+from wtforms.validators import InputRequired, Email, Length, Regexp
 
 class RegisterForm(FlaskForm):
     username = wtforms.StringField('username', validators=[InputRequired(), Length(max=10)])
@@ -49,3 +49,8 @@ class RegisterForm(FlaskForm):
 class LoginForm(FlaskForm):
     email = wtforms.StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
     password = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
+
+class RoomBasicForm(FlaskForm):
+    roomName = wtforms.StringField('roomName', validators=[InputRequired(), Length(max=10)])
+    roomImage = wtforms.FileField('roomImage', validators=[InputRequired(), Regexp('([^\\s]+(\\.(?i)(jpe?g|png|bmp))$)')])
+    roomLoc = wtforms.StringField('roomLoc', validators=[InputRequired(), Length(max=30)])
