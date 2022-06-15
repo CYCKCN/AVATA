@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+    #main{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        width: 100vw;
+        padding: 5vh 5vw;
+    }
+
+    .main-txt{
+        width: 20vw;
+        height: 10vh;
+
+        /* font-family: 'Comfortaa'; */
+        font-style: normal;
+        font-weight: 360;
+        font-size: 8vw;
+        line-height: 10vh;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+    }
+
+    .searchsubhead{
+        font-size: 1.5vh;
+        font-weight: 800;
+
+        padding-top: 1vh;
+        padding-bottom: 2vh;
+    }
+
+    .searchBox {
+        width: 100%;
+        height: 6vh;
+        
+        font-size: 2vh;
+        margin: 1vh 0 2vh 0;
+        padding: 0 3vw;
+        border: 0.5vw solid #000;
+    }
+
+    .roomgroup{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+    }
+    .room{
+        height: 30vh;
+        width: 41vw;
+        margin-right: 4vw;
+        border-radius: 2.9vw;
+        filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
+        background-color: white;
+    }
+    .roomimg{
+        width: 100%;
+        height: 80%;
+        border-radius: 2.9vw 2.9vw 0 0;
+    }
+    .roomtext{
+        width: 100%;
+        height: 20%;
+        padding: 2% 6%;
+    }
+    .roomname{
+        font-size: 3.3vw;
+        font-weight: 500;
+    }
+    .roomlift{
+        font-size: 2.4vw;
+        font-weight: 300;
+    }
+    .roomelse{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        margin-left: auto;
+        align-items: flex-end;
+        position: relative;
+        bottom: 80%;
+    }
+    .roomdate{
+        position: relative;
+        font-size: 2.4vw;
+        font-weight: 300;
+    }
+    .roomtime{
+        position: relative;
+        font-size: 2.4vw;
+        font-weight: 300;
+    }
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<form method="post" id="admin-main" enctype="multipart/form-data">
+  <div id="main">  
+    <div class="main-txt">Rooms</div>
+    <div class="searchsubhead">SEARCH</div>
+		<input class="searchBox" type="text" placeholder="Search all rooms" name="room_id" v-model="roomid"/>
+    <div class="searchsubhead">BROWSE ALL</div>
+    <div class="roomgroup">
+			<div class="room" v-on:click="goRoom($event, 5554)">
+				<img class="roomimg" src="{{url_for('static',filename='images/test/room5554/IMG5554.png')}}" />
+				<div class="roomtext">
+					<div class="roomname">Room 5554</div>
+					<div class="roomlift">Lift 27-28</div>
+					<div class="roomelse">
+						<div class="roomdate">August 21</div>
+						<div class="roomtime">19:00-21:00</div>
+					</div>
+				</div>
+			</div>
+			<div class="room">
+				<img class="roomimg" src="{{url_for('static',filename='images/test/room4223/IMG4223.png')}}" />
+				<div class="roomtext">
+					<div class="roomname">Room 4223</div>
+					<div class="roomlift">Lift 23</div>
+				<div class="roomelse">
+					<div class="roomdate">September 21</div>
+					<div class="roomtime">1:00-3:00</div>
+				</div>
+				</div>
+			</div>
+		</div>
+  </div>
+</form>
+
+<script>
+    Vue.createApp({
+      data() {
+        return {
+        }
+      },
+      delimiters: ['{[', ']}'],
+      methods: {
+        goRoom: function (event, roomid) {
+            console.log(event, roomid)
+            var form = document.getElementById("admin-main");
+            form.submit();
+        },
+      }
+    }).mount('#admin-main')    
+</script>
+
+<script>
+   
+
+</script>
+{% endblock %}

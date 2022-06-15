@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+    #admin{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        padding: 5vh 5vw;
+    }
+
+    .admin-img{
+        width: 100%;
+        height: 40vh;
+        margin: 0 0 5vh 0;
+
+        /* border-radius: 5vw 5vw 0 0; */
+    }
+
+    .admin-txt{
+        width: 100%;
+        height: 10vh;
+
+        /* font-family: 'Comfortaa'; */
+        font-style: normal;
+        font-weight: 450;
+        font-size: 8vw;
+        line-height: 10vh;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+    }
+
+    .roomsubhead{
+        font-size: 1.8vh;
+        font-weight: 800;
+
+        padding-top: 1vh;
+    }
+
+    .roomtext{
+        font-size: 1.8vh;
+        font-weight: 600;
+        padding-top: 0.5vh;
+        padding-bottom: 2vh;
+    }
+
+    #btn-delete {
+        width: 100%;
+        height: 7vh;
+        margin: 10vh 0 2vh 0;
+        
+        background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw;
+
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
+    }
+
+    #btn-edit {
+        margin: auto;
+        width: 100%;
+        height: 7vh;
+        
+        background: #FFFFFF;
+        border: 0.5vw solid #000000;
+        border-radius: 1vw;
+
+        font-style: normal;
+        font-weight: 700;
+        font-size: 2vh;
+
+        text-decoration: none;
+        color: #000000;
+    }
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<form method="post" id="admin-room" enctype="multipart/form-data">
+  <div id="admin">  
+    <div class="admin-txt">Room 5554</div>
+    <img class="admin-img" src="{{url_for('static',filename='images/test/room5554/IMG5554.png')}}" />
+    <div class="roomsubhead">LOCATION</div>
+    <div class="roomtext">Academic Building</div>
+    <input id="btn-delete" type='submit' name="delete" value="DELETE">
+    <input id="btn-edit" type='submit' name="edit" value="EDIT">
+</div>
+</form>
+
+<script>
+    Vue.createApp({
+      data() {
+        return {
+        }
+      },
+      delimiters: ['{[', ']}'],
+      methods: {
+    
+      }
+    }).mount('#admin-room')    
+</script>
+
+<script>
+   
+
+</script>
+{% endblock %}

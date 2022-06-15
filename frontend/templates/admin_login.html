@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+    #admin{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        width: 100vw;
+        height: 50vh;
+        padding: 5vh 5vw;
+    }
+
+    .admin-txt{
+        width: 20vw;
+        height: 10vh;
+
+        /* font-family: 'Comfortaa'; */
+        font-style: normal;
+        font-weight: 360;
+        font-size: 8vw;
+        line-height: 10vh;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+    }
+
+    .admin-ans{
+        margin: 2vh 0 0vh 0;
+        width: 100%;
+        height: 7vh;
+        box-sizing: border-box;
+        background: #FFFFFF;
+        border: 0.5vw solid #000000;
+        padding: 0 3vw;
+        font-size: 2vh;
+    }
+
+    #btn-login {
+        margin: auto;
+        width: 100%;
+        height: 7vh;
+        
+        background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw;
+
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
+    }
+
+    /* 去掉Google密码自动填充的丑蓝色 */
+    input:-webkit-autofill {
+        box-shadow: 0 0 0 32vh #fff inset;;
+        -webkit-box-shadow: 0 0 0 32vh #fff inset; /**通过边框阴影遮挡住背景*/
+        -webkit-text-fill-color: #000; /*自动填充内容的文本颜色*/
+    }       
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<form method="post" id="admin-login" enctype="multipart/form-data">
+    <div id="admin">  
+        <div class="admin-txt">Admin</div>
+        <input class="admin-ans" v-model="adminEmail" name="email" placeholder="">
+        <input class="admin-ans" v-model="adminPwd" type="password" name="pwd" placeholder="">
+        <input id="btn-login" type='submit' name="login" value="LOG IN">
+    </div>
+</form>
+
+<script>
+    Vue.createApp({
+      data() {
+        return {
+        }
+      },
+      delimiters: ['{[', ']}'],
+      methods: {
+    
+      }
+    }).mount('#admin-login')    
+</script>
+
+<script>
+   
+
+</script>
+{% endblock %}

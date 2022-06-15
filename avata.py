@@ -154,6 +154,67 @@ def code():
 
     return render_template('code.html')
 
+devices_dict = {}
+from objects_admin import *
+
+@app.route("/point", methods=['POST','GET'])
+def point():
+    k = '4223'  # Three point initalization
+    global devices_test_admin
+    devices_dict[k] = devices_test_admin
+
+    if request.method == "POST":
+        update_from_admin_request(devices_dict[k])
+    
+    return render_template('point.html', devices=devices_dict[k].getJson(),devices_choose=devices_dict[k].chooseDevice())
+
+@app.route("/admin_logout", methods=['GET'])
+def admin_logout():  
+    return render_template('admin_logout.html')
+
+@app.route("/admin_login", methods=['POST','GET'])
+def admin_login():
+    if request.method == "POST":
+        text = request.form.get('email')
+        password = request.form.get('pwd')
+        if text or password:
+            return redirect(url_for('admin_main'))
+    
+    return render_template('admin_login.html')
+
+@app.route("/admin_main", methods=['POST','GET'])
+def admin_main():
+    room_id=''
+    if request.method == "POST":
+        room_id=request.form.get('room_id')
+        return redirect(url_for('admin_room',room_id=5554))
+    
+    return render_template('admin_main.html')
+
+@app.route("/admin_room/<room_id>", methods=['POST','GET'])
+def admin_room(room_id):
+    if request.method == "POST":
+        edit=request.form.get('edit')
+        if edit:
+            return redirect(url_for('admin_basic_info',room_id=room_id))
+    
+    return render_template('admin_room.html',room_id=room_id)
+
+@app.route("/admin_basic_info/<room_id>", methods=['POST','GET'])
+def admin_basic_info(room_id):
+    if request.method == "POST":
+        continue_=request.form.get('continue')
+        if continue_:
+            return redirect(url_for('admin_device_info',room_id=room_id))
+    
+    return render_template('admin_basic_info.html',room_id=room_id)
+
+@app.route("/admin_device_info/<room_id>", methods=['POST','GET'])
+def admin_device_info(room_id):
+    if request.method == "POST":
+        pass
+    
+    return render_template('admin_device_info.html',room_id=room_id)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',debug=True)
