@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <!-- 
+        NOTES:
+        If you want to change the style or add class attribute of eg. {{ form.username }} , 
+        you can directly think "username" as id="username".
+        Thus, just use id to styling this tag:
+        #username{
+            ...
+        }
+        -by shaun
+     -->
+
+    <br><input name="submit" type="submit" value="submit">
+    <!--<br><input name="login" type="submit" value="login">-->
+    <p><a href='{{ url_for("authen.login") }}'>Login</a></p>
+    <p><a href='{{ url_for("authen.register") }}'>Register</a></p>
+
+</form>
+
+{% endblock %}
