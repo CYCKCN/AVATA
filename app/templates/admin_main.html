@@ -2,7 +2,7 @@
 
 {% block head %}
 <style>
-    #main{
+    #mainBody{
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -98,6 +98,31 @@
         font-weight: 300;
     }
 
+    #mainFooter{
+        position: absolute;
+        width: 100vw;
+        height: 10vh;
+        top: 90vh;
+        left: 0;
+
+        border-top: 0.1vw solid #D9D9D9;
+    }
+
+    .btnAdd{
+        position: relative;
+        width: 20vw;
+        height: 7vh;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+
+        background: #000000;
+        border-radius: 3.5vh;
+
+        font-size: 4vh;
+        color: white;
+    }
+
 </style>
 
 {% endblock %}
@@ -105,35 +130,37 @@
 {% block content %}
 
 <form method="post" id="admin-main" enctype="multipart/form-data">
-  <div id="main">  
-    <div class="main-txt">Rooms</div>
-    <div class="searchsubhead">SEARCH</div>
-		<input class="searchBox" type="text" placeholder="Search all rooms" name="room_id" v-model="roomid"/>
-    <div class="searchsubhead">BROWSE ALL</div>
-    <div class="roomgroup">
-			<div class="room" v-on:click="goRoom($event, 5554)">
-				<img class="roomimg" src="{{url_for('static',filename='images/test/room5554/IMG5554.png')}}" />
-				<div class="roomtext">
-					<div class="roomname">Room 5554</div>
-					<div class="roomlift">Lift 27-28</div>
-					<div class="roomelse">
-						<div class="roomdate">August 21</div>
-						<div class="roomtime">19:00-21:00</div>
-					</div>
-				</div>
-			</div>
-			<div class="room">
-				<img class="roomimg" src="{{url_for('static',filename='images/test/room4223/IMG4223.png')}}" />
-				<div class="roomtext">
-					<div class="roomname">Room 4223</div>
-					<div class="roomlift">Lift 23</div>
-				<div class="roomelse">
-					<div class="roomdate">September 21</div>
-					<div class="roomtime">1:00-3:00</div>
-				</div>
-				</div>
-			</div>
-		</div>
+  <div class="main">
+    <!-- body -->
+    <div id="mainBody">  
+        <div class="main-txt">Rooms</div>
+        <div class="searchsubhead">SEARCH</div>
+            <input class="searchBox" type="text" placeholder="Search all rooms" name="room_id" v-model="roomid"/>
+        <div class="searchsubhead">BROWSE ALL</div>
+        <div class="roomgroup">
+            {% for k, v in roomInfo.items() %}
+            <div class="room" v-on:click="goRoom($event, {{v.name}})">
+                <img class="roomimg" src="../../static/images/test/room{{v.name}}/IMG{{v.name}}.png" />
+                <div class="roomtext">
+                    <div class="roomname">Room {{v.name}}</div>
+                    <div class="roomlift">Lift {{v.lift}}</div>
+                    <div class="roomelse">
+                        <div class="roomdate">{{v.date}}</div>
+                        <div class="roomtime">{{v.time}}</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- footer -->
+    <div id="mainFooter">
+        <input class="btnAdd" type="submit" name="add" value="+">
+    </div>
+  </div>
+  <!-- auxiliary field: not show in frontend, deal with form submit to send RoomId -->
+  <div id="roomId" style="display:none">
+    <input id="children0" type="text" name="roomid" value="" style="display:none">
   </div>
 </form>
 
@@ -146,8 +173,12 @@
       delimiters: ['{[', ']}'],
       methods: {
         goRoom: function (event, roomid) {
-            console.log(event, roomid)
             var form = document.getElementById("admin-main");
+            var roomDiv = document.getElementById("roomId");
+
+            roomDiv.children[0].setAttribute('value', roomid);
+            console.log(roomDiv.children[0].value)
+            
             form.submit();
         },
       }

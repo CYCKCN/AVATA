@@ -22,11 +22,22 @@ def login():
 
 @admin_blue.route("/main", methods=['POST','GET'])
 def main():
+    roomInfo={
+        0:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
+        1:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+        2:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+        3:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+    }
+
     if request.method == "POST":
-        room_id=request.form.get('room_id')
-        return redirect(url_for('admin.room',room_id=5554))
+        room_id=request.form.get('roomid')
+        add=request.form.get('add')
+        if add:
+            return redirect(url_for('admin.basic_info'))
+        if room_id:
+            return redirect(url_for('admin.room',room_id=room_id))
     
-    return render_template('admin_main.html')
+    return render_template('admin_main.html',roomInfo=roomInfo)
 
 @admin_blue.route("/room/<room_id>", methods=['POST','GET'])
 def room(room_id):
@@ -37,8 +48,9 @@ def room(room_id):
     
     return render_template('admin_room.html',room_id=room_id)
 
-@admin_blue.route("/basic_info/<room_id>", methods=['POST','GET'])
-def basic_info(room_id):
+@admin_blue.route("/basic_info", methods=['POST','GET'])
+def basic_info():
+    room_id = request.args.get('room_id')
     if request.method == "POST":
         continue_=request.form.get('continue')
         if continue_:
