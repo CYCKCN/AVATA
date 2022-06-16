@@ -4,12 +4,9 @@ from flask_user import login_required, UserManager, UserMixin
 from app import app, user_manager
 
 @app.route("/")
-def hello():
-    return 'hello'
+def main():
+    return render_template('admin_logout.html')
 
 
-@app.route("/finish")
-@login_required
-def finish():
-    return 'finish!'
+
 
