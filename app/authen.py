@@ -92,7 +92,7 @@ def register():
             passwordRepeat=form.passwordRepeat.data
             roles=form.roles.data
             if not password == passwordRepeat:
-                return render_template('register.html', form=form, exist=True, repeat=True)
+                return render_template('register.html', form=form, exist=False, repeat=True)
             
             exist=User.objects(email=email).first()
             if exist is None:

@@ -126,6 +126,14 @@
         height: 7vh;
         background: #ffffff;
     }
+    .register-error{
+        margin-top:2vh;
+        font-style: normal;
+        font-weight: 360;
+        font-size: 4.5vw;
+        line-height: 4.5vh;
+        color: #000000;
+    }
 
 </style>
 {% endblock %}
@@ -156,12 +164,18 @@
         <br><input class="register-submit" name="submit" type="submit" value="SUBMIT">
         <!--<br><input name="login" type="submit" value="login">-->
         <p class="register-login"><a href='{{ url_for("main") }}'>LOGIN</a></p>
+        
+        {% if exist %}
+            <p class="register-error">User has registered, please login.</p>
+        {% endif %}
+        {% if repeat %}
+            <p class="register-error">Repeated password is different.</p>
+        {% endif %}
+
         <div class="placehold"></div>
     </div>
 
-    {% if exist %}
-        <p  class="register-txt">User has registered, please login.</p>
-    {% endif %}
+    
 
 </form>
 
