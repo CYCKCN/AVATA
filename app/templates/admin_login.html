@@ -69,6 +69,31 @@
         color: #FFFFFF;
     }
 
+    #btn-register{
+        position: relative;
+        top: 0;
+        width: 90vw;
+        height: 7vh;
+        left: 5vw;
+        top: -12vw;
+        padding-top:2vh;
+
+        background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw;
+
+        text-align: center;
+    }
+
+    #btn-register a{
+        text-decoration: none;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
+        
+    }
+
     /* 去掉Google密码自动填充的丑蓝色 */
     input:-webkit-autofill {
         box-shadow: 0 0 0 32vh #fff inset;;
@@ -93,7 +118,9 @@
         {{ form.password(class_='admin-ans', **{'v-model': 'adminPwd'}) }}
         {{ form.hidden_tag() }}
         <input id="btn-login" type='submit' name="login" value="LOG IN">
+        
     </div>
+        <div id="btn-register"><a  href="/authen/register">REGISTER</a></p>p>
         {% if not pass_right %}
             <p class="admin-error">Password is not correct!</p>
         {% endif %}
