@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">
+<form method="post" id="register-form">
     <!-- 
         NOTES:
         If you want to change the style or add class attribute of eg. {{ form.username }} , 
@@ -15,27 +15,28 @@
         }
         -by shaun
      -->
-    <p>Username</p>
-    {{ form.username }}
-    <p>Email</p>
-    {{ form.email }}
-    <p>Room</p>
-    {{ form.room }}
-    <p>Password</p>
-    {{ form.password }}
+    <p class="register-title">Register</p>
+    <p class="register-txt">Username</p>
+    {{ form.username(class_='register-input') }}
+    <p class="register-txt">Email</p>
+    {{ form.email(class_='register-input') }}
+    <p class="register-txt">Room</p>
+    {{ form.room(class_='register-input') }}
+    <p class="register-txt">Password</p>
+    {{ form.password(class_='register-input') }}
     {{ form.hidden_tag() }}
-    <p>Role</p>
+    <p class="register-txt">Role</p>
     {% for subfield in form.roles %}
         <tr>
-            <td>{{ subfield }}</td>
-            <td>{{ subfield.label }}</td>
+            <td>{{ subfield(class_="register-radio") }}</td>
+            <td>{{ subfield.label(class_="register-txt") }}</td>
         </tr>
     {% endfor %}
     {% if exist %}
-        <p>User has registered, please login.</p>
+        <p  class="register-txt">User has registered, please login.</p>
     {% endif %}
 
-    <br><input name="submit" type="submit" value="submit">
+    <br><input class="register-submit" name="submit" type="submit" value="submit">
     <!--<br><input name="login" type="submit" value="login">-->
     <p><a href='{{ url_for("authen.login") }}'>Login</a></p>
 
