@@ -28,6 +28,21 @@
         color: #000000;
     }
 
+    .admin-error{
+        /* font-family: 'Comfortaa'; */
+        float: left;
+        margin-left: 5vw;
+        font-style: normal;
+        font-weight: 360;
+        font-size: 6vw;
+        line-height: 5vh;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+    }
+
     .admin-ans{
         margin: 2vh 0 0vh 0;
         width: 100%;
@@ -70,10 +85,23 @@
 <form method="post" id="admin-login" enctype="multipart/form-data">
     <div id="admin">  
         <div class="admin-txt">Admin</div>
+        <!--
         <input class="admin-ans" v-model="adminEmail" name="email" placeholder="">
         <input class="admin-ans" v-model="adminPwd" type="password" name="pwd" placeholder="">
+        -->
+        {{ form.email(class_='admin-ans', **{'v-model': 'adminEmail'}) }}
+        {{ form.password(class_='admin-ans', **{'v-model': 'adminPwd'}) }}
+        {{ form.hidden_tag() }}
         <input id="btn-login" type='submit' name="login" value="LOG IN">
     </div>
+        {% if not pass_right %}
+            <p class="admin-error">Password is not correct!</p>
+        {% endif %}
+
+        {% if register %}
+            <p class="admin-error">User not exists! Please register.</p>
+        {% endif %}
+    
 </form>
 
 <script>
