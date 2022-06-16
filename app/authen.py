@@ -89,7 +89,10 @@ def register():
             email=form.email.data
             room=form.room.data
             password=form.password.data
+            passwordRepeat=form.passwordRepeat.data
             roles=form.roles.data
+            if not password == passwordRepeat:
+                return render_template('register.html', form=form, exist=True, repeat=True)
             
             exist=User.objects(email=email).first()
             if exist is None:
@@ -99,10 +102,10 @@ def register():
                 #return form.username.data+' '+form.email.data+' '+form.room.data+' '+form.password.data+' '+form.roles.data
                 return redirect(url_for('authen.secret'))
             else:
-                return render_template('register.html', form=form, exist=True)
+                return render_template('register.html', form=form, exist=True, repeat=False)
                 
 
-    return render_template('register.html', form=form, exist=False)
+    return render_template('register.html', form=form, exist=False, repeat=False)
 
 @authen_blue.route('/logout')
 @check_login

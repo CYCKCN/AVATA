@@ -1,44 +1,167 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<style>
+    input:-webkit-autofill {
+        box-shadow: 0 0 0 32vh #fff inset;;
+        -webkit-box-shadow: 0 0 0 32vh #fff inset; /**通过边框阴影遮挡住背景*/
+        -webkit-text-fill-color: #000; /*自动填充内容的文本颜色*/
+    } 
+
+    .register{
+        /*
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        padding: 5vh 5vw;
+    }
+    .register-title{
+        font-style: normal;
+        font-weight: 360;
+        font-size: 8vw;
+        line-height: 7vh;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+    }
+    .register-txt{
+        margin-top: 2vh;
+        font-style: normal;
+        font-weight: 360;
+        font-size: 6vw;
+        line-height: 6vh;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+    }
+    .register-input{
+        margin: auto;
+        width: 100%;
+        height: 6vh;
+        
+        background: #FFFFFF;
+        border: 0.5vw solid #000000;
+        padding: 0 3vw;
+
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #000000;
+    }
+    input[type="radio"] {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    .register-radio{
+        margin-left: 5vw;
+        margin-right: 3vw;
+        height: 6vw;
+        width: 6vw;
+        background-color: #ffffff;
+        border: 0.5vw solid #000000;
+    }
+    .register-radio:checked{
+        background-color: #000000;
+    }
+    .register-label{
+        margin-right: 8vw;
+
+        font-style: normal;
+        font-weight: 360;
+        font-size: 6vw;
+        line-height: 6vh;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+    }
+    .register-submit{
+        margin-top: 4vh;
+        width: 100%;
+        height: 7vh;
+        
+        background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw;
+
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
+    }
+    .register-login{
+        margin-top: 2vh;
+        width: 100%;
+        height: 7vh;
+        padding-top:2vh;
+        
+        background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw;
+
+        text-align: center;
+    }
+    .register-login a{
+        text-decoration: none;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
+    }
+    .placehold{
+        width: 100%;
+        height: 7vh;
+        background: #ffffff;
+    }
+
+</style>
 {% endblock %}
 
 {% block content %}
-<form method="post" id="register-form">
-    <!-- 
-        NOTES:
-        If you want to change the style or add class attribute of eg. {{ form.username }} , 
-        you can directly think "username" as id="username".
-        Thus, just use id to styling this tag:
-        #username{
-            ...
-        }
-        -by shaun
-     -->
-    <p class="register-title">Register</p>
-    <p class="register-txt">Username</p>
-    {{ form.username(class_='register-input') }}
-    <p class="register-txt">Email</p>
-    {{ form.email(class_='register-input') }}
-    <p class="register-txt">Room</p>
-    {{ form.room(class_='register-input') }}
-    <p class="register-txt">Password</p>
-    {{ form.password(class_='register-input') }}
-    {{ form.hidden_tag() }}
-    <p class="register-txt">Role</p>
-    {% for subfield in form.roles %}
-        <tr>
-            <td>{{ subfield(class_="register-radio") }}</td>
-            <td>{{ subfield.label(class_="register-txt") }}</td>
-        </tr>
-    {% endfor %}
+<form method="post">
+    <div class="register">
+        <p class="register-title">Register</p>
+        <p class="register-txt">Username</p>
+        {{ form.username(class_='register-input') }}
+        <p class="register-txt">Email</p>
+        {{ form.email(class_='register-input') }}
+        <p class="register-txt">Room</p>
+        {{ form.room(class_='register-input') }}
+        <p class="register-txt">Password</p>
+        {{ form.password(class_='register-input') }}
+        {{ form.hidden_tag() }}
+        <p class="register-txt">Repeat Password</p>
+        {{ form.passwordRepeat(class_='register-input') }}
+        <p class="register-txt">Role</p>
+        {% for subfield in form.roles %}
+            <tr>
+                <td>{{ subfield(class_="register-radio") }}</td>
+                <td>{{ subfield.label(class_="register-label") }}</td>
+            </tr>
+        {% endfor %}
+
+        <br><input class="register-submit" name="submit" type="submit" value="SUBMIT">
+        <!--<br><input name="login" type="submit" value="login">-->
+        <p class="register-login"><a href='{{ url_for("main") }}'>LOGIN</a></p>
+        <div class="placehold"></div>
+    </div>
+
     {% if exist %}
         <p  class="register-txt">User has registered, please login.</p>
     {% endif %}
-
-    <br><input class="register-submit" name="submit" type="submit" value="submit">
-    <!--<br><input name="login" type="submit" value="login">-->
-    <p><a href='{{ url_for("authen.login") }}'>Login</a></p>
 
 </form>
 
