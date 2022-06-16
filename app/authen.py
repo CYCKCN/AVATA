@@ -17,7 +17,7 @@ def check_login(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated: 
-            return redirect(url_for('authen.login'))
+            return redirect(url_for('main'))
         return f(*args, **kwargs)
     return wrapper
 
@@ -52,6 +52,33 @@ def login():
                 return render_template('login.html', form=form, pass_right=True, register=True)
 
     return render_template('login.html', form=form, pass_right=True, register=False)
+
+@authen_blue.route('/admin-login', methods=['POST','GET'])
+def admin_login():
+    if current_user.is_authenticated: 
+        return redirect(url_for('admin.main'))
+
+    form=LoginForm()
+    if request.method=='POST':
+        if form.validate():
+            email=form.email.data
+            password=form.password.data
+
+            exist=User.objects(email=email).first()
+            if exist:
+                if check_password_hash(exist['password'], password):
+                    login_user(exist)
+                    return redirect(url_for('admin.main'))
+                else:
+                    return render_template('admin_login.html', form=form, pass_right=False, register=False)
+            else:
+                return render_template('admin_login.html', form=form, pass_right=True, register=True)
+
+    return render_template('admin_login.html', form=form, pass_right=True, register=False)
+
+@authen_blue.route('/user-login', methods=['POST','GET'])
+def user_login():
+    pass
 
 @authen_blue.route('/register', methods=['POST','GET'])
 def register():
