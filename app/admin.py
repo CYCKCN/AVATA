@@ -49,6 +49,9 @@ def room(room_id):
         edit=request.form.get('edit')
         if edit:
             return redirect(url_for('admin.basic_info',room_id=room_id))
+        delete=request.form.get('delete')
+        if delete:
+            return redirect(url_for('admin.main'))
     
     return render_template('admin_room.html',room_id=room_id)
 
