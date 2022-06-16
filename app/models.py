@@ -46,10 +46,14 @@ class RegisterForm(FlaskForm):
 
     roles = wtforms.RadioField('roles', validators=[InputRequired()], choices=[('USER', 'User'), ('ADMIN', 'Admin')])
 
-
 class LoginForm(FlaskForm):
     email = wtforms.StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
     password = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
+
+class ResetForm(FlaskForm):
+    email = wtforms.StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
+    password = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
+    passwordRepeat = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
 
 class RoomBasicForm(FlaskForm):
     roomName = wtforms.StringField('roomName', validators=[InputRequired(), Length(max=10)])
