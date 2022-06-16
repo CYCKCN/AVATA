@@ -90,9 +90,11 @@ def reset():
         return ''
     return render_template('reset.html')
 
+'''
 @authen_blue.route('/secret', methods=['POST','GET'])
 @check_login
 def secret():
     if request.method=='POST':
         return redirect(url_for('hello'))
     return 'secret page'
+'''
