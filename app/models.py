@@ -1,3 +1,5 @@
+#------------------ Flask Config
+
 import secrets
 
 class ConfigClass(object):
@@ -16,8 +18,9 @@ class ConfigClass(object):
     USER_LOGIN_TEMPLATE = 'login.html'
     USER_REGISTER_TEMPLATE = 'register.html'
 
+#------------------ MongoEngine
 
-from app import db
+from app import mongo as db
 from flask_user import UserMixin
 
 class User(db.Document, UserMixin):
@@ -31,6 +34,7 @@ class User(db.Document, UserMixin):
 
     roles = db.StringField(default='USER', required=True)
 
+#------------------ wtforms
 
 from flask_wtf import FlaskForm
 import wtforms
@@ -59,3 +63,30 @@ class RoomBasicForm(FlaskForm):
     roomName = wtforms.StringField('roomName', validators=[InputRequired(), Length(max=10)])
     roomImage = wtforms.FileField('roomImage', validators=[InputRequired(), Regexp('([^\\s]+(\\.(?i)(jpe?g|png|bmp))$)')])
     roomLoc = wtforms.StringField('roomLoc', validators=[InputRequired(), Length(max=30)])
+
+#------------------ MongeClient
+class Account(object):
+    def __init__(self, email, password, identity="USER"):
+        self.accountEmail = email # "example@example.com"
+        self.accountPw = password # "examplePW"
+        self.accountID = identity # "USER" / "ADMIN"
+
+class Device(object):
+    def __init__(self, roomName, deviceName, deviceType, deviceIP, deviceLoc):
+        self.roomName = roomName # ["IEDA Conference Room", "5554"]
+        self.deviceName = deviceName # "project_1"
+        self.deviceType = deviceType # "display_projector_WIFI"
+        self.deviceIP = deviceIP # "000.00.000.000:0000"
+        self.deviceLoc = deviceLoc # [0, 0]
+
+class Room(object):
+    def __init__(self, roomName, roomImg, roomLoc, bookBy, bookTime, insInitial, insTurnon, insPair, insZoom):
+        self.roomName = roomName
+        self.roomImg = roomImg
+        self.roomLoc = roomLoc
+        self.bookBy = bookBy
+        self.bookTime = bookTime
+        self.insInitial = insInitial
+        self.insTurnon = insTurnon
+        self.insPair = insPair
+        self.insZoom = insZoom
