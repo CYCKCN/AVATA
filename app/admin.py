@@ -62,6 +62,7 @@ def room(room_id):
     return render_template('admin_room.html',room_id=room_id)
 
 @admin_blue.route("/basic_info", methods=['POST','GET'])
+@check_login 
 def basic_info():
     room_id = request.args.get('room_id')
     if request.method == "POST":
