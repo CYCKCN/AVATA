@@ -1,5 +1,7 @@
+import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from .authen import check_login
+from .img_trans import *
 
 admin_blue=Blueprint('admin',__name__,url_prefix='/admin')
 
