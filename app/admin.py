@@ -119,4 +119,4 @@ def instruction_pair():
     if request.method == "POST":
         pass
     
-    return render_template('admin_instruction_pair.html',room_id=room_id)
+    return render_template('admin_device_info.html',room_id=room_id)
