@@ -112,7 +112,7 @@ def register():
 @check_login
 def logout():
     logout_user()
-    return redirect(url_for('authen.login'))
+    return redirect(url_for('main'))
 
 @authen_blue.route('/reset', methods=['POST','GET'])
 def reset():
