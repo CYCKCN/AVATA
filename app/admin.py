@@ -73,14 +73,3 @@ def device_info(room_id):
         pass
     
     return render_template('admin_device_info.html',room_id=room_id)
-
-
-
-
-
-
-
-
-
-
-
