@@ -103,13 +103,10 @@ def device_info():
     
     return render_template('admin_device_info.html',room_id=room_id,devices=devices_dict[room_id].getJson(),devices_choose=devices_dict[room_id].chooseDevice())
 
-@admin_blue.route("/device_list", methods=['POST','GET'])
+@admin_blue.route("/device_list", methods=['GET'])
 def device_list():
     room_id = request.args.get('room_id')
-    if request.method == "POST":
-        pass
-    
-    return render_template('admin_device_list.html',room_id=room_id)
+    return render_template('admin_device_list.html',room_id=room_id,devices=devices_dict[room_id].getJson())
 
 
 @admin_blue.route("/instruction_pair", methods=['POST','GET'])
