@@ -71,11 +71,23 @@
 
     #btn-register{
         position: relative;
-        top: 0;
         width: 90vw;
         height: 7vh;
         left: 5vw;
         top: -12vw;
+        padding-top:2vh;
+
+        background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw;
+
+        text-align: center;
+    }
+    #btn-reset{
+        margin-top: 4vh;
+        width: 90vw;
+        height: 7vh;
+        left: 5vw;
         padding-top:2vh;
 
         background: #000000;
@@ -91,7 +103,13 @@
         font-weight: 500;
         font-size: 2vh;
         color: #FFFFFF;
-        
+    }
+    #btn-reset a{
+        text-decoration: none;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
     }
 
     /* 去掉Google密码自动填充的丑蓝色 */
@@ -120,7 +138,8 @@
         <input id="btn-login" type='submit' name="login" value="LOG IN">
         
     </div>
-        <div id="btn-register"><a  href="/authen/register">REGISTER</a></p>p>
+        <div id="btn-register"><a href="/authen/register">REGISTER</a></p>
+        <div id="btn-reset"><a href="/authen/reset">FORGET PASSWORD</a></p>
         {% if not pass_right %}
             <p class="admin-error">Password is not correct!</p>
         {% endif %}

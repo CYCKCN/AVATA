@@ -1,7 +1,8 @@
 from functools import wraps
+from genericpath import exists
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_user import login_required
-from .models import RegisterForm, LoginForm, User
+from .models import RegisterForm, LoginForm, ResetForm,User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import user_manager
 from flask_login import login_user, logout_user, current_user
@@ -89,7 +90,10 @@ def register():
             email=form.email.data
             room=form.room.data
             password=form.password.data
+            passwordRepeat=form.passwordRepeat.data
             roles=form.roles.data
+            if not password == passwordRepeat:
+                return render_template('register.html', form=form, exist=False, repeat=True)
             
             exist=User.objects(email=email).first()
             if exist is None:
@@ -99,23 +103,38 @@ def register():
                 #return form.username.data+' '+form.email.data+' '+form.room.data+' '+form.password.data+' '+form.roles.data
                 return redirect(url_for('authen.secret'))
             else:
-                return render_template('register.html', form=form, exist=True)
+                return render_template('register.html', form=form, exist=True, repeat=False)
                 
 
-    return render_template('register.html', form=form, exist=False)
+    return render_template('register.html', form=form, exist=False, repeat=False)
 
 @authen_blue.route('/logout')
 @check_login
 def logout():
     logout_user()
-    return redirect(url_for('authen.login'))
+    return redirect(url_for('main'))
 
-@authen_blue.route('/change-password', methods=['POST','GET'])
-@check_login
+@authen_blue.route('/reset', methods=['POST','GET'])
 def reset():
+    form=ResetForm()
     if request.method=="POST":
-        return ''
-    return render_template('reset.html')
+        if form.validate():
+            email=form.email.data
+            password=form.password.data
+            passwordRepeat=form.passwordRepeat.data
+
+            if not password == passwordRepeat:
+                return render_template('reset.html', form=form, exist=False, repeat=True)
+
+            exist=User.objects(email=email).first()
+            if not exist:
+                return render_template('reset.html', form=form, exist=True, repeat=False)
+            else:
+                hashpassword=generate_password_hash(password, method='sha256')
+                User.objects(email=email).update(set__password=hashpassword)
+                return redirect(url_for('main'))
+
+    return render_template('reset.html', form=form, exist=False, repeat=False)
 
 '''
 @authen_blue.route('/secret', methods=['POST','GET'])

@@ -47,6 +47,7 @@ def main():
     return render_template('admin_main.html',roomInfo=roomInfo)
 
 @admin_blue.route("/room/<room_id>", methods=['POST','GET'])
+@check_login 
 def room(room_id):
     if request.method == "POST":
         edit=request.form.get('edit')
@@ -59,6 +60,7 @@ def room(room_id):
     return render_template('admin_room.html',room_id=room_id)
 
 @admin_blue.route("/basic_info", methods=['POST','GET'])
+@check_login 
 def basic_info():
     room_id = request.args.get('room_id')
     if request.method == "POST":

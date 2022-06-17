@@ -39,16 +39,21 @@ from wtforms.validators import InputRequired, Email, Length, Regexp
 class RegisterForm(FlaskForm):
     username = wtforms.StringField('username', validators=[InputRequired(), Length(max=10)])
     password = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
+    passwordRepeat = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
 
     email = wtforms.StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
     room = wtforms.StringField('room', validators=[InputRequired(), Length(max=30)])
 
     roles = wtforms.RadioField('roles', validators=[InputRequired()], choices=[('USER', 'User'), ('ADMIN', 'Admin')])
 
-
 class LoginForm(FlaskForm):
     email = wtforms.StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
     password = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
+
+class ResetForm(FlaskForm):
+    email = wtforms.StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
+    password = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
+    passwordRepeat = wtforms.PasswordField('password', validators=[InputRequired(), Length(min=8, max=32)])
 
 class RoomBasicForm(FlaskForm):
     roomName = wtforms.StringField('roomName', validators=[InputRequired(), Length(max=10)])
