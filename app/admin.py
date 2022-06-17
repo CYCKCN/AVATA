@@ -31,6 +31,9 @@ def main():
         1:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
         2:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
         3:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+        4:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+        5:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+        6:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
     }
 
     if request.method == "POST":
