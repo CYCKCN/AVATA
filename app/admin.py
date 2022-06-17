@@ -66,14 +66,56 @@ def basic_info():
     if request.method == "POST":
         continue_=request.form.get('continue')
         if continue_:
-            return redirect(url_for('admin.device_info',room_id=room_id))
+            return redirect(url_for('admin.photo_360',room_id=room_id))
     
     return render_template('admin_basic_info.html',room_id=room_id)
 
-@admin_blue.route("/device_info/<room_id>", methods=['POST','GET'])
-def device_info(room_id):
+@admin_blue.route("/photo_360", methods=['POST','GET'])
+def photo_360():
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        continue_=request.form.get('continue')
+        if continue_:
+            return redirect(url_for('admin.device_info',room_id=room_id))
+    
+    return render_template('admin_360_photo.html',room_id=room_id)
+
+
+devices_dict = {}
+from objects_admin import *
+
+@admin_blue.route("/device_info", methods=['POST','GET'])
+def device_info():
+    room_id = request.args.get('room_id')
+    
+    global devices_test_admin  # Three point initalization
+    devices_dict[room_id] = devices_test_admin
+
+    if request.method == "POST":
+        continue_=request.form.get('continue')
+        checklist=request.form.get('checkList')
+        if continue_:
+            return redirect(url_for('admin.instruction_pair',room_id=room_id))
+        if checklist:
+            return redirect(url_for('admin.device_list',room_id=room_id))
+
+        update_from_admin_request(devices_dict[room_id])
+    
+    return render_template('admin_device_info.html',room_id=room_id,devices=devices_dict[room_id].getJson(),devices_choose=devices_dict[room_id].chooseDevice())
+
+@admin_blue.route("/device_list", methods=['POST','GET'])
+def device_list():
+    room_id = request.args.get('room_id')
     if request.method == "POST":
         pass
     
-    return render_template('admin_device_info.html',room_id=room_id)
+    return render_template('admin_device_list.html',room_id=room_id)
 
+
+@admin_blue.route("/instruction_pair", methods=['POST','GET'])
+def instruction_pair():
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        pass
+    
+    return render_template('admin_instruction_pair.html',room_id=room_id)

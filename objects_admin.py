@@ -1,7 +1,6 @@
 #All the objects in this project
 from collections import defaultdict
 from typing import List
-import numpy as np
 from flask import request
 
 class Device_admin(object):
