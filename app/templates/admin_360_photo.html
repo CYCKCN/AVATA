@@ -46,6 +46,11 @@
         border: 0.5vw solid #000;
     }
 
+    .roomImg{
+      width: 100%;
+      height: 100%;
+    }
+
     .uploadWrap{
       width: 100%;
       height: 40vh;
@@ -105,18 +110,21 @@
 
 {% block content %}
 
-<form method="post" id="admin-device-info" enctype="multipart/form-data">
+<form method="post" id="admin-360-photo" enctype="multipart/form-data">
   <div id="deviceInfo">  
     <div class="admin-txt">Device Info</div>
     <div class="roomsubhead">360-DEGREE PHOTO</div>
     <div class="uploadWrap">
+      <img id="room-360photo" class="roomImg" src="../../static/images/test/room{{room_id}}/IMG{{room_id}}.png">
       <div class="uploadBox">UPLOAD
-        <input class="roomUpload" type="file">
+        <input id="d360-photo-uploader" class="roomUpload" type="file">
       </div>
     </div>
     <div class="roomsubhead">photo-taken instruction</div>
     <input id="btn-continue" type='submit' name="continue" value="CONTINUE">
   </div>
+  <!-- auxiliary input field -->
+  <input id="room-img2" type="text" name="img360Src" value="" style="display: none">
 </form>
 
 <script>
@@ -133,7 +141,44 @@
 </script>
 
 <script>
-   
-
+  const form = document.getElementById('admin-360-photo');
+  const fileUploader1 = document.getElementById('d360-photo-uploader');
+  const imgSrc = document.getElementById('room-img2');
+  // 听更 change 件并读取元数据
+  fileUploader1.addEventListener('change', (event) => {
+      // 获取文件列表数组
+      const files1 = event.target.files;
+      if(files1.length > 1){
+          alert("请您上传1张图片")
+      }
+      const file1 = files1[0]
+  
+      const name1 = file1.name;
+      const type1 = file1.type ? file1.type: 'NA';
+      const size1 = file1.size;
+      const lastModified1 = file1.lastModified;
+  
+      var imageType1 = /^image\//; 
+      // 是否是图片 
+      if(!imageType1.test(type1)) { alert("请选择图片！"); return; }
+      //if(size > 40 * 1024 * 1024) {alert("发送的图片超过40MB！"); return;}
+  
+      console.log({ file1, name1, type1, size1, lastModified1 });
+  
+      // 判断是否支持FileReader 
+      if(window.FileReader) { 
+          const reader1 = new FileReader(); 
+          reader1.readAsDataURL(file1);
+          reader1.addEventListener('load', (event) => {
+              const img1 = document.getElementById('room-360photo');
+              img1.src = event.target.result;
+              img1.alt = file1.name;
+              imgSrc.setAttribute('value', img1.src);
+              console.log(imgSrc.value)
+          });
+      } 
+      else { alert("您的设备不支持图片预览功能，如需该功能请升级您的设备！"); } 
+  
+  });
 </script>
 {% endblock %}

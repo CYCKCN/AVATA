@@ -65,6 +65,8 @@ def basic_info():
     room_id = request.args.get('room_id')
     if request.method == "POST":
         continue_=request.form.get('continue')
+        img_base64=request.form.get('imgSrc')
+        print(img_base64)
         if continue_:
             return redirect(url_for('admin.photo_360',room_id=room_id))
     
@@ -75,6 +77,8 @@ def photo_360():
     room_id = request.args.get('room_id')
     if request.method == "POST":
         continue_=request.form.get('continue')
+        img360_base64=request.form.get('img360Src')
+        print(img360_base64)
         if continue_:
             return redirect(url_for('admin.device_info',room_id=room_id))
     

@@ -70,6 +70,15 @@
         font-weight: 500;
     }
 
+    .empty-text{
+        font-weight: 700;
+        font-size: 3vw;
+
+        color: rgba(0, 0, 0, 0.3);
+        margin-top: 30vh;
+        margin-left: 15vw;
+    }
+
 </style>
 
 {% endblock %}
@@ -79,22 +88,26 @@
 <form method="post" id="admin-device-list" enctype="multipart/form-data">
   <div id="deviceList">  
     <div class="admin-txt">Device List</div>
-    {% for k, v in devices.items() %}
-    <div class="device-div">
-        <div class="line">
-            <div class="device-label">DEVICE NAME</div>
-            <div class="device-name">{{v.name}}</div>
-        </div>
-        <div class="line">
-            <div class="device-label">DEVICE TYPE</div>
-            <div class="device-type">{{v.type}}</div>
-        </div>
-        <div class="line">
-            <div class="device-label">DEVICE IP</div>
-            <div class="device-ip">Example</div>
-        </div>
-    </div>
-    {% endfor %}
+    {% if devices|length==0 %}
+        <div class="empty-text">THERE IS NO DEVICE CREATED SO FAR.</div>
+    {% else %}
+        {% for k, v in devices.items() %} 
+            <div class="device-div">
+                <div class="line">
+                    <div class="device-label">DEVICE NAME</div>
+                    <div class="device-name">{{v.name}}</div>
+                </div>
+                <div class="line">
+                    <div class="device-label">DEVICE TYPE</div>
+                    <div class="device-type">{{v.type}}</div>
+                </div>
+                <div class="line">
+                    <div class="device-label">DEVICE IP</div>
+                    <div class="device-ip">Example</div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
   </div>
 </form>
 
