@@ -129,6 +129,7 @@ def instruction_initial_list():
     room_id = request.args.get('room_id')
     print("instruction_initial_list")
     print(steps)
+    print(devices_dict)
 
     if request.method == "POST":
         # add
@@ -150,12 +151,16 @@ def instruction_initial_list():
             if request.form.get(f'delete_{step_id}'):
                 print("delete", step_id)
                 return render_template('admin_instruction_initial_list.html',room_id=room_id,steps=steps)
+        confirm=request.form.get('confirm')
+        if  confirm:
+            return redirect(url_for('admin.instruction_turnon_main',room_id=room_id))
     
     return render_template('admin_instruction_initial_list.html',room_id=room_id,steps=steps)
 
 @admin_blue.route("/instruction_initial", methods=['POST','GET'])
 def instruction_initial():
     print("instruction_initial")
+    print(devices_dict)
     print(steps)
     room_id = request.args.get('room_id')
     step_id = request.args.get('step_id')
@@ -178,3 +183,146 @@ def instruction_initial():
             return redirect(url_for('admin.instruction_initial_list',room_id=room_id))
     
     return render_template('admin_instruction_initial.html',room_id=room_id,step_id=step_id,steps=steps)
+
+@admin_blue.route("/instruction_turnon_main", methods=['POST','GET'])
+def instruction_turnon_main(): 
+    room_id = request.args.get('room_id')
+    print(devices_dict)
+    if request.method == "POST":
+        for device_id in range(0, len(devices_dict[room_id].devices)):
+            # edit
+            if request.form.get(f'edit_{device_id}'):
+                print("edit", device_id)
+                device_id+=1
+                return redirect(url_for('admin.instruction_turnon_list',room_id=room_id,device_id=device_id))
+        confirm=request.form.get('confirm')
+        if confirm:
+            return redirect(url_for('admin.instruction_turnon_main',devices_obj=devices_dict[room_id]))
+    return render_template('admin_instruction_turnon_main.html',devices_obj=devices_dict[room_id],room_id=room_id)
+
+@admin_blue.route("/instruction_turnon_list", methods=['POST','GET'])
+def instruction_turnon_list():  
+    room_id = request.args.get('room_id')
+    device_id = request.args.get('device_id')
+    print("instruction_turnon_list")
+    print(steps)
+
+    if request.method == "POST":
+        # add
+        if request.form.get(f'add-step'):
+            print("add")
+            step_length = f"step {len(steps.keys())+1}"
+            new_dict = {step_length:{'text':'', 'image':'', 'command':'', 'help':''}}
+            steps.update(new_dict)
+            print(steps)
+            return redirect(url_for('admin.instruction_turnon',device_id=device_id,room_id=room_id,step_id=step_length))
+        
+        for step_id in steps.keys():
+            # edit
+            if request.form.get(f'edit_{step_id}'):
+                print("edit", step_id)
+                # not implemented delete function
+                return redirect(url_for('admin.instruction_turnon',device_id=device_id,room_id=room_id,step_id=step_id))
+            # delete
+            if request.form.get(f'delete_{step_id}'):
+                print("delete", step_id)
+                return render_template('admin_instruction_turnon_list.html',device_id=device_id,room_id=room_id,steps=steps)
+        confirm=request.form.get('confirm')
+        if confirm:
+            return redirect(url_for('admin.instruction_turnon_main',devices_obj=devices_dict[room_id],room_id=room_id))
+    return render_template('admin_instruction_turnon_list.html',device_id=device_id,room_id=room_id,steps=steps)
+
+@admin_blue.route("/instruction_turnon", methods=['POST','GET'])
+def instruction_turnon():
+    print("instruction_turnon")
+    print(steps)
+    room_id = request.args.get('room_id')
+    step_id = request.args.get('step_id')
+    device_id = request.args.get('device_id')
+    if request.method == "POST":
+        step_text=request.form.get('step_text')
+        img_base64=request.form.get('imgSrc')
+        step_command=request.form.get('step_command')
+        step_help=request.form.get('step_help')
+        print(step_text)
+        print(img_base64)
+        print(step_command)
+        print(step_help)
+        confirm=request.form.get('confirm')
+        if confirm:
+            steps[step_id]["text"]=step_text
+            steps[step_id]["image"]=img_base64  # debug
+            steps[step_id]["command"]=step_command
+            steps[step_id]["help"]=step_help
+            print(steps)
+            return redirect(url_for('admin.instruction_turnon_list',device_id=device_id,room_id=room_id))
+    
+    return render_template('admin_instruction_turnon.html',device_id=device_id,room_id=room_id,step_id=step_id,steps=steps)
+
+@admin_blue.route("/instruction_zoom_main", methods=['POST','GET'])
+def instruction_zoom_main(): 
+    room_id = request.args.get('room_id')
+    video=request.form.get('edit_VIDEO')
+    if request.method == "POST":
+        if video:
+            return redirect(url_for('admin.instruction_zoom_list',zoom_type='Video', room_id=room_id))
+        audio=request.form.get('edit_AUDIO')
+        if audio:
+            return redirect(url_for('admin.instruction_zoom_list',zoom_type='Audio', room_id=room_id))
+    return render_template('admin_instruction_zoom_main.html')
+
+@admin_blue.route("/instruction_zoom_list", methods=['POST','GET'])
+def instruction_zoom_list():  
+    room_id = request.args.get('room_id')
+    zoom_type = request.args.get('zoom_type')
+    print("instruction_zoom_list")
+    print(steps)
+
+    if request.method == "POST":
+        # add
+        if request.form.get(f'add-step'):
+            print("add")
+            step_length = f"step {len(steps.keys())+1}"
+            new_dict = {step_length:{'text':'', 'image':'', 'command':'', 'help':''}}
+            steps.update(new_dict)
+            print(steps)
+            return redirect(url_for('admin.instruction_zoom',room_id=room_id,step_id=step_length,zoom_type=zoom_type))
+        
+        for step_id in steps.keys():
+            # edit
+            if request.form.get(f'edit_{step_id}'):
+                print("edit", step_id)
+                # not implemented delete function
+                return redirect(url_for('admin.instruction_zoom',room_id=room_id,step_id=step_id,zoom_type=zoom_type))
+            # delete
+            if request.form.get(f'delete_{step_id}'):
+                print("delete", step_id)
+                return render_template('admin_instruction_zoom_list.html',room_id=room_id,steps=steps,zoom_type=zoom_type)
+    return render_template('admin_instruction_zoom_list.html',room_id=room_id,steps=steps, zoom_type=zoom_type)
+
+@admin_blue.route("/instruction_zoom", methods=['POST','GET'])
+def instruction_zoom():
+    print("instruction_zoom")
+    print(steps)
+    room_id = request.args.get('room_id')
+    step_id = request.args.get('step_id')
+    zoom_type = request.args.get('zoom_type')
+    if request.method == "POST":
+        step_text=request.form.get('step_text')
+        img_base64=request.form.get('imgSrc')
+        step_command=request.form.get('step_command')
+        step_help=request.form.get('step_help')
+        print(step_text)
+        print(img_base64)
+        print(step_command)
+        print(step_help)
+        confirm=request.form.get('confirm')
+        if confirm:
+            steps[step_id]["text"]=step_text
+            steps[step_id]["image"]=img_base64  # debug
+            steps[step_id]["command"]=step_command
+            steps[step_id]["help"]=step_help
+            print(steps)
+            return redirect(url_for('admin.instruction_zoom_list',room_id=room_id,zoom_type=zoom_type))
+    
+    return render_template('admin_instruction_zoom.html',room_id=room_id,step_id=step_id,steps=steps,zoom_type=zoom_type)
