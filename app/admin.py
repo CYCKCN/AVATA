@@ -1,5 +1,8 @@
+import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from .authen import check_login
+from .img_trans import *
+from app import accountdb, devicedb, roomdb
 
 admin_blue=Blueprint('admin',__name__,url_prefix='/admin')
 
@@ -66,7 +69,8 @@ def basic_info():
     if request.method == "POST":
         continue_=request.form.get('continue')
         img_base64=request.form.get('imgSrc')
-        print(img_base64)
+        image_decoder((img_base64.split(','))[-1],
+        f'app/static/images/test/room{room_id}/_basic_upload.png')
         if continue_:
             return redirect(url_for('admin.photo_360',room_id=room_id))
     
@@ -78,7 +82,7 @@ def photo_360():
     if request.method == "POST":
         continue_=request.form.get('continue')
         img360_base64=request.form.get('img360Src')
-        print(img360_base64)
+        #rint(img360_base64)
         if continue_:
             return redirect(url_for('admin.device_info',room_id=room_id))
     
