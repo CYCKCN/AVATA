@@ -2,7 +2,7 @@
 
 {% block head %}
 <style>
-    #basicInfo{
+    #instructionInitial{
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -11,16 +11,57 @@
         /* height: 100vh; */
         padding: 5vh 5vw;
     }
+    
+    .line{
+        width: 100%;
+        height: 9vh;
+    }
 
     .admin-txt{
-        width: 100%;
-        height: 10vh;
+        float: left;
 
         /* font-family: 'Comfortaa'; */
         font-style: normal;
         font-weight: 450;
-        font-size: 8vw;
+        font-size: 10vw;
         line-height: 10vh;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+    }
+
+    .admin-small-txt{
+        float: left;
+        padding-left: 2vw;
+        padding-top: 3.6vh;
+
+        font-weight: 100;
+        font-size: 4vw;
+        line-height: 5vh;
+        /* identical to box height */
+
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .admin-mid-txt{
+        float: left;
+        width: 90%;
+        margin-bottom: 3vh;
+
+        font-weight: 100;
+        font-size: 4vw;
+        line-height: 3vh;
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        /* identical to box height */
+
         display: flex;
         align-items: center;
         letter-spacing: -0.015em;
@@ -34,22 +75,43 @@
 
         padding-top: 1vh;
         padding-bottom: 1vh;
+        text-transform: uppercase;
     }
 
-    .roomBox {
+    .stepBox {
         width: 100%;
-        height: 6vh;
-        
+        height: 10vh;
+
         font-size: 2vh;
         margin: 1vh 0 2vh 0;
-        padding: 0 3vw;
+        padding: 1vh 3vw;
+        border: 0.5vw solid #000;
+    }
+
+    .stepCommand {
+        width: 100%;
+        height: 56vh;
+
+        font-size: 2vh;
+        margin: 1vh 0 2vh 0;
+        padding: 1vh 3vw;
+        border: 0.5vw solid #000;
+    }
+
+    .stepHelp {
+        width: 100%;
+        height: 30vh;
+
+        font-size: 2vh;
+        margin: 1vh 0 2vh 0;
+        padding: 1vh 3vw;
         border: 0.5vw solid #000;
     }
 
     .uploadWrap{
       width: 100%;
       height: 40vh;
-      margin: 1vh 0 5vh 0;
+      margin: 1vh 0 2vh 0;
   
       background-color: #D9D9D9;
     }
@@ -63,7 +125,7 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(100%);
       padding: 1.7vh 7.5vw;
       width: 30vw;
       height: 7vh;
@@ -89,10 +151,10 @@
         /* border-radius: 5vw 5vw 0 0; */
     }
 
-    #btn-continue {
+    #btn-confirm {
         width: 100%;
         height: 7vh;
-        margin: 5vh 0 2vh 0;
+        margin: 1vh 0;
         
         background: #000000;
         border: 2px solid #000000;
@@ -110,21 +172,25 @@
 
 {% block content %}
 
-<form method="post" id="admin-basic-info" enctype="multipart/form-data">
-  <div id="basicInfo">  
-    <div class="admin-txt">Basic Info</div>
-    <div class="roomsubhead">ROOM NUMBER</div>
-		<input class="roomBox" type="text" placeholder="{{room_id}}" name="room_id" v-model="roomid"/>
-    <div class="roomsubhead">ROOM PHOTO</div>
+<form method="post" id="admin-instruction-initial" enctype="multipart/form-data">
+  <div id="instructionInitial">  
+    <div class="line">
+        <div class="admin-txt">Instruction</div>
+        <div class="admin-small-txt">- Initial</div>
+    </div>
+    <div class="admin-mid-txt">Please describe your new step in details with text, image or code according to the following guides.</div>
+    <!-- instruction content part -->
+    <div class="roomsubhead">{{step_id}}</div>
+	<textarea class="stepBox" type="text" placeholder="Please add text to describe this step." name="step_text" value="{{steps.get(step_id).text}}"></textarea>
     <div class="uploadWrap">
       <img id="room-photo" class="roomImg" src="../../static/images/test/room{{room_id}}/IMG{{room_id}}.png">
       <div class="uploadBox">UPLOAD
         <input id="room-photo-uploader" class="roomUpload" type="file">
       </div>
     </div>
-    <div class="roomsubhead">ROOM LOCATION</div>
-		<input class="roomBox" type="text" placeholder="Academic Building" name="room_loc" v-model="roomloc"/>
-    <input id="btn-continue" type='submit' name="continue" value="CONTINUE">
+    <textarea class="stepCommand" type="text" placeholder="//Start your code here&#13;&#10;func(){&#13;&#10;}" name="step_command" value="{{steps.get(step_id).command}}"></textarea>
+    <textarea class="stepHelp" type="text" placeholder="If there is any substitutive method or solution when the above step doesn't work, please add here." name="step_help" value="{{steps.get(step_id).help}}"></textarea>
+    <input id="btn-confirm" type='submit' name="confirm" value="CONFIRM">
   </div>
    <!-- auxiliary input field -->
    <input id="room-img1" type="text" name="imgSrc" value="" style="display: none">
@@ -140,11 +206,11 @@
       methods: {
     
       }
-    }).mount('#admin-basic-info')    
+    }).mount('#admin-instruction-initial')    
 </script>
 
 <script>
-  const form = document.getElementById('admin-basic-info');
+  const form = document.getElementById('admin-instruction-initial');
   const fileUploader1 = document.getElementById('room-photo-uploader');
   const imgSrc = document.getElementById('room-img1');
   // 听更 change 件并读取元数据
