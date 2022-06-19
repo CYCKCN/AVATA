@@ -53,6 +53,7 @@ def main():
 @admin_blue.route("/room/<room_id>", methods=['POST','GET'])
 @check_login 
 def room(room_id):
+    error=request.args.get('error')
     if request.method == "POST":
         edit=request.form.get('edit')
         if edit:
@@ -61,7 +62,9 @@ def room(room_id):
         if delete:
             return redirect(url_for('admin.main'))
     
-    return render_template('admin_room.html',room_id=room_id)
+    return render_template('admin_room.html',
+    room_id=room_id,
+    error=error if error else '')
 
 @admin_blue.route("/basic_info", methods=['POST','GET'])
 @check_login 
@@ -75,7 +78,7 @@ def basic_info():
             #roomName
             roomName=request.form.get('room_id')
             if utils.room_is_exist(roomName):
-                return redirect(url_for('admin.basic_info',room_id=roomName,is_editRoom=True))
+                return redirect(url_for('admin.room',room_id=roomName,is_editRoom=True,error='Room exists, please edit the room.'))
 
             #roomImage
             '''
