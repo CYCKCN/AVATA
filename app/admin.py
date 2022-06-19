@@ -37,15 +37,10 @@ def main():
         2:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
         3:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
         4:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
-<<<<<<< HEAD
-    }
-
-=======
         5:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
         6:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
     }'''
     error=request.args.get('error')
->>>>>>> 3ce202d179f633563cda3e1c5485c95179ea55b5
     if request.method == "POST":
         room_id=request.form.get('room_id') if not request.form.get('room_id')=='' else request.form.get('roomid')
         add=request.form.get('add')
@@ -58,19 +53,14 @@ def main():
 
         if room_id:
             return redirect(url_for('admin.room',room_id=room_id))
-<<<<<<< HEAD
         btn_profile=request.form.get('profile')
         if btn_profile:
             return redirect(url_for('admin.profile'))
-    
-    return render_template('admin_main.html',roomInfo=roomInfo)
-=======
         
     roomInfo=utils.get_all_room_basic()
     return render_template('admin_main.html',
     roomInfo=roomInfo,
     error=error if error else '')
->>>>>>> 3ce202d179f633563cda3e1c5485c95179ea55b5
 
 @admin_blue.route("/room/<room_id>", methods=['POST','GET'])
 @check_login 
