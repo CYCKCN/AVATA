@@ -123,6 +123,33 @@
         color: white;
     }
 
+    .img_profile{
+        transform: scale(10);
+        position:absolute;
+        margin: 15vh 0vw 0vh 104vw;
+        width: 5vw;
+        height: 5vh;
+	}
+
+    #btn-profile {
+        opacity: 0;
+        margin: -5vh 0vw 0vh 87vw;
+        position:absolute;
+        z-index: 100;
+        width: 7vw;
+        height: 7vh;
+
+        
+        background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw;
+
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
+    }
+
 </style>
 
 {% endblock %}
@@ -156,7 +183,17 @@
     <!-- footer -->
     <div id="mainFooter">
         <input class="btnAdd" type="submit" name="add" value="+">
+        <div class="profile">
+            <input id="btn-profile" type='submit' name="profile" value="profile">
+            <div class="img_profile">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.2174 20.4783C17.3359 20.4783 15 22.8142 15 25.6957V27H25.4348V25.6957C25.4348 22.8142 23.0989 20.4783 20.2174 20.4783Z" stroke="black"/>
+                    <ellipse cx="20.2175" cy="15.913" rx="3.91307" ry="3.91304" stroke="black" stroke-linecap="square"/>
+                </svg>
+            </div>
+        </div>
     </div>
+    
   </div>
   <!-- auxiliary field: not show in frontend, deal with form submit to send RoomId -->
   <div id="roomId" style="display:none">
