@@ -114,16 +114,34 @@
   <div id="basicInfo">  
     <div class="admin-txt">Basic Info</div>
     <div class="roomsubhead">ROOM NUMBER</div>
+
+    {% if is_addRoom %}
+    <input class="roomBox" type="text" placeholder="{{room_id}}" name="room_id" v-model="roomid" required/>
+    {% else %}
 		<input class="roomBox" type="text" placeholder="{{room_id}}" name="room_id" v-model="roomid"/>
+    {% endif %}
+
     <div class="roomsubhead">ROOM PHOTO</div>
     <div class="uploadWrap">
       <img id="room-photo" class="roomImg" src="../../static/images/test/room{{room_id}}/IMG{{room_id}}.png">
       <div class="uploadBox">UPLOAD
+
+        {% if is_addRoom %}
+        <input id="room-photo-uploader" class="roomUpload" type="file" required>
+        {% else %}
         <input id="room-photo-uploader" class="roomUpload" type="file">
+        {% endif %}
+
       </div>
     </div>
     <div class="roomsubhead">ROOM LOCATION</div>
+
+    {% if is_addRoom %}
+    <input class="roomBox" type="text" placeholder="Academic Building" name="room_loc" v-model="roomloc"/>
+    {% else %}
 		<input class="roomBox" type="text" placeholder="Academic Building" name="room_loc" v-model="roomloc"/>
+    {% endif %}
+
     <input id="btn-continue" type='submit' name="continue" value="CONTINUE">
   </div>
    <!-- auxiliary input field -->
