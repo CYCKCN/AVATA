@@ -148,6 +148,7 @@ def create_device_with_room_id_name_type_x_y(
         'deviceId':id,
         'deviceName':name,
         'deviceType':type,
+        'deviceIP':'',
         'deviceX':x,
         'deviceY':y,
         'chosen':False
