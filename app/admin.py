@@ -30,6 +30,7 @@ def login():
 @admin_blue.route("/main", methods=['POST','GET'])
 @check_login #plz use wrapper function @check_login where you want user to login
 def main():
+    '''
     roomInfo={
         0:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
         1:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
@@ -38,21 +39,22 @@ def main():
         4:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
         5:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
         6:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
-    }
-
+    }'''
     error=request.args.get('error')
     if request.method == "POST":
-        room_id=request.form.get('room_id')
+        room_id=request.form.get('room_id') if not request.form.get('room_id')=='' else request.form.get('roomid')
         add=request.form.get('add')
+
+        if add:
+            return redirect(url_for('admin.basic_info',is_addRoom=True))
+        
         if not utils.room_is_exist(room_id):
             return redirect(url_for('admin.main',error='Room not exists!'))
 
         if room_id:
             return redirect(url_for('admin.room',room_id=room_id))
-
-        if add:
-            return redirect(url_for('admin.basic_info',is_addRoom=True))
-    
+        
+    roomInfo=utils.get_all_room_basic()
     return render_template('admin_main.html',
     roomInfo=roomInfo,
     error=error if error else '')
@@ -68,6 +70,7 @@ def room(room_id):
             return redirect(url_for('admin.basic_info',room_id=room_id,is_editRoom=True))
         delete=request.form.get('delete')
         if delete:
+            utils.delete_room_with_name(room_id)
             return redirect(url_for('admin.main'))
     
     return render_template('admin_room.html',
@@ -102,6 +105,8 @@ def basic_info():
             '''
             img_base64=request.form.get('imgSrc')
             roomImage=(img_base64.split(','))[-1]
+            if len(roomImage)==0:
+                return redirect(url_for('admin.basic_info',is_addRoom=True))
 
             #roomLoc
             roomLoc=request.form.get('room_loc')

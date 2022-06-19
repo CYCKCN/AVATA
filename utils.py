@@ -55,6 +55,7 @@ def update_room_with_name_image_loc(room_id:str ,name:str=None, image:str=None, 
     return True
 
 def download_room_basic_image_with_name(name:str):
+    #缓存当前房间basic的图片
     room=find_room_with_name(name)
     if room==None: return False
     exist=f'app/static/images/test/room{name}'
@@ -63,3 +64,30 @@ def download_room_basic_image_with_name(name:str):
     image_decoder(room['roomImage'],path)
     return True
 
+def get_all_room_basic():
+    #date和time还没有加 后面记得加
+    _db=db['rooms']
+    if _db.count_documents({})==0: return False
+
+    rooms=_db.find({})
+    _dict={}
+    i=0
+    for room in rooms:
+        _d={}
+        _d['name']=room['roomName']
+        _d['lift']=room['roomLoc']
+        #_d['date']=
+        #_d['time']=
+
+        _dict[i]=_d
+        download_room_basic_image_with_name(_d['name'])
+        i+=1
+    
+    return _dict
+
+def delete_room_with_name(name:str):
+    if name==None: return False
+    if not room_is_exist(name): return False
+    _db=db['rooms']
+    _db.delete_one({'roomName':name})
+    return True
