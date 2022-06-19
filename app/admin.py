@@ -71,7 +71,7 @@ def room(room_id):
 def basic_info():
     room_id = request.args.get('room_id')
     is_addRoom = request.args.get('is_addRoom')
-    is_editRoom = request.args.get('edit_room')
+    is_editRoom = request.args.get('is_editRoom')
     if request.method == "POST":
         continue_=request.form.get('continue')
         if is_addRoom and continue_:
@@ -96,6 +96,19 @@ def basic_info():
 
             utils.create_room_with_name_image_loc(roomName, roomImage, roomLoc)
         
+        if is_editRoom and continue_:
+            roomName = request.form.get('room_id') if request.form.get('room_id') else None
+            roomLoc = request.form.get('room_loc') if request.form.get('room_loc') else None
+            
+            img_base64=request.form.get('imgSrc')
+            roomImage=(img_base64.split(','))[-1] if img_base64 else None
+            has_udpate=utils.update_room_with_name_image_loc(room_id, roomName, roomImage, roomLoc)
+
+            if has_udpate:
+                return redirect(url_for('admin.photo_360',
+                room_id=roomName if roomName else room_id))
+            else:
+                return redirect(url_for('admin.room',room_id=roomName,is_editRoom=True,error='Invalid room name or empty submit!'))
             
 
         if continue_:

@@ -13,6 +13,7 @@ def find_room_with_name(name:str):
     else: return False
 
 def room_is_exist(name:str):
+    if name==None:  return False
     _db=db['rooms']
     if _db.find_one({'roomName':name}): return True
     else: return False
@@ -29,6 +30,7 @@ def create_room_with_name_image_loc(name:str, image:str, loc:str):
 
 def update_room_with_name_image_loc(room_id:str ,name:str=None, image:str=None, loc:str=None):
     if not room_is_exist(room_id): return False
+    if room_is_exist(name): return False
     if name==None and image==None and loc==None: return False
     _db=db['rooms']
     room=find_room_with_name(room_id)
@@ -40,5 +42,6 @@ def update_room_with_name_image_loc(room_id:str ,name:str=None, image:str=None, 
         {'_id': room['_id']}, 
         {'$set': _dict}
     )
+    return True
 
 
