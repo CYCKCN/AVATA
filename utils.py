@@ -22,6 +22,16 @@ def room_is_exist(name:str):
     if _db.find_one({'roomName':name}): return True
     else: return False
 
+def room_has_attribute(name:str,attr:str):
+    _db=db['rooms']
+    room=_db.find({'roomName':name,attr:{'$exists': True}})
+    if room: return True
+    else: return False
+
+def get_room_location_with_name(name:str):
+    room=find_room_with_name(name)
+    return room['roomLoc']
+
 def create_room_with_name_image_loc(name:str, image:str, loc:str):
     #用name image loc创建新的room
     _db=db['rooms']
@@ -36,12 +46,12 @@ def create_room_with_name_image_loc(name:str, image:str, loc:str):
 def update_room_with_name_image_loc(room_id:str ,name:str=None, image:str=None, loc:str=None):
     #room_id是现在这个room的名字
     #name是更改后房间的名字 image loc同理
-    #name image loc可以全改或改几个 但是不能全都不改 不然false
+    #name image loc可以全改或改几个 全都不改返回True
     #room_id当前房间的名字要是不存在 返回false
     #name更改后房间的名字存在会冲突 返回false
     if not room_is_exist(room_id): return False
     if room_is_exist(name): return False
-    if name==None and image==None and loc==None: return False
+    if name==None and image==None and loc==None: return True
     _db=db['rooms']
     room=find_room_with_name(room_id)
     _dict={}
@@ -60,8 +70,11 @@ def download_room_basic_image_with_name(name:str):
     if room==None: return False
     exist=f'app/static/images/test/room{name}'
     path_exist_or_mkdir(exist)
+
+    #if room['roomImage']==None: return False
     path=f'app/static/images/test/room{name}/_basic_upload.png'
     image_decoder(room['roomImage'],path)
+
     return True
 
 def get_all_room_basic():
@@ -90,4 +103,27 @@ def delete_room_with_name(name:str):
     if not room_is_exist(name): return False
     _db=db['rooms']
     _db.delete_one({'roomName':name})
+    return True
+
+def add_room_360image_with_name(name:str,image:str):
+    if name==None: return False
+    if not room_is_exist(name): return False
+    _db=db['rooms']
+    _db.update_one(
+        {'roomName':name},
+        {'$set':{'room360Image':image}}
+    )
+    return True
+
+def download_room_360image_with_name(name:str):
+    if name==None: return False
+    if not room_is_exist(name): return False
+    room=find_room_with_name(name)
+    exist=f'app/static/images/test/room{name}'
+    path_exist_or_mkdir(exist)
+
+    if not room_has_attribute(name,'room360Image'): return False
+    path=f'app/static/images/test/room{name}/_360_upload.png'
+    image_decoder(room['room360Image'],path)
+
     return True
