@@ -122,6 +122,27 @@
         font-size: 4vh;
         color: white;
     }
+    .error{
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 5vh;
+        width: 100vw;
+        background: #ffeb99;
+        text-align: center;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        padding-top: 1vh;
+    }
+    .room-empty{
+        margin: auto;
+        text-align: center;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        padding-top: 5vh;
+    }
 
     .img_profile{
         transform: scale(10);
@@ -157,7 +178,12 @@
 {% block content %}
 
 <form method="post" id="admin-main" enctype="multipart/form-data">
-  <div class="main">
+    {% if not error=='' %}
+    <div class="error">
+        {{error}}
+    </div>
+    {% endif %}
+    <div class="main">
     <!-- body -->
     <div id="mainBody">  
         <div class="main-txt">Rooms</div>
@@ -165,19 +191,28 @@
             <input class="searchBox" type="text" placeholder="Search all rooms" name="room_id" v-model="roomid"/>
         <div class="searchsubhead">BROWSE ALL</div>
         <div class="roomgroup">
-            {% for k, v in roomInfo.items() %}
-            <div class="room" v-on:click="goRoom($event, {{v.name}})">
-                <img class="roomimg" src="../../static/images/test/room{{v.name}}/IMG{{v.name}}.png" />
-                <div class="roomtext">
-                    <div class="roomname">Room {{v.name}}</div>
-                    <div class="roomlift">Lift {{v.lift}}</div>
-                    <div class="roomelse">
-                        <div class="roomdate">{{v.date}}</div>
-                        <div class="roomtime">{{v.time}}</div>
+            {% if roomInfo %}
+                {% for k, v in roomInfo.items() %}
+                <div class="room" v-on:click="goRoom($event, {{v.name}})">
+                    <img class="roomimg" src="../../static/images/test/room{{v.name}}/_basic_upload.png" />
+                    <div class="roomtext">
+                        <div class="roomname">Room {{v.name}}</div>
+                        <div class="roomlift">{{v.lift}}</div>
+                        <div class="roomelse">
+                            <!--
+                            <div class="roomdate">{{v.date}}</div>
+                            <div class="roomtime">{{v.time}}</div>
+                            -->
+                            <div class="roomdate">TBA</div>
+                            <div class="roomtime">TBA</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <div class="room-empty">Not room now! Please create one!</div>
+            {% endif %}
+            
         </div>
     </div>
     <!-- footer -->
