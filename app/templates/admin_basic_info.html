@@ -123,7 +123,11 @@
 
     <div class="roomsubhead">ROOM PHOTO</div>
     <div class="uploadWrap">
-      <img id="room-photo" class="roomImg" src="../../static/images/test/room{{room_id}}/IMG{{room_id}}.png">
+
+      {% if is_editRoom %}
+      <img id="room-photo" class="roomImg" src="../../static/images/test/room{{room_id}}/_basic_upload.png">
+      {% endif %}
+
       <div class="uploadBox">UPLOAD
 
         {% if is_addRoom %}

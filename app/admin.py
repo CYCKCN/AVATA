@@ -40,20 +40,28 @@ def main():
         6:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
     }
 
+    error=request.args.get('error')
     if request.method == "POST":
-        room_id=request.form.get('roomid')
+        room_id=request.form.get('room_id')
         add=request.form.get('add')
-        if add:
-            return redirect(url_for('admin.basic_info',is_addRoom=True))
+        if not utils.room_is_exist(room_id):
+            return redirect(url_for('admin.main',error='Room not exists!'))
+
         if room_id:
             return redirect(url_for('admin.room',room_id=room_id))
+
+        if add:
+            return redirect(url_for('admin.basic_info',is_addRoom=True))
     
-    return render_template('admin_main.html',roomInfo=roomInfo)
+    return render_template('admin_main.html',
+    roomInfo=roomInfo,
+    error=error if error else '')
 
 @admin_blue.route("/room/<room_id>", methods=['POST','GET'])
 @check_login 
 def room(room_id):
     error=request.args.get('error')
+    utils.download_room_basic_image_with_name(room_id)
     if request.method == "POST":
         edit=request.form.get('edit')
         if edit:
@@ -72,6 +80,10 @@ def basic_info():
     room_id = request.args.get('room_id')
     is_addRoom = request.args.get('is_addRoom')
     is_editRoom = request.args.get('is_editRoom')
+
+    if is_editRoom:
+        utils.download_room_basic_image_with_name(room_id)
+
     if request.method == "POST":
         continue_=request.form.get('continue')
         if is_addRoom and continue_:
@@ -116,7 +128,8 @@ def basic_info():
     
     return render_template('admin_basic_info.html',
     room_id=room_id if is_editRoom else '1234',
-    is_addRoom=True if is_addRoom else False)
+    is_addRoom=True if is_addRoom else False,
+    is_editRoom=True if is_editRoom else False)
 
 @admin_blue.route("/photo_360", methods=['POST','GET'])
 def photo_360():
