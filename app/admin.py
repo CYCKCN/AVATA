@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for, request
 from .authen import check_login
 from .img_trans import *
 from app import accountdb, devicedb, roomdb
+import utils
 
 admin_blue=Blueprint('admin',__name__,url_prefix='/admin')
 
@@ -43,7 +44,7 @@ def main():
         room_id=request.form.get('roomid')
         add=request.form.get('add')
         if add:
-            return redirect(url_for('admin.basic_info'))
+            return redirect(url_for('admin.basic_info',is_addRoom=True))
         if room_id:
             return redirect(url_for('admin.room',room_id=room_id))
     
@@ -55,7 +56,7 @@ def room(room_id):
     if request.method == "POST":
         edit=request.form.get('edit')
         if edit:
-            return redirect(url_for('admin.basic_info',room_id=room_id))
+            return redirect(url_for('admin.basic_info',room_id=room_id,is_editRoom=True))
         delete=request.form.get('delete')
         if delete:
             return redirect(url_for('admin.main'))
@@ -66,15 +67,40 @@ def room(room_id):
 @check_login 
 def basic_info():
     room_id = request.args.get('room_id')
+    is_addRoom = request.args.get('is_addRoom')
+    is_editRoom = request.args.get('edit_room')
     if request.method == "POST":
         continue_=request.form.get('continue')
-        img_base64=request.form.get('imgSrc')
-        image_decoder((img_base64.split(','))[-1],
-        f'app/static/images/test/room{room_id}/_basic_upload.png')
+        if is_addRoom and continue_:
+            #roomName
+            roomName=request.form.get('room_id')
+            if utils.room_is_exist(roomName):
+                return redirect(url_for('admin.basic_info',room_id=roomName,is_editRoom=True))
+
+            #roomImage
+            '''
+            _roomPath=f'app/static/images/test/room{roomName}'
+            utils.path_exist_or_mkdir(_roomPath)
+            roomImage=f'app/static/images/test/room{roomName}/_basic_upload.png'
+            img_base64=request.form.get('imgSrc')
+            image_decoder((img_base64.split(','))[-1],roomImage)
+            '''
+            img_base64=request.form.get('imgSrc')
+            roomImage=(img_base64.split(','))[-1]
+
+            #roomLoc
+            roomLoc=request.form.get('room_loc')
+
+            utils.create_room_with_name_image_loc(roomName, roomImage, roomLoc)
+        
+            
+
         if continue_:
             return redirect(url_for('admin.photo_360',room_id=room_id))
     
-    return render_template('admin_basic_info.html',room_id=room_id)
+    return render_template('admin_basic_info.html',
+    room_id=room_id if is_editRoom else '1234',
+    is_addRoom=True if is_addRoom else False)
 
 @admin_blue.route("/photo_360", methods=['POST','GET'])
 def photo_360():
@@ -83,7 +109,7 @@ def photo_360():
         continue_=request.form.get('continue')
         img360_base64=request.form.get('img360Src')
         image_decoder((img360_base64.split(','))[-1],
-        f'app/static/images/test/room{room_id}/_basic_upload.png')
+        f'app/static/images/test/room{room_id}/_360_upload.png')
         #rint(img360_base64)
         if continue_:
             return redirect(url_for('admin.device_info',room_id=room_id))
