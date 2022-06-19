@@ -191,7 +191,10 @@ def device_info():
 
         update_from_admin_request(devices_dict[room_id])
     
-    return render_template('admin_device_info.html',room_id=room_id,devices=devices_dict[room_id].getJson(),devices_choose=devices_dict[room_id].chooseDevice())
+    devices=utils.get_all_devices_with_room(room_id)
+    devices_choose=utils.get_choose_device_with_room(room_id)
+    #return render_template('admin_device_info.html',room_id=room_id,devices=devices_dict[room_id].getJson(),devices_choose=devices_dict[room_id].chooseDevice())
+    return render_template('admin_device_info.html',room_id=room_id,devices=devices,devices_choose=devices_choose)
 
 @admin_blue.route("/device_list", methods=['GET'])
 def device_list():
