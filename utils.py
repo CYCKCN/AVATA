@@ -8,6 +8,8 @@ def path_exist_or_mkdir(path:str):
         os.makedirs(path)
     return True
 
+#------------ Room utils ---------------
+
 def find_room_with_name(name:str):
     #用name找room 找不到返回false
     _db=db['rooms']
@@ -126,4 +128,58 @@ def download_room_360image_with_name(name:str):
     path=f'app/static/images/test/room{name}/_360_upload.png'
     image_decoder(room['room360Image'],path)
 
+    return True
+
+
+#------------ Device utils ---------------
+
+def device_is_exist(room:str,id:int):
+    _db=db['devices']
+    device=_db.find_one({'roomName':room,'deviceId':id})
+    if device: return True
+    else: return False
+
+def create_device_with_room_id_name_type_x_y(
+    room:str,id:int,name:str,type:str,x:str,y:str):
+    _db=db['devices']
+    _dict={
+        'roomName':room,
+        'deviceId':id,
+        'deviceName':name,
+        'deviceType':type,
+        'deviceX':x,
+        'deviceY':y
+    }
+    _db.insert_one(_dict)
+    return True
+
+
+def get_all_devices_with_room(name:str):
+    _db=db['devices']
+    if _db.count_documents({'roomName':name})==0: return False
+    devices=_db.find({'roomName':name})
+    _dict={}
+    for device in devices:
+        _d={
+            'name':device['deviceName'],
+            'type':device['deviceType'],
+            'x':device['deviceX'],
+            'y':device['deviceY']
+        }
+        _dict[device['id']]=_d
+    return _dict
+
+def update_device_with_name_type_x_y(room:str,id:int,name:str=None,type:str=None,x:str=None,y:str=None):
+    _db=db['devices']
+    if not device_is_exist(room,id): return False
+    if name==None and name==None and type==None and x==None and y==None: return True
+    _dict={}
+    if name: _dict['deviceName']=name
+    if type: _dict['deviceType']=type
+    if x: _dict['deviceX']=x
+    if y: _dict['deviceY']=y
+    _db.update_one(
+        {'roomName':room, 'deviceId':id},
+        {'$set':_dict}
+    )
     return True
