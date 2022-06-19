@@ -107,8 +107,9 @@ def delete_room_with_name(name:str):
     _db.delete_one({'roomName':name})
     return True
 
-def add_room_360image_with_name(name:str,image:str):
+def add_room_360image_with_name(name:str,image:str=None):
     if name==None: return False
+    if image==None: return True
     if not room_is_exist(name): return False
     _db=db['rooms']
     _db.update_one(

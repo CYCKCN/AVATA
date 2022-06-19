@@ -123,7 +123,13 @@
       {% endif %}
       
       <div class="uploadBox">UPLOAD
+
+        {% if is_addRoom %}
+        <input id="d360-photo-uploader" class="roomUpload" type="file" required>
+        {% else %}
         <input id="d360-photo-uploader" class="roomUpload" type="file">
+        {% endif %}
+
       </div>
     </div>
     <div class="roomsubhead">Please take a panorama involving all the devices in the room with jpg/jpeg/png format.</div>
