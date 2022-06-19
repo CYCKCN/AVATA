@@ -81,6 +81,19 @@
         text-decoration: none;
         color: #000000;
     }
+    .error{
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 5vh;
+        width: 100vw;
+        background: #ffeb99;
+        text-align: center;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        padding-top: 1vh;
+    }
 
 </style>
 
@@ -89,14 +102,20 @@
 {% block content %}
 
 <form method="post" id="admin-room" enctype="multipart/form-data">
-  <div id="admin">  
+  <div id="admin">
+
     <div class="admin-txt">Room {{room_id}}</div>
     <img class="admin-img" src="../../static/images/test/room{{room_id}}/IMG{{room_id}}.png" />
     <div class="roomsubhead">LOCATION</div>
     <div class="roomtext">Academic Building</div>
     <input id="btn-delete" type='submit' name="delete" value="DELETE">
     <input id="btn-edit" type='submit' name="edit" value="EDIT">
-</div>
+    </div>
+    {% if not error=='' %}
+    <div class="error">
+        {{error}}
+    </div>
+    {% endif %}
 </form>
 
 <script>
