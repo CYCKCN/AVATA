@@ -47,15 +47,16 @@ def main():
 
         if add:
             return redirect(url_for('admin.basic_info',is_addRoom=True))
+
+        btn_profile=request.form.get('profile')
+        if btn_profile:
+            return redirect(url_for('admin.profile'))
         
         if not utils.room_is_exist(room_id):
             return redirect(url_for('admin.main',error='Room not exists!'))
 
         if room_id:
             return redirect(url_for('admin.room',room_id=room_id))
-        btn_profile=request.form.get('profile')
-        if btn_profile:
-            return redirect(url_for('admin.profile'))
         
     roomInfo=utils.get_all_room_basic()
     return render_template('admin_main.html',
