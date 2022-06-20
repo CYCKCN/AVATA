@@ -145,9 +145,9 @@ def photo_360():
     if request.method == "POST":
         continue_=request.form.get('continue')
         img360_base64=request.form.get('img360Src')
-        room360Image=(img360_base64.split(','))[-1]
-        if len(room360Image)==0:
-            return redirect(url_for('admin.photo_360',is_addRoom=True))
+        room360Image=(img360_base64.split(','))[-1] if img360_base64 else None
+        #if len(room360Image)==0:
+        #    return redirect(url_for('admin.photo_360',is_addRoom=True))
         utils.add_room_360image_with_name(room_id,room360Image)
 
         if is_addRoom and continue_:
