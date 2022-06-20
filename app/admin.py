@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from .authen import check_login
 from .img_trans import *
+import cv2
 from app import accountdb, devicedb, roomdb
 import utils
 
@@ -23,6 +24,7 @@ def login():
         text = request.form.get('email')
         password = request.form.get('pwd')
         if text or password:
+            print(text)
             return redirect(url_for('admin.main'))
     
     return render_template('admin_login.html')
@@ -48,7 +50,7 @@ def main():
         if add:
             return redirect(url_for('admin.basic_info',is_addRoom=True))
         
-        if not utils.room_is_exist(room_id):
+        if roomdb.checkRoomList(room_id) is None:
             return redirect(url_for('admin.main',error='Room not exists!'))
 
         if room_id:
@@ -57,7 +59,7 @@ def main():
         if btn_profile:
             return redirect(url_for('admin.profile'))
         
-    roomInfo=utils.get_all_room_basic()
+    roomInfo=roomdb.getRoomInfo()
     return render_template('admin_main.html',
     roomInfo=roomInfo,
     error=error if error else '')
@@ -66,20 +68,20 @@ def main():
 @check_login 
 def room(room_id):
     error=request.args.get('error')
-    
+    room = roomdb.db.find_one({"roomName": room_id})
     if request.method == "POST":
         edit=request.form.get('edit')
         if edit:
             return redirect(url_for('admin.basic_info',room_id=room_id,is_editRoom=True))
         delete=request.form.get('delete')
         if delete:
-            utils.delete_room_with_name(room_id)
+            roomdb.delRoom(room_id)
             return redirect(url_for('admin.main'))
     
-    utils.download_room_basic_image_with_name(room_id)
+    roomdb.download_room_basic_image_with_name(room_id)
     return render_template('admin_room.html',
     room_id=room_id,
-    room_loc=utils.get_room_location_with_name(room_id),
+    room_loc="Academic Building" if room is None else room["roomLoc"],
     error=error if error else '')
 
 @admin_blue.route("/basic_info", methods=['POST','GET'])
@@ -90,14 +92,15 @@ def basic_info():
     is_editRoom = request.args.get('is_editRoom')
 
     if is_editRoom:
-        utils.download_room_basic_image_with_name(room_id)
+        roomdb.download_room_basic_image_with_name(room_id)
 
     if request.method == "POST":
         continue_=request.form.get('continue')
         if is_addRoom and continue_:
             #roomName
             roomName=request.form.get('room_id')
-            if utils.room_is_exist(roomName):
+            print(roomName)
+            if roomdb.db.find_one({"roomName": roomName}):
                 return redirect(url_for('admin.room',room_id=roomName,is_editRoom=True,error='Room exists, please edit the room.'))
 
             #roomImage
@@ -109,16 +112,17 @@ def basic_info():
             #roomLoc
             roomLoc=request.form.get('room_loc')
 
-            utils.create_room_with_name_image_loc(roomName, roomImage, roomLoc)
-            return redirect(url_for('admin.photo_360',room_id=room_id,is_addRoom=True))
+            roomdb.addRoom(roomName, roomImage, roomLoc)
+            return redirect(url_for('admin.photo_360',room_id=roomName,is_addRoom=True))
         
         if is_editRoom and continue_:
-            roomName = request.form.get('room_id') if request.form.get('room_id') else None
-            roomLoc = request.form.get('room_loc') if request.form.get('room_loc') else None
+            room = roomdb.db.find_one({"roomName": room_id})
+            roomName = request.form.get('room_id') if request.form.get('room_id') else room['roomName']
+            roomLoc = request.form.get('room_loc') if request.form.get('room_loc') else room['roomLoc']
             
             img_base64=request.form.get('imgSrc')
-            roomImage=(img_base64.split(','))[-1] if img_base64 else None
-            has_udpate=utils.update_room_with_name_image_loc(room_id, roomName, roomImage, roomLoc)
+            roomImage=(img_base64.split(','))[-1] if img_base64 else room['roomImg']
+            has_udpate=roomdb.addRoom(roomName, roomImage, roomLoc)
 
             if has_udpate:
                 return redirect(url_for('admin.photo_360',
@@ -147,7 +151,8 @@ def photo_360():
         room360Image=(img360_base64.split(','))[-1]
         if len(room360Image)==0:
             return redirect(url_for('admin.photo_360',is_addRoom=True))
-        utils.add_room_360image_with_name(room_id,room360Image)
+        roomdb.upload360Img(room_id, room360Image)
+        roomdb.download_room_360image_with_name(room_id)
 
         if is_addRoom and continue_:
             return redirect(url_for('admin.device_info',room_id=room_id,is_addRoom=True))
@@ -165,21 +170,22 @@ def photo_360():
             return redirect(url_for('admin.device_info',room_id=room_id))
         '''
 
-    utils.download_room_360image_with_name(room_id)
+    # roomdb.download_room_360image_with_name(room_id)
     return render_template('admin_360_photo.html',
     room_id=room_id,
     is_addRoom=True if is_addRoom else False,
     is_editRoom=True if is_editRoom else False)
 
-
-devices_dict = {}
-from objects_admin import *
+# devices_dict = {}
+# from objects_admin import *
 
 @admin_blue.route("/device_info", methods=['POST','GET'])
 def device_info():
     room_id = request.args.get('room_id')
-    global devices_test_admin  # Three point initalization
-    devices_dict[room_id] = devices_test_admin
+    device_list = {}
+    devices_choose = {}
+    # global devices_test_admin  # Three point initalization
+    # devices_dict[room_id] = devices_test_admin
 
     if request.method == "POST":
         continue_=request.form.get('continue')
@@ -188,33 +194,76 @@ def device_info():
             return redirect(url_for('admin.instruction_initial_list',room_id=room_id))
         if checklist:
             return redirect(url_for('admin.device_list',room_id=room_id))
+        room = roomdb.db.find_one({"roomName": room_id})
+        devices = devicedb.checkDeviceList(room["_id"])
 
-        update_from_admin_request(devices_dict[room_id])
+        point_delete=request.form.get('point_delete')
+        point_edit=request.form.get('point_edit')
+        dup_x=request.form.get('dup_x')
+        dup_y=request.form.get('dup_y')
+        p_name=request.form.get('p_name')
+        p_type=request.form.get('p_type')
+        uid=request.form.get('uid')
+
+        i = 0
+        for d in devices:
+            cur_d = request.form.get('devices_input_' + d['deviceName'])
+            if cur_d == ' ':
+                devices_choose[i][1] = 1
+            else: 
+                devices_choose[i][1] = 0
+            device_list[i]["name"] = d['deviceName']
+            device_list[i]["type"] = d['devicetype']
+            device_list[i]["room"] = d['roomName']
+            device_list[i]["x"] = d['deviceLocX']
+            device_list[i]["y"] = d['deviceLocY']
+            i += 1
+
+        if point_edit:
+            im = cv2.read(f'app/static/images/test/room{room_id}/_360_upload.png')
+            devicedb.addDevice(uid, room_id, p_name, p_type, "", float(dup_x) / im.shape[1], float(dup_y) / im.shape[0])
+
+        if point_delete:
+            devicedb.delDevice(uid, room_id)
     
-    devices=utils.get_all_devices_with_room(room_id)
-    devices_choose=utils.get_choose_device_with_room(room_id)
+    # devices_list=utils.get_all_devices_with_room(room_id)
+    # devices_choose=utils.get_choose_device_with_room(room_id)
     #return render_template('admin_device_info.html',room_id=room_id,devices=devices_dict[room_id].getJson(),devices_choose=devices_dict[room_id].chooseDevice())
-    return render_template('admin_device_info.html',room_id=room_id,devices=devices,devices_choose=devices_choose)
+    return render_template('admin_device_info.html',room_id=room_id,devices=device_list,devices_choose=devices_choose)
 
 @admin_blue.route("/device_list", methods=['GET'])
 def device_list():
     room_id = request.args.get('room_id')
-    return render_template('admin_device_list.html',room_id=room_id,devices=devices_dict[room_id].getJson())
+    room = roomdb.db.find_one({"roomName": room_id})
+    devices = devicedb.checkDeviceList(room["_id"])
+    device_list = {}
+    i = 0
+    for d in devices:
+        device_list[i]["name"] = d['deviceName']
+        device_list[i]["type"] = d['devicetype']
+        device_list[i]["room"] = d['roomName']
+        device_list[i]["x"] = d['deviceLocX']
+        device_list[i]["y"] = d['deviceLocY']
+        i += 1
+    return render_template('admin_device_list.html',room_id=room_id,devices=device_list)
 
-steps={
-    'step 1':{'text':'', 'image':'', 'command':'', 'help':''},
-    'step 2':{'text':'', 'image':'', 'command':'', 'help':''},
-    'step 3':{'text':'', 'image':'', 'command':'', 'help':''},
-    'step 4':{'text':'', 'image':'', 'command':'', 'help':''},
-    'step 5':{'text':'', 'image':'', 'command':'', 'help':''},
-}
+# steps={
+#     'step 1':{'text':'', 'image':'', 'command':'', 'help':''},
+#     'step 2':{'text':'', 'image':'', 'command':'', 'help':''},
+#     'step 3':{'text':'', 'image':'', 'command':'', 'help':''},
+#     'step 4':{'text':'', 'image':'', 'command':'', 'help':''},
+#     'step 5':{'text':'', 'image':'', 'command':'', 'help':''},
+# }
 
 @admin_blue.route("/instruction_initial_list", methods=['POST','GET'])
 def instruction_initial_list():
     room_id = request.args.get('room_id')
-    print("instruction_initial_list")
-    print(steps)
-    print(devices_dict)
+    room = roomdb.db.find_one({"roomName": room_id})
+    steps = {}
+    i = 1
+    for ins in room["insInitial"]:
+        index = 'step ' + str(i)
+        steps[index] = ins
 
     if request.method == "POST":
         # add
@@ -244,26 +293,29 @@ def instruction_initial_list():
 @admin_blue.route("/instruction_initial", methods=['POST','GET'])
 def instruction_initial():
     print("instruction_initial")
-    print(devices_dict)
-    print(steps)
+    # print(devices_dict)
+    # print(steps)
     room_id = request.args.get('room_id')
     step_id = request.args.get('step_id')
+    room = roomdb.db.find_one({"roomName": room_id})
+    steps = {}
+    i = 1
+    for ins in room["insInitial"]:
+        index = 'step ' + str(i)
+        steps[index] = ins
     if request.method == "POST":
         step_text=request.form.get('step_text')
         img_base64=request.form.get('imgSrc')
         step_command=request.form.get('step_command')
         step_help=request.form.get('step_help')
-        print(step_text)
-        print(img_base64)
-        print(step_command)
-        print(step_help)
+        # print(step_text)
+        # print(img_base64)
+        # print(step_command)
+        # print(step_help)
         confirm=request.form.get('confirm')
         if confirm:
-            steps[step_id]["text"]=step_text
-            steps[step_id]["image"]=img_base64  # debug
-            steps[step_id]["command"]=step_command
-            steps[step_id]["help"]=step_help
-            print(steps)
+            roomdb.addInsInitialStep(room_id, step_id, step_text, img_base64, step_command, step_help)
+            # print(steps)
             return redirect(url_for('admin.instruction_initial_list',room_id=room_id))
     
     return render_template('admin_instruction_initial.html',room_id=room_id,step_id=step_id,steps=steps)
@@ -271,18 +323,18 @@ def instruction_initial():
 @admin_blue.route("/instruction_turnon_main", methods=['POST','GET'])
 def instruction_turnon_main(): 
     room_id = request.args.get('room_id')
-    print(devices_dict)
+    devices = devicedb.checkDeviceList(room_id)
+    # print(devices_dict)
     if request.method == "POST":
-        for device_id in range(0, len(devices_dict[room_id].devices)):
+        for dev in devices:
             # edit
-            if request.form.get(f'edit_{device_id}'):
-                print("edit", device_id)
-                device_id+=1
-                return redirect(url_for('admin.instruction_turnon_list',room_id=room_id,device_id=device_id))
+            devID = dev["deviceID"]
+            if request.form.get(f'edit_{devID}'):
+                return redirect(url_for('admin.instruction_turnon_list',room_id=room_id,device_id=devID + 1))
         confirm=request.form.get('confirm')
         if confirm:
-            return redirect(url_for('admin.instruction_pair_main',devices_obj=devices_dict[room_id],room_id=room_id))
-    return render_template('admin_instruction_turnon_main.html',devices_obj=devices_dict[room_id],room_id=room_id)
+            return redirect(url_for('admin.instruction_pair_main',devices_length=len(devices), room_id=room_id))
+    return render_template('admin_instruction_turnon_main.html',devices_length=len(devices),room_id=room_id)
 
 @admin_blue.route("/instruction_turnon_list", methods=['POST','GET'])
 def instruction_turnon_list():  

@@ -148,22 +148,17 @@ def create_device_with_room_id_name_type_x_y(
         'deviceId':id,
         'deviceName':name,
         'deviceType':type,
-        'deviceIP':'',
         'deviceX':x,
-        'deviceY':y,
-        'chosen':False
+        'deviceY':y
     }
     _db.insert_one(_dict)
     return True
 
-
 def get_all_devices_with_room(name:str):
     _db=db['devices']
-
-    _dict={}
-    if _db.count_documents({'roomName':name})==0: return _dict
+    if _db.count_documents({'roomName':name})==0: return False
     devices=_db.find({'roomName':name})
-    
+    _dict={}
     for device in devices:
         _d={
             'name':device['deviceName'],
@@ -187,8 +182,7 @@ def update_device_with_name_type_x_y(room:str,id:int,name:str=None,type:str=None
         {'roomName':room, 'deviceId':id},
         {'$set':_dict}
     )
-    return True
-
+    
 def choose_a_device_with_room_id(room:str,id:int):
     if not device_is_exist(room,id): return False
     _db=db['devices']
@@ -211,5 +205,4 @@ def get_choose_device_with_room(room:str):
             _dict[device['id']]=[device['deviceName'], 0]
     return _dict
         
-
-
+    return True

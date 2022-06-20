@@ -1,4 +1,5 @@
 import base64
+import cv2
 
 def image_encoder(image_path: str) -> str: #enocde video or image to string
     img = open(image_path,"rb")
@@ -14,21 +15,20 @@ def image_decoder(encoded_image: str, save_path: str = "write.png"): #decode str
     out.write(img)
     out.close()
 
-
-
 if __name__ == '__main__':
     print("Testing file image encoder and decoder...")
 
-    img_str = image_encoder("frontend\static\images\demo-ieda\Macbook\Apple-flow.MOV")
-    image_decoder(img_str,'write.mp4')
+    # img_str = image_encoder("frontend\static\images\demo-ieda\Macbook\Apple-flow.MOV")
+    # image_decoder(img_str,'write.mp4')
 
     #img_str = image_encoder("frontend\static\images\logo.jpg")
     #image_decoder(img_str)
 
-    '''
-    img = open("frontend\static\images\logo.jpg","rb")
-    #print(len(img.read()))
 
+    im = cv2.imread("static/images/demo-ieda/360-1.jpg")
+    print(im.shape)
+    #print(len(img.read()))
+    '''
     img_encode = base64.b64encode(img.read())
     img.close()
     print(type(img_encode))

@@ -72,9 +72,9 @@ class Account(object):
         self.accountID = identity # "USER" / "ADMIN"
 
 class Device(object):
-    def __init__(self, deviceID, roomName, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY):
+    def __init__(self, deviceID, roomID, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY):
         self.deviceID = deviceID
-        self.roomName = roomName # "IEDA Conference Room, Room 5554"
+        self.roomID = roomID # room("_id")
         self.deviceName = deviceName # "project_1"
         self.deviceType = deviceType # "display_projector_WIFI"
         self.deviceIP = deviceIP # "000.00.000.000:0000"

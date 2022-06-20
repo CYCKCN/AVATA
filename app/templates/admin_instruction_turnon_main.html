@@ -154,10 +154,10 @@
     </div>
     <div class="admin-mid-txt">Turnon stage is to get all devices turned on. Please click in each device and describe clearly how to turn it on.</div>
     <!-- step part -->
-    {% if devices_obj.devices|length==0 %}
+    {% if devices_length==0 %}
         <div class="empty-text">There is no device created so far.</div>
     {% else %}
-        {% for k in range(devices_obj.devices|length) %}
+        {% for k in range(devices_length) %}
             <div class="step-div">
                 <div class="line">
                     <div class="step-label">DEVICE{{k+1}}</div>
