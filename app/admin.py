@@ -75,6 +75,9 @@ def room(room_id):
         if delete:
             utils.delete_room_with_name(room_id)
             return redirect(url_for('admin.main'))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.main'))
     
     utils.download_room_basic_image_with_name(room_id)
     return render_template('admin_room.html',
@@ -199,6 +202,11 @@ def device_info():
 @admin_blue.route("/device_list", methods=['GET'])
 def device_list():
     room_id = request.args.get('room_id')
+    if request.method == "POST":
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.device_info',room_id=room_id))
+
     return render_template('admin_device_list.html',room_id=room_id,devices=devices_dict[room_id].getJson())
 
 steps={
