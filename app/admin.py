@@ -47,15 +47,16 @@ def main():
 
         if add:
             return redirect(url_for('admin.basic_info',is_addRoom=True))
+
+        btn_profile=request.form.get('profile')
+        if btn_profile:
+            return redirect(url_for('admin.profile'))
         
         if not utils.room_is_exist(room_id):
             return redirect(url_for('admin.main',error='Room not exists!'))
 
         if room_id:
             return redirect(url_for('admin.room',room_id=room_id))
-        btn_profile=request.form.get('profile')
-        if btn_profile:
-            return redirect(url_for('admin.profile'))
         
     roomInfo=utils.get_all_room_basic()
     return render_template('admin_main.html',
@@ -147,9 +148,9 @@ def photo_360():
     if request.method == "POST":
         continue_=request.form.get('continue')
         img360_base64=request.form.get('img360Src')
-        room360Image=(img360_base64.split(','))[-1]
-        if len(room360Image)==0:
-            return redirect(url_for('admin.photo_360',is_addRoom=True))
+        room360Image=(img360_base64.split(','))[-1] if img360_base64 else None
+        #if len(room360Image)==0:
+        #    return redirect(url_for('admin.photo_360',is_addRoom=True))
         utils.add_room_360image_with_name(room_id,room360Image)
 
         if is_addRoom and continue_:
