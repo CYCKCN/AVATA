@@ -78,6 +78,9 @@ def room(room_id):
         if delete:
             utils.delete_room_with_name(room_id)
             return redirect(url_for('admin.main'))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.main'))
     
     utils.download_room_basic_image_with_name(room_id)
     return render_template('admin_room.html',
@@ -202,6 +205,11 @@ def device_info():
 @admin_blue.route("/device_list", methods=['GET'])
 def device_list():
     room_id = request.args.get('room_id')
+    if request.method == "POST":
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.device_info',room_id=room_id))
+
     return render_template('admin_device_list.html',room_id=room_id,devices=devices_dict[room_id].getJson())
 
 steps={
@@ -241,6 +249,9 @@ def instruction_initial_list():
         confirm=request.form.get('confirm')
         if  confirm:
             return redirect(url_for('admin.instruction_turnon_main',room_id=room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.device_info',room_id=room_id))
     
     return render_template('admin_instruction_initial_list.html',room_id=room_id,steps=steps)
 
@@ -285,6 +296,9 @@ def instruction_turnon_main():
         confirm=request.form.get('confirm')
         if confirm:
             return redirect(url_for('admin.instruction_pair_main',devices_obj=devices_dict[room_id],room_id=room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.instruction_initial_list',room_id=room_id))
     return render_template('admin_instruction_turnon_main.html',devices_obj=devices_dict[room_id],room_id=room_id)
 
 @admin_blue.route("/instruction_turnon_list", methods=['POST','GET'])
@@ -356,9 +370,12 @@ def instruction_zoom_main():
         audio=request.form.get('edit_AUDIO')
         if audio:
             return redirect(url_for('admin.instruction_zoom_list',zoom_type='Audio', room_id=room_id))
-    confirm=request.form.get('confirm')
-    if  confirm:
-        return redirect(url_for('admin.room',room_id=room_id))
+        confirm=request.form.get('confirm')
+        if  confirm:
+            return redirect(url_for('admin.room',room_id=room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.instruction_pair_main',devices_obj=devices_dict[room_id],room_id=room_id))
     
     return render_template('admin_instruction_zoom_main.html',room_id=room_id)
 
@@ -501,6 +518,9 @@ def instruction_pair_main():
         confirm=request.form.get('confirm')
         if  confirm:
             return redirect(url_for('admin.instruction_zoom_main',room_id=room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.instruction_turnon_main',room_id=room_id))
     
     return render_template('admin_instruction_pair_main.html',room_id=room_id,cases=cases)
 
