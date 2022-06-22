@@ -166,9 +166,9 @@
     }
 
     .img_back{
-        transform: scale(5);
-        position:absolute;
-        margin: 3vh 0vw 0vh 90vw;
+        transform: scale(4);
+        position: absolute;
+        margin: 1vh 0vw 0vh 89vw;
         width: 5vw;
         height: 5vh;
 	}
@@ -191,7 +191,7 @@
         font-size: 2vh;
         color: #FFFFFF;
     }
-    
+
     /* button part */
     #btn-add {
         width: 100%;
@@ -260,9 +260,13 @@
                 </div>
                 <div class="line">
                     <div class="step-label">DEVICE INCLUDED: </div>
-                    {% for k1, v1 in v['devices'].items() %}
-                        <div class="admin-device-txt">{{v1.name}}</div>
-                    {% endfor %}
+                    {% if v.devices|length==0 %}
+
+                    {% else %}
+                        {% for k1, v1 in v['devices'].items() %}
+                            <div class="admin-device-txt">{{v1.name}}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

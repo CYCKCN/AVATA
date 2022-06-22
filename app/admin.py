@@ -130,6 +130,9 @@ def basic_info():
                 is_editRoom=True))
             else:
                 return redirect(url_for('admin.room',room_id=roomName,is_editRoom=True,error='Invalid room name or empty submit!'))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.room',room_id=room_id))
             
 
         #if continue_:
@@ -158,6 +161,10 @@ def photo_360():
 
         if is_editRoom and continue_:
             return redirect(url_for('admin.device_info',room_id=room_id,is_editRoom=True))
+
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.basic_info',room_id=room_id))
 
 
         '''
@@ -192,6 +199,9 @@ def device_info():
             return redirect(url_for('admin.instruction_initial_list',room_id=room_id))
         if checklist:
             return redirect(url_for('admin.device_list',room_id=room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.photo_360',room_id=room_id))
 
         update_from_admin_request(devices_dict[room_id])
     
@@ -498,10 +508,10 @@ def instruction_pair_main():
         # add
         if request.form.get(f'add-step'):
             print("add")
-            case_length = f"case {len(steps.keys())+1}"
+            case_length = f"case {len(cases.keys())+1}"
             new_dict = {case_length:{'devices':'', 'steps':''}}
-            steps.update(new_dict)
-            print(steps)
+            cases.update(new_dict)
+            print(cases)
             return redirect(url_for('admin.instruction_pair_list',room_id=room_id,case_id=case_length))
         
         for case_id in cases.keys():
