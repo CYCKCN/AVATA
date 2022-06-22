@@ -4,6 +4,7 @@ from .authen import check_login
 from .img_trans import *
 from app import accountdb, devicedb, roomdb
 import utils
+from flask_login import logout_user
 
 admin_blue=Blueprint('admin',__name__,url_prefix='/admin')
 
@@ -13,6 +14,7 @@ def enter():
 
 @admin_blue.route("/logout", methods=['GET'])
 def logout():  
+    logout_user()
     return render_template('admin_logout.html')
 
 @admin_blue.route("/login", methods=['POST','GET'])
