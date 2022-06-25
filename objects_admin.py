@@ -148,7 +148,7 @@ def update_from_admin_request(devices:Devices_admin):
         if cur_d==' ':
             devices.chooseDevice(d.name)  # 
     
-    # Close the open device window
+    # Close the open device window 
     if close_idx:
         i=0
         for d in devices.devices:

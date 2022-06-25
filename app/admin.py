@@ -1,5 +1,6 @@
 import os
 from flask import Blueprint, render_template, redirect, url_for, request
+from sqlalchemy import null
 from .authen import check_login
 from .img_trans import *
 #from app import accountdb, devicedb, roomdb
@@ -520,9 +521,6 @@ cases={
     },
     'Case 3':{
         'devices':{
-            'device 1':{'name':'device 1'},
-            'device 2':{'name':'device 2'},
-            'device 4':{'name':'device 4'},
         },
         'steps':{
             'step 1':{'text':'', 'image':'', 'command':'', 'help':''},
@@ -576,6 +574,7 @@ def instruction_pair_main():
     
     return render_template('admin_instruction_pair_main.html',room_id=room_id,cases=cases)
 
+dev_choose_idx_list=set()
 @admin_blue.route("/instruction_pair_list", methods=['POST','GET'])
 def instruction_pair_list():  
     room_id = request.args.get('room_id')
@@ -603,10 +602,30 @@ def instruction_pair_list():
             if request.form.get(f'delete_{step_id}'):
                 print("delete", step_id)
                 return render_template('admin_instruction_pair_list.html',case_id=case_id,room_id=room_id,steps=steps,device111=device111)
+        
+        i=0
+        for k, v in device111.items():
+            device_temp=request.form.get(f'Device_{k}')
+            if device_temp:
+                dev_choose_idx_list.add(i)
+            elif i in dev_choose_idx_list:
+                dev_choose_idx_list.remove(i)
+            i+=1
+        print(dev_choose_idx_list)
+        
         confirm=request.form.get('confirm')
         if confirm:
+            i=0
+            for k, v in device111.items():
+                choose_devices = cases[case_id]['devices']
+                if i in dev_choose_idx_list:
+                    choose_devices.update({k:v})
+                elif choose_devices.get(k):
+                    cases[case_id]['devices'].pop(k)
+                i+=1
+            print(cases)
             return redirect(url_for('admin.instruction_pair_main',room_id=room_id))
-    return render_template('admin_instruction_pair_list.html',case_id=case_id,room_id=room_id,steps=steps,device111=device111)
+    return render_template('admin_instruction_pair_list.html',case_id=case_id,room_id=room_id,steps=steps,device111=device111,choose_dev=cases[case_id]['devices'])
 
 @admin_blue.route("/instruction_pair", methods=['POST','GET'])
 def instruction_pair():
