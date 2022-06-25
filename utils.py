@@ -191,7 +191,7 @@ def get_all_devices_with_room(name:str):
 
 def update_device_with_name_type_x_y_id(room:str,id:int,name:str=None,type:str=None,x:float=None,y:float=None,ip:str=None):
     _db=db['devices']
-    if not device_is_exist(room,-1): return False
+    #if not device_is_exist(room,id): return False
     if name==None and name==None and type==None and x==None and y==None and ip==None: return True
     _dict={}
     _dict['deviceId']=id
@@ -201,13 +201,13 @@ def update_device_with_name_type_x_y_id(room:str,id:int,name:str=None,type:str=N
     if y: _dict['deviceY']=y
     if ip: _dict['deviceIP']=ip
     _db.update_one(
-        {'roomName':room, 'deviceId':-1},
+        {'roomName':room, 'deviceId':id},
         {'$set':_dict}
     )
     return True
 
 def choose_a_device_with_room_id(room:str,id:int):
-    if not device_is_exist(room,id): return False
+    #if not device_is_exist(room,id): return False
     _db=db['devices']
     _db.update_many(
         {'roomName':room},
