@@ -36,6 +36,13 @@ def get_room_location_with_name(name:str):
 
 def create_room_with_name_image_loc(name:str, image:str, loc:str):
     #用name image loc创建新的room
+    exist=f'app/static/images/test/room{name}'
+    path_exist_or_mkdir(exist)
+
+    #if room['roomImage']==None: return False
+    path=f'app/static/images/test/room{name}/_basic_upload.png'
+    image_decoder(image,path)
+
     _db=db['rooms']
     _dict={
         'roomName':name,
@@ -111,6 +118,14 @@ def add_room_360image_with_name(name:str,image:str=None):
     if name==None: return False
     if image==None: return True
     if not room_is_exist(name): return False
+
+    exist=f'app/static/images/test/room{name}'
+    path_exist_or_mkdir(exist)
+
+    if not room_has_attribute(name,'room360Image'): return False
+    path=f'app/static/images/test/room{name}/_360_upload.png'
+    image_decoder(image,path)
+
     _db=db['rooms']
     _db.update_one(
         {'roomName':name},
@@ -140,15 +155,15 @@ def device_is_exist(room:str,id:int):
     if device: return True
     else: return False
 
-def create_device_with_room_id_name_type_x_y(
-    room:str,id:int,name:str,type:str,x:str,y:str):
+def create_device_with_room_id_name_type_x_y_id(
+    room:str,name:str,type:str,x:float,y:float,ip:str):
     _db=db['devices']
     _dict={
         'roomName':room,
-        'deviceId':id,
+        'deviceId':-1,
         'deviceName':name,
         'deviceType':type,
-        'deviceIP':'',
+        'deviceIP':ip,
         'deviceX':x,
         'deviceY':y,
         'chosen':False
@@ -171,20 +186,22 @@ def get_all_devices_with_room(name:str):
             'x':device['deviceX'],
             'y':device['deviceY']
         }
-        _dict[device['id']]=_d
+        _dict[device['deviceId']]=_d
     return _dict
 
-def update_device_with_name_type_x_y(room:str,id:int,name:str=None,type:str=None,x:str=None,y:str=None):
+def update_device_with_name_type_x_y_id(room:str,id:int,name:str=None,type:str=None,x:float=None,y:float=None,ip:str=None):
     _db=db['devices']
-    if not device_is_exist(room,id): return False
-    if name==None and name==None and type==None and x==None and y==None: return True
+    if not device_is_exist(room,-1): return False
+    if name==None and name==None and type==None and x==None and y==None and ip==None: return True
     _dict={}
+    _dict['deviceId']=id
     if name: _dict['deviceName']=name
     if type: _dict['deviceType']=type
     if x: _dict['deviceX']=x
     if y: _dict['deviceY']=y
+    if ip: _dict['deviceIP']=ip
     _db.update_one(
-        {'roomName':room, 'deviceId':id},
+        {'roomName':room, 'deviceId':-1},
         {'$set':_dict}
     )
     return True
@@ -192,6 +209,10 @@ def update_device_with_name_type_x_y(room:str,id:int,name:str=None,type:str=None
 def choose_a_device_with_room_id(room:str,id:int):
     if not device_is_exist(room,id): return False
     _db=db['devices']
+    _db.update_many(
+        {'roomName':room},
+        {'$set':{'chosen':False}}
+    )
     _db.update_one(
         {'roomName':room, 'deviceId':id},
         {'$set':{'chosen':True}}
@@ -206,10 +227,43 @@ def get_choose_device_with_room(room:str):
     devices=_db.find({'roomName':room})
     for device in devices:
         if device['chosen']:
-            _dict[device['id']]=[device['deviceName'], 1]
+            _dict[device['deviceId']]=[device['deviceName'], 1]
         else:
-            _dict[device['id']]=[device['deviceName'], 0]
+            _dict[device['deviceId']]=[device['deviceName'], 0]
     return _dict
-        
 
+def get_devices_and_chosen_devices(room:str):
+    devices=get_all_devices_with_room(room)
+    devices_choose=get_choose_device_with_room(room)
+    return devices, devices_choose
+
+def find_device_with_room_id(room:str,id:int):
+    _db=db['devices']
+    device=_db.find_one({'roomName':room,'deviceId':id})
+    if device: return device
+    else: return False
+
+def delete_device_with_room_id(room:str, id:int):
+    _db=db['devices']
+    if not device_is_exist(room,id): return False
+    device=find_device_with_room_id(room,id)
+    _db.update_many({"deviceID": {'$gt': device["deviceID"]}}, {'$inc': {"deviceID": -1}})
+    _db.delete_one({"_id": device["_id"]})
+    return True
+    
+def delete_device_with_room_name(room:str, name:str):
+    _db=db['devices']
+    device=_db.find_one({'roomName':room,'deviceName':name})
+    if device==None: return False
+    _db.update_many({"deviceID": {'$gt': device["deviceID"]}}, {'$inc': {"deviceID": -1}})
+    _db.delete_one({"_id": device["_id"]})
+    return True
+
+def clean_choose_device_with_room(room:str):
+    _db=db['devices']
+    _db.update_many(
+        {'roomName':room},
+        {'$set':{'chosen':False}}
+    )
+    return False
 
