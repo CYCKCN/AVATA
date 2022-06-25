@@ -39,12 +39,12 @@ from .models import User
 
 user_manager = UserManager(app, mongo, User)
 
-from .database import connection, AccountDB, DeviceDB, RoomDB
+from .database import connection#, AccountDB, DeviceDB, RoomDB
 
 db = connection("AVATA")
-accountdb = AccountDB(db)
-devicedb = DeviceDB(db)
-roomdb = RoomDB(db)
+#accountdb = AccountDB(db)
+#devicedb = DeviceDB(db)
+#roomdb = RoomDB(db)
 
 from app import routes
 from .user import user_blue

@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from .authen import check_login
 from .img_trans import *
-from app import accountdb, devicedb, roomdb
+#from app import accountdb, devicedb, roomdb
 import utils
 from flask_login import logout_user
 
@@ -82,7 +82,7 @@ def room(room_id):
         if back:
             return redirect(url_for('admin.main'))
     
-    utils.download_room_basic_image_with_name(room_id)
+    #utils.download_room_basic_image_with_name(room_id)
     return render_template('admin_room.html',
     room_id=room_id,
     room_loc=utils.get_room_location_with_name(room_id),
@@ -95,8 +95,8 @@ def basic_info():
     is_addRoom = request.args.get('is_addRoom')
     is_editRoom = request.args.get('is_editRoom')
 
-    if is_editRoom:
-        utils.download_room_basic_image_with_name(room_id)
+    #if is_editRoom:
+        #utils.download_room_basic_image_with_name(room_id)
 
     if request.method == "POST":
         continue_=request.form.get('continue')
@@ -178,7 +178,7 @@ def photo_360():
             return redirect(url_for('admin.device_info',room_id=room_id))
         '''
 
-    utils.download_room_360image_with_name(room_id)
+    #utils.download_room_360image_with_name(room_id)
     return render_template('admin_360_photo.html',
     room_id=room_id,
     is_addRoom=True if is_addRoom else False,
@@ -204,11 +204,53 @@ def device_info():
         back=request.form.get('back')
         if back:
             return redirect(url_for('admin.photo_360',room_id=room_id))
+        
+        #update_from_admin_request(devices_dict[room_id])
+        ''''''
+        point_delete=request.form.get('point_delete')
+        point_edit=request.form.get('point_edit')
+        point_close=request.form.get('point_close')
 
-        update_from_admin_request(devices_dict[room_id])
-    
-    devices=utils.get_all_devices_with_room(room_id)
-    devices_choose=utils.get_choose_device_with_room(room_id)
+        deviceID=request.form.get('uid')
+        deviceName=request.form.get('p_name')
+        deviceType=request.form.get('p_type')
+        deviceIP=request.form.get('p_ip')
+        deviceLocX=request.form.get('dup_x')
+        deviceLocY=request.form.get('dup_y')
+
+        #save
+        if point_edit and deviceName and deviceType and deviceIP:
+            utils.update_device_with_name_type_x_y_id(
+                room=room_id,
+                id=deviceID,
+                name=deviceName,
+                type=deviceType,
+                ip=deviceIP
+            )
+        
+        #delete
+        if point_delete and deviceName:
+            utils.delete_device_with_room_name(room_id, deviceName)
+
+        #create
+        print(deviceID)
+        if deviceLocX and deviceLocY:
+            utils.create_device_with_room_id_name_type_x_y_id(
+                room_id, deviceName, deviceType, float(deviceLocX)/100, float(deviceLocY)/100, deviceIP
+            )
+
+        #choose
+        choose=utils.get_choose_device_with_room(room_id)
+        for id, c in choose.items():
+            d=request.form.get('devices_input_'+c[0])
+            if d==' ': utils.choose_a_device_with_room_id(room_id,id)
+
+        #close
+        if point_close: utils.clean_choose_device_with_room(room_id)
+        
+    devices, devices_choose=utils.get_devices_and_chosen_devices(room_id)
+    print(devices)
+    print(devices_choose)
     #return render_template('admin_device_info.html',room_id=room_id,devices=devices_dict[room_id].getJson(),devices_choose=devices_dict[room_id].chooseDevice())
     return render_template('admin_device_info.html',room_id=room_id,devices=devices,devices_choose=devices_choose)
 
