@@ -118,75 +118,35 @@ class Devices_admin(object):
 
 def update_from_admin_request(devices:Devices_admin):
     close_idx=request.form.get('point_close')
-    point_name=request.form.get('point_name')
+    point_old_name=request.form.get('point_name')  # point_old_name <- point_name
     point_delete=request.form.get('point_delete')
     point_edit=request.form.get('point_edit')
-    point_pic=request.form.get('point_pic')
     dup_x=request.form.get('dup_x')
     dup_y=request.form.get('dup_y')
-    p_name=request.form.get('p_name')
+    point_new_name=request.form.get('p_name')    # point_new_name <- p_name
     p_type=request.form.get('p_type')
-    uid=request.form.get('uid')
-    p_img=request.form.get('p_img')
 
-    # Edit the divice
-    if point_edit and p_name and p_type:
-        i=0
+    # Save the divice
+    if point_edit and point_new_name and p_type:
         for d in devices.devices:
-            if i==int(uid):
-                d.name=p_name
+            if d.name==point_old_name:
+                d.name=point_new_name
                 d.type=p_type
                 break
-            i+=1
-    
-    # Insert Img of the device
-    if point_pic and p_img:
-        i=0
-        for d in devices.devices:
-            if i==int(uid):
-                d.device_img=p_img
-                break
-            i+=1
     
     # Delete the device
-    print(1)
-    print(p_name, point_name, devices.devices_list, point_delete, point_edit)
-    print(1)
-    if p_name and point_delete:
-        devices.deleteDevice(p_name)
+    if point_new_name and point_delete:
+        devices.deleteDevice(point_new_name)
     
-    # Duplicate the device
-    print(2)
-    print(point_name, p_name, dup_x, dup_y)
-    print(devices.devices_list)
-    print(devices.device_choose)
-    print(2)
+    # Add the device
     if dup_x and dup_y:
-        hit = False
-        for d in devices.devices:
-            if d.name==point_name:
-                devices.addDevice(d.name, d.type, float(dup_x)/devices.img[0], float(dup_y)/devices.img[1],room='4223')
-                hit = True
-        if not hit:  # point_name="", but p_name=microphone 1
-            devices.addDevice('name', 'Microphone', float(dup_x)/devices.img[0], float(dup_y)/devices.img[1],room='4223')
-    print(3)
-    print(point_name,p_name, dup_x, dup_y)
-    print(devices.devices_list)
-    print(devices.device_choose)
-    print(3)
+        devices.addDevice('name', 'Microphone', float(dup_x)/devices.img[0], float(dup_y)/devices.img[1],room='4223')
 
     # Choose the devices
-    i=0
     for d in devices.devices:
         cur_d=request.form.get('devices_input_'+d.name)
         if cur_d==' ':
             devices.chooseDevice(d.name)  # 
-        i+=1
-    
-    print(4)
-    print(devices.devices_list)
-    print(devices.device_choose)
-    print(4)
     
     # Close the open device window
     if close_idx:
