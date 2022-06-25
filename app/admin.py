@@ -1,3 +1,4 @@
+from ctypes import util
 import os
 from flask import Blueprint, render_template, redirect, url_for, request
 from sqlalchemy import null
@@ -212,7 +213,8 @@ def device_info():
         point_edit=request.form.get('point_edit')
         point_close=request.form.get('point_close')
 
-        deviceID=request.form.get('uid')
+        #deviceID=request.form.get('uid')
+        deviceName_old=request.form.get('point_name') 
         deviceName=request.form.get('p_name')
         deviceType=request.form.get('p_type')
         deviceIP=request.form.get('p_ip')
@@ -221,37 +223,42 @@ def device_info():
 
         #save
         if point_edit and deviceName and deviceType and deviceIP:
-            utils.update_device_with_name_type_x_y_id(
+            utils.udpate_device_with_name_type_ip(
                 room=room_id,
-                id=deviceID,
-                name=deviceName,
+                old_name=deviceName_old,
+                new_name=deviceName,
                 type=deviceType,
                 ip=deviceIP
             )
         
         #delete
         if point_delete and deviceName:
-            utils.delete_device_with_room_name(room_id, deviceName)
+            utils.delete_device_with_name(room_id, deviceName)
 
         #create
-        print(deviceID)
         if deviceLocX and deviceLocY:
-            utils.create_device_with_room_id_name_type_x_y_id(
-                room_id, deviceName, deviceType, float(deviceLocX)/100, float(deviceLocY)/100, deviceIP
+            utils.create_device_with_name_type_ip(
+                room=room_id,
+                name=deviceName,
+                type=deviceType,
+                ip=deviceIP,
+                x=float(deviceLocX),
+                y=float(deviceLocY)
             )
 
         #choose
         choose=utils.get_choose_device_with_room(room_id)
-        for id, c in choose.items():
+        for _, c in choose.items():
             d=request.form.get('devices_input_'+c[0])
-            if d==' ': utils.choose_a_device_with_room_id(room_id,id)
+            if d==' ': 
+                utils.choose_device_with_name(room_id, c[0])
 
         #close
-        if point_close: utils.clean_choose_device_with_room(room_id)
+        if point_close: utils.clean_chosen_device(room_id)
         
     devices, devices_choose=utils.get_devices_and_chosen_devices(room_id)
-    print(devices)
-    print(devices_choose)
+    #print(devices)
+    #print(devices_choose)
     #return render_template('admin_device_info.html',room_id=room_id,devices=devices_dict[room_id].getJson(),devices_choose=devices_dict[room_id].chooseDevice())
     return render_template('admin_device_info.html',room_id=room_id,devices=devices,devices_choose=devices_choose)
 

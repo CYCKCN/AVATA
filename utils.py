@@ -149,6 +149,7 @@ def download_room_360image_with_name(name:str):
 
 #------------ Device utils ---------------
 
+#old version
 def device_is_exist(room:str,id:int):
     _db=db['devices']
     device=_db.find_one({'roomName':room,'deviceId':id})
@@ -171,23 +172,6 @@ def create_device_with_room_id_name_type_x_y_id(
     _db.insert_one(_dict)
     return True
 
-
-def get_all_devices_with_room(name:str):
-    _db=db['devices']
-
-    _dict={}
-    if _db.count_documents({'roomName':name})==0: return _dict
-    devices=_db.find({'roomName':name})
-    
-    for device in devices:
-        _d={
-            'name':device['deviceName'],
-            'type':device['deviceType'],
-            'x':device['deviceX'],
-            'y':device['deviceY']
-        }
-        _dict[device['deviceId']]=_d
-    return _dict
 
 def update_device_with_name_type_x_y_id(room:str,id:int,name:str=None,type:str=None,x:float=None,y:float=None,ip:str=None):
     _db=db['devices']
@@ -220,23 +204,6 @@ def choose_a_device_with_room_id(room:str,id:int):
     return True
 
 
-def get_choose_device_with_room(room:str):
-    _db=db['devices']
-    _dict={}
-    if _db.count_documents({'roomName':room})==0: return _dict
-    devices=_db.find({'roomName':room})
-    for device in devices:
-        if device['chosen']:
-            _dict[device['deviceId']]=[device['deviceName'], 1]
-        else:
-            _dict[device['deviceId']]=[device['deviceName'], 0]
-    return _dict
-
-def get_devices_and_chosen_devices(room:str):
-    devices=get_all_devices_with_room(room)
-    devices_choose=get_choose_device_with_room(room)
-    return devices, devices_choose
-
 def find_device_with_room_id(room:str,id:int):
     _db=db['devices']
     device=_db.find_one({'roomName':room,'deviceId':id})
@@ -267,3 +234,82 @@ def clean_choose_device_with_room(room:str):
     )
     return False
 
+#new version: remove id
+def udpate_device_with_name_type_ip(room:str, old_name:str, new_name:str, type:str, ip:str):
+    _db=db['devices']
+    _db.update_one(
+        {'roomName':room, 'deviceName':old_name},
+        {'$set':
+            {'deviceName':new_name, 'deviceType':type, 'deviceIP':ip}
+        }
+    )
+    return True
+
+def delete_device_with_name(room:str, name:str):
+    _db=db['devices']
+    _db.delete_one({'roomName':room, 'deviceName':name})
+    return True
+
+def create_device_with_name_type_ip(room:str, name:str, type:str, ip:str, x:float, y:float):
+    _db=db['devices']
+    _db.insert_one({
+        'roomName':room,
+        'deviceName':name,
+        'deviceType':type,
+        'deviceIP':ip,
+        'deviceX':x,
+        'deviceY':y,
+        'chosen':False
+    })
+    return True
+
+def choose_device_with_name(room:str, name:str):
+    _db=db['devices']
+    _db.update_one(
+        {'roomName':room, 'deviceName':name},
+        {'$set':{'chosen':True}}
+    )
+    return True
+
+def get_all_devices_with_room(name:str):
+    _db=db['devices']
+
+    _dict={}
+    if _db.count_documents({'roomName':name})==0: return _dict
+    devices=_db.find({'roomName':name})
+    
+    for device in devices:
+        _d={
+            'name':device['deviceName'],
+            'type':device['deviceType'],
+            'ip':device['deviceIP'],
+            'x':device['deviceX'],
+            'y':device['deviceY']
+        }
+        _dict[len(_dict)]=_d
+    return _dict
+
+def get_choose_device_with_room(room:str):
+    _db=db['devices']
+    _dict={}
+    if _db.count_documents({'roomName':room})==0: return _dict
+    devices=_db.find({'roomName':room})
+    for device in devices:
+        if device['chosen']:
+            _dict[len(_dict)]=[device['deviceName'], 1]
+        else:
+            _dict[len(_dict)]=[device['deviceName'], 0]
+    return _dict
+
+def get_devices_and_chosen_devices(room:str):
+    devices=get_all_devices_with_room(room)
+    devices_choose=get_choose_device_with_room(room)
+    return devices, devices_choose
+
+def clean_chosen_device(room:str):
+    _db=db['devices']
+    _db.update_many(
+        {'roomName':room},
+        {'$set':{'chosen':False}}
+    )
+    return True
