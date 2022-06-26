@@ -391,6 +391,7 @@ def delete_instruction_step(name:str, id:str):
             _dict[id_new]=v
         else:
             img_hex=v['image']
+            if img_hex=='': continue
             remove=f'app/static/images/test/room{name}/instruction/{img_hex}.png'
             os.remove(remove)
 
