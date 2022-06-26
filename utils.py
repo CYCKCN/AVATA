@@ -47,7 +47,7 @@ def create_room_with_name_image_loc(name:str, image:str, loc:str):
     _db=db['rooms']
     _dict={
         'roomName':name,
-        'roomImage':'_basic_upload.png',
+        'roomImage':'_basic_upload',
         'roomLoc':loc
     }
     _db.insert_one(_dict)
@@ -134,7 +134,7 @@ def add_room_360image_with_name(name:str,image:str=None):
     _db=db['rooms']
     _db.update_one(
         {'roomName':name},
-        {'$set':{'room360Image':'_360_upload.png'}}
+        {'$set':{'room360Image':'_360_upload'}}
     )
     return True
 
@@ -380,7 +380,7 @@ def delete_instruction_step(name:str, id:str):
             img_hex=v['image']
             remove=f'app/static/images/test/room{name}/instruction/{img_hex}.png'
             os.remove(remove)
-            
+
     _db.update_one(
         {"_id": room["_id"]}, 
         {'$set': {"insInitial": _dict}}
