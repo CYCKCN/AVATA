@@ -1,7 +1,5 @@
-from ctypes import util
 import os
 from flask import Blueprint, render_template, redirect, url_for, request
-from sqlalchemy import null
 from .authen import check_login
 from .img_trans import *
 #from app import accountdb, devicedb, roomdb
@@ -160,11 +158,14 @@ def photo_360():
         #    return redirect(url_for('admin.photo_360',is_addRoom=True))
         utils.add_room_360image_with_name(room_id,room360Image)
 
-        if is_addRoom and continue_:
-            return redirect(url_for('admin.device_info',room_id=room_id,is_addRoom=True))
+        #if is_addRoom and continue_:
+        #    return redirect(url_for('admin.device_info',room_id=room_id,is_addRoom=True))
 
-        if is_editRoom and continue_:
-            return redirect(url_for('admin.device_info',room_id=room_id,is_editRoom=True))
+        #if is_editRoom and continue_:
+        #    return redirect(url_for('admin.device_info',room_id=room_id,is_editRoom=True))
+
+        if continue_:
+            return redirect(url_for('admin.device_info',room_id=room_id))
 
         back=request.form.get('back')
         if back:
@@ -193,8 +194,8 @@ from objects_admin import *
 @admin_blue.route("/device_info", methods=['POST','GET'])
 def device_info():
     room_id = request.args.get('room_id')
-    global devices_test_admin  # Three point initalization
-    devices_dict[room_id] = devices_test_admin
+    #global devices_test_admin  # Three point initalization
+    #devices_dict[room_id] = devices_test_admin
 
     if request.method == "POST":
         continue_=request.form.get('continue')
@@ -269,8 +270,9 @@ def device_list():
         back=request.form.get('back')
         if back:
             return redirect(url_for('admin.device_info',room_id=room_id))
-
-    return render_template('admin_device_list.html',room_id=room_id,devices=devices_dict[room_id].getJson())
+    devices=utils.get_all_devices_with_room(room_id)
+    #return render_template('admin_device_list.html',room_id=room_id,devices=devices_dict[room_id].getJson())
+    return render_template('admin_device_list.html',room_id=room_id,devices=devices)
 
 steps={
     'step 1':{'text':'', 'image':'', 'command':'', 'help':''},
@@ -283,28 +285,30 @@ steps={
 @admin_blue.route("/instruction_initial_list", methods=['POST','GET'])
 def instruction_initial_list():
     room_id = request.args.get('room_id')
-    print("instruction_initial_list")
-    print(steps)
-    print(devices_dict)
+    #print("instruction_initial_list")
+    #print(steps)
+    #print(devices_dict)
 
     if request.method == "POST":
         # add
         if request.form.get(f'add-step'):
-            print("add")
+            #print("add")
             step_length = f"step {len(steps.keys())+1}"
-            new_dict = {step_length:{'text':'', 'image':'', 'command':'', 'help':''}}
-            steps.update(new_dict)
-            print(steps)
+            #new_dict = {step_length:{'text':'', 'image':'', 'command':'', 'help':''}}
+            #steps.update(new_dict)
+            #print(steps)
+            utils.add_instruction_step(room_id,step_length)
             return redirect(url_for('admin.instruction_initial',room_id=room_id,step_id=step_length))
         
         for step_id in steps.keys():
             # edit
             if request.form.get(f'edit_{step_id}'):
-                print("edit", step_id)
+                #print("edit", step_id)
                 return redirect(url_for('admin.instruction_initial',room_id=room_id,step_id=step_id))
             # delete
             if request.form.get(f'delete_{step_id}'):
-                print("delete", step_id)
+                #print("delete", step_id)
+                utils.delete_instruction_step(room_id,step_id)
                 return render_template('admin_instruction_initial_list.html',room_id=room_id,steps=steps)
         confirm=request.form.get('confirm')
         if  confirm:
@@ -317,27 +321,36 @@ def instruction_initial_list():
 
 @admin_blue.route("/instruction_initial", methods=['POST','GET'])
 def instruction_initial():
-    print("instruction_initial")
-    print(devices_dict)
-    print(steps)
+    #print("instruction_initial")
+    #print(devices_dict)
+    #print(steps)
     room_id = request.args.get('room_id')
     step_id = request.args.get('step_id')
     if request.method == "POST":
-        step_text=request.form.get('step_text')
+        step_text=request.form.get('step_text') if request.form.get('step_text') else None
         img_base64=request.form.get('imgSrc')
-        step_command=request.form.get('step_command')
-        step_help=request.form.get('step_help')
-        print(step_text)
-        print(img_base64)
-        print(step_command)
-        print(step_help)
+        step_command=request.form.get('step_command') if request.form.get('step_command') else None
+        step_help=request.form.get('step_help') if request.form.get('step_help') else None
+        step_image=(img_base64.split(','))[-1] if img_base64 else None
+        #print(step_text)
+        #print(img_base64)
+        #print(step_command)
+        #print(step_help)
         confirm=request.form.get('confirm')
         if confirm:
-            steps[step_id]["text"]=step_text
-            steps[step_id]["image"]=img_base64  # debug
-            steps[step_id]["command"]=step_command
-            steps[step_id]["help"]=step_help
-            print(steps)
+            #steps[step_id]["text"]=step_text
+            #steps[step_id]["image"]=img_base64  # debug
+            #steps[step_id]["command"]=step_command
+            #steps[step_id]["help"]=step_help
+            #print(steps)
+            utils.update_instruction_step(
+                name=room_id,
+                id=step_id,
+                text=step_text,
+                image=step_image,
+                com=step_command,
+                help=step_help
+            )
             return redirect(url_for('admin.instruction_initial_list',room_id=room_id))
     
     return render_template('admin_instruction_initial.html',room_id=room_id,step_id=step_id,steps=steps)
