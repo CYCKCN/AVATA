@@ -311,7 +311,8 @@ def instruction_initial_list():
             if request.form.get(f'delete_{step_id}'):
                 #print("delete", step_id)
                 utils.delete_instruction_step(room_id,step_id)
-                return render_template('admin_instruction_initial_list.html',room_id=room_id,steps=steps)
+                step=utils.get_instruction_step(room_id)
+                return render_template('admin_instruction_initial_list.html',room_id=room_id,steps=step)
         confirm=request.form.get('confirm')
         if  confirm:
             return redirect(url_for('admin.instruction_turnon_main',room_id=room_id))
