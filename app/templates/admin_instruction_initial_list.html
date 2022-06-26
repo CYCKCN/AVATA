@@ -95,6 +95,7 @@
 
     /* step part */
     .step-div{
+        width: 100%;
         padding: 0 0 0 5vw;
     }
 
@@ -109,10 +110,12 @@
     }
     
     .btn-edit{        
-        float: left;
+        /*float: left;*/
+        float: right;
         width: 12vw;
         height: 7vh;
-        margin-left: 34vw;
+        /*margin-left: 34vw;*/
+        margin-right: 3vw;
         margin-top: 1vh;
 
         font-size: 1.8vh;
@@ -132,10 +135,12 @@
     }
 
     .btn-delete{
-        float: left;
+        /*float: left;*/
+        float: right;
         width: 25vw;
         height: 7vh;
-        margin-left: 3vw;
+        /*margin-left: 3vw;
+        margin-right: 0;*/
         margin-top: 1vh;
 
         font-size: 1.8vh;
@@ -259,8 +264,8 @@
             <div class="step-div">
                 <div class="line">
                     <div class="step-label">{{k}}</div>
-                    <input class="btn-edit" type='submit' name="edit_{{k}}" value="edit">
                     <input class="btn-delete" type='submit' name="delete_{{k}}" value="delete">
+                    <input class="btn-edit" type='submit' name="edit_{{k}}" value="edit">
                 </div>
                 <div class="line-step">
                     {% if v.text %}

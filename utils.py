@@ -27,7 +27,7 @@ def room_is_exist(name:str):
 
 def room_has_attribute(name:str,attr:str):
     _db=db['rooms']
-    room=_db.find({'roomName':name,attr:{'$exists': True}})
+    room=_db.find_one({'roomName':name,attr:{'$exists': True}})
     if room: return True
     else: return False
 
@@ -326,6 +326,14 @@ def clean_chosen_device(room:str):
 
 #------------ Instruction utils ---------------
 
+def get_instruction_step(name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": name})
+    if room_has_attribute(name,'insInitial'):
+        return room['insInitial']
+    else:
+        return {}
+
 def add_instruction_step(name:str,id:str):
     _db=db['rooms']
     room=_db.find_one({"roomName": name})
@@ -349,9 +357,10 @@ def update_instruction_step(name:str, id:str, text:str=None, image:str=None, com
     _db=db['rooms']
     room=_db.find_one({"roomName": name})
     ins=room['insInitial']
-    if text: ins[id]['text']=text
-    if com: ins[id]['command']=com
-    if help: ins[id]['help']=help
+    if text==None and image==None and com==None and help==None: return True
+    if text and not ins[id]['text']==text: ins[id]['text']=text
+    if com and not ins[id]['command']==com: ins[id]['command']=com
+    if help and not ins[id]['help']==help: ins[id]['help']=help
     if image: 
         img_hex=uuid.uuid4().hex
         img_hex_old=ins[id]['image']
@@ -365,6 +374,10 @@ def update_instruction_step(name:str, id:str, text:str=None, image:str=None, com
         if not img_hex_old=='':
             remove=f'app/static/images/test/room{name}/instruction/{img_hex_old}.png'
             os.remove(remove)
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': {"insInitial": ins}}
+    )
     
 def delete_instruction_step(name:str, id:str):
     _db=db['rooms']
