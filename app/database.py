@@ -1,11 +1,4 @@
 from pymongo import MongoClient
-from app.img_trans import *
-import os
-
-def path_exist_or_mkdir(path:str):
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return True
 
 def connection(dbname):
     # mongodb+srv://shaunxu:Xyz20010131@cluster0.llrsd.mongodb.net/myFirstDatabase?retryWrites=true"&"w=majority
@@ -61,32 +54,32 @@ class DeviceDB():
     def cleardb(self):
         self.db.delete_many({})
 
-    def addDevice(self, deviceID, roomID, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY):
-        device = self.db.find_one({"deviceID": deviceID, "roomID": roomID})
+    def addDevice(self, deviceID, roomName, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY):
+        device = self.db.find_one({"deviceID": deviceID, "roomName": roomName})
         
         if device:
             self.db.update_one({"_id": device["_id"]}, \
                 {'$set': {"deviceName": deviceName, "deviceType": deviceType, "deviceIP": deviceIP, "deviceLocX": deviceLocX, "deviceLocY": deviceLocY}})
             return "Info: Edit Device Successfully!"
         else:
-            newDevice = Device(deviceID, roomID, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY)
+            newDevice = Device(deviceID, roomName, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY)
             self.db.insert_one(newDevice.__dict__)
             return "Info: Add Device Successfully!"
             
-    def delDevice(self, deviceID, roomID):
-        device = self.db.find_one({"deviceID": deviceID, "roomID": roomID})
+    def delDevice(self, deviceID, roomName):
+        device = self.db.find_one({"deviceID": deviceID, "roomName": roomName})
         if device is None:
             return "Err: Device Invalid!"
         self.db.update_many({"deviceID": {'$gt': device["deviceID"]}}, {'$inc': {"deviceID": -1}})
         self.db.delete_one({"_id": device["_id"]})
         return "Info: Delete Successfully!"
     
-    def checkDeviceList(self, roomID):
-        devices = self.db.find({"roomID": roomID})
+    def checkDeviceList(self, roomName):
+        devices = self.db.find({"roomName": roomName})
         return devices
     
-    def printDeviceList(self, roomID):
-        devices = self.checkDeviceList(roomID)
+    def printDeviceList(self, roomName):
+        devices = self.checkDeviceList(roomName)
         for dev in devices:
             print("Device ID: " + str(dev["deviceID"]) + "\nDevice Name: " + dev["deviceName"] + "\nDevice Type: " + dev["deviceName"] + "\nDevice IP" + dev["deviceIP"] + "\n")
 
@@ -117,7 +110,7 @@ class RoomDB():
         return "Info: Delete Successfully!"
 
     def upload360Img(self, roomName, room360Img):
-        self.db.update_one({"roomName": roomName}, {'$set': {"room360Img": room360Img}})
+        self.db.update_one({"roomName": roomName}, {"room360Img": room360Img})
         return "Info: Upload Successfully!"
 
     def checkRoomList(self, roomName):
@@ -129,41 +122,6 @@ class RoomDB():
         for r in rooms:
             print("Room Name: " + r["roomName"] + "\nRoom Img: " + r["roomImg"] + "\nRoom Location" + r["roomLoc"] + "\n")
         return
-
-    def download_room_basic_image_with_name(self, roomName):
-        room = self.db.find_one({"roomName": roomName})
-        if room is None: return
-        exist=f'app/static/images/test/room{roomName}'
-        path_exist_or_mkdir(exist)
-
-        # print(room["roomImg"])
-
-        path=f'app/static/images/test/room{roomName}/_basic_upload.png'
-        image_decoder(room["roomImg"], path)
-
-    def download_room_360image_with_name(self, roomName):
-        print(roomName)
-        room = self.db.find_one({"roomName": roomName})
-        if room is None: return
-        if room["room360Img"] == "": return
-        exist=f'app/static/images/test/room{roomName}'
-        path_exist_or_mkdir(exist)
-
-        path=f'app/static/images/test/room{roomName}/_360_upload.png'
-        image_decoder(room["room360Img"], path)
-
-    def getRoomInfo(self):
-        cnt = 0
-        roomInfo = {}
-        rooms = self.checkRoomList("")
-        for r in rooms:
-            d = {}
-            d['name'] = r['roomName']
-            d['lift'] = r['roomLoc']
-            roomInfo[cnt] = d
-            self.download_room_basic_image_with_name(r['roomName'])
-            cnt += 1
-        return roomInfo
 
     def addInsInitialStep(self, roomName, stepID, stepText='', stepImg='', stepCom='', stepHelp=''):
         room = self.db.find_one({"roomName": roomName})
