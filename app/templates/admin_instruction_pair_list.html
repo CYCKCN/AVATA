@@ -65,6 +65,25 @@
         text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     }
 
+    .admin-step-txt{
+        float: left;
+        padding-left: 2vw;
+        padding-top: 3.6vh;
+
+        font-weight: 100;
+        font-size: 4vw;
+        line-height: 0vh;
+        /* identical to box height */
+
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+
+        color: #000000;
+
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
     .admin-mid-txt{
         float: left;
         width: 90%;
@@ -232,7 +251,7 @@
     <div class="deviceChoose">
         {% for k, v in device111.items() %}
             <div class="devicebox">
-                <input class="device-checkbox" type='checkbox' id='one' name="Device_{{k}}" value="Device_{{k}}">
+                <input class="device-checkbox" type='checkbox' name="Device_{{k}}" value="device {{k}}" id="{{k}}">
                 <label class="text" for="one">{{k}}</label>
             </div>
         {% endfor %}
@@ -247,6 +266,13 @@
                     <div class="step-label">{{k}}</div>
                     <input class="btn-edit" type='submit' name="edit_{{k}}" value="edit">
                     <input class="btn-delete" type='submit' name="delete_{{k}}" value="delete">
+                </div>
+                <div class="line">
+                    {% if v.text %}
+                        <div class="admin-step-txt">{{v.text}}</div>
+                    {% else %}
+                        <div class="admin-step-txt">none</div> 
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
@@ -270,5 +296,18 @@
 </script>
 
 <script>
+    var choose_devices = JSON.parse('{{ choose_dev | tojson | safe}}')
+    var all_devices = JSON.parse('{{ device111 | tojson | safe}}')
+    console.log(choose_devices)
+    for(all_id in all_devices){
+        var checkbox_device = document.getElementById(all_id)
+        checkbox_device.removeAttribute("checked", false)
+    }
+
+    for (choose_id in choose_devices) {
+        var checkbox_device = document.getElementById(choose_id)
+        checkbox_device.setAttribute("checked", true)
+        console.log(checkbox_device.getAttribute("checked"))
+    }
 </script>
 {% endblock %}
