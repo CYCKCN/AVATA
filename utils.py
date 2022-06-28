@@ -360,7 +360,10 @@ def add_instruction_init_step(name:str,id:str):
             {'$set': {"insInitial": add}}
         )
 
-def update_instruction_init_step(name:str, id:str, text:str=None, image:str=None, com:str=None, help:str=None):
+def update_instruction_init_step(
+    name:str, id:str, 
+    text:str=None, image:str=None, com:str=None, help:str=None):
+
     _db=db['rooms']
     room=_db.find_one({"roomName": name})
     ins=room['insInitial']
@@ -436,7 +439,10 @@ def add_instruction_turnon_step(room_name:str,device_name:str,id:str):
             {'$set': {"insTurnon": add}}
         )
 
-def update_instruction_turnon_step(room_name:str,device_name:str, id:str, text:str=None, image:str=None, com:str=None, help:str=None):
+def update_instruction_turnon_step(
+    room_name:str,device_name:str, id:str, 
+    text:str=None, image:str=None, com:str=None, help:str=None):
+
     _db=db['devices']
     device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
     ins=device['insTurnon']
@@ -482,4 +488,134 @@ def delete_instruction_turnon_step(room_name:str,device_name:str, id:str):
         {"_id": device["_id"]}, 
         {'$set': {"insTurnon": _dict}}
     )
+
+#------ Instruction pair --------
+
+def get_instruction_pair_case(name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": name})
+    if room_has_attribute(name,'insPair'):
+        return room['insPair']
+    else:
+        return {}
+
+def add_instruction_pair_case(name:str,id:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": name})
+    add={
+        id:{'devices':'', 'steps':''}
+    }
+    if room_has_attribute(name,'insPair'):
+        ins=room['insPair']
+        ins.update(add)
+        _db.update_one(
+            {"_id": room["_id"]}, 
+            {'$set': {"insPair": ins}}
+        )
+    else:
+        _db.update_one(
+            {"_id": room["_id"]}, 
+            {'$set': {"insPair": add}}
+        )
+
+def get_instruction_pair_case_step(room_name:str,case_name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_pair=room['insPair']
+    ins_case=ins_pair[case_name]['steps']
+    return ins_case
+
+def add_instruction_pair_case_step(room_name:str,case_name:str,step_name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_pair=room['insPair']
+    ins_case=ins_pair[case_name]['steps']
+
+    add={
+        step_name:{'text':'', 'image':'', 'command':'', 'help':''}
+    }
+    ins_case.update(add)
+    ins_pair[case_name]['steps']=ins_case
+    #这里采取了update整个case
+    #但是不知道这样会不会很慢
+    #有另一个方法还没试过:
+    # {'$set': { f'insPair.{case_name}.steps' : ins_case}}
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': {"insPair": ins_pair}}
+    )
+
+def update_instruction_pair_case_step(
+    room_name:str,case_name:str,step_name:str,
+    text:str=None, image:str=None, com:str=None, help:str=None):
+
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_pair=room['insPair']
+    ins_case=ins_pair[case_name]['steps']
+
+    if text==None and image==None and com==None and help==None: return True
+    if text and not ins_case[step_name]['text']==text: ins_case[step_name]['text']=text
+    if com and not ins_case[step_name]['command']==com: ins_case[step_name]['command']=com
+    if help and not ins_case[step_name]['help']==help: ins_case[step_name]['help']=help
+    if image: 
+        img_hex=uuid.uuid4().hex
+        img_hex_old=ins_case[step_name]['image']
+        ins_case[step_name]['image']=img_hex
+
+        exist=f'app/static/images/test/room{room_name}/instruction'
+        path_exist_or_mkdir(exist)
+        path=f'app/static/images/test/room{room_name}/instruction/{img_hex}.png'
+        image_decoder(image,path)
+
+        if not img_hex_old=='':
+            remove=f'app/static/images/test/room{room_name}/instruction/{img_hex_old}.png'
+            os.remove(remove)
+
+    # {'$set': { f'insPair.{case_name}.steps' : ins_case}}
+    ins_pair[case_name]['steps']=ins_case
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': {"insPair": ins_pair}}
+    )
+
+def delete_instruction_pair_case_step(room_name:str,case_name:str,step_name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_pair=room['insPair']
+    ins_case=ins_pair[case_name]['steps']
+
+    _dict={}
+    for k, v in ins_case.items():
+        if k<step_name: _dict[k]=v
+        elif k>step_name:
+            id_new=f'step {len(_dict)+1}'
+            _dict[id_new]=v
+        else:
+            img_hex=v['image']
+            if img_hex=='': continue
+            remove=f'app/static/images/test/room{room_name}/instruction/{img_hex}.png'
+            os.remove(remove)
+
+    # {'$set': { f'insPair.{case_name}.steps' : _dict}}
+    ins_pair[case_name]['steps']=_dict
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': {"insPair": ins_pair}}
+    )
+
+def get_instruction_pair_case_device(room_name:str,case_name:str):
+    _db=db['devices']
+
+    _dict={}
+    devices=_db.find({'roomName':room_name},{'deviceName':1})
+    
+    for device in devices:
+        _d={
+            'name':device['deviceName']
+        }
+        _dict[f'Device {len(_dict)+1}']=_d
+    return _dict
+
+
 

@@ -649,28 +649,32 @@ dev_choose_idx_list=set()
 def instruction_pair_list():  
     room_id = request.args.get('room_id')
     case_id = request.args.get('case_id')
-    print("instruction_turnon_list")
-    print(steps)
+    #print("instruction_turnon_list")
+    #print(steps)
+    steps=utils.get_instruction_pair_case_step(room_id,case_id)
 
     if request.method == "POST":
         # add
         if request.form.get(f'add-step'):
-            print("add")
+            #print("add")
             step_length = f"step {len(steps.keys())+1}"
-            new_dict = {step_length:{'text':'', 'image':'', 'command':'', 'help':''}}
-            steps.update(new_dict)
-            print(steps)
+            #new_dict = {step_length:{'text':'', 'image':'', 'command':'', 'help':''}}
+            #steps.update(new_dict)
+            #print(steps)
+            utils.add_instruction_pair_case_step(room_id,case_id,step_length)
             return redirect(url_for('admin.instruction_pair',case_id=case_id,room_id=room_id,step_id=step_length))
         
         for step_id in steps.keys():
             # edit
             if request.form.get(f'edit_{step_id}'):
-                print("edit", step_id)
+                #print("edit", step_id)
                 # not implemented delete function
                 return redirect(url_for('admin.instruction_pair',case_id=case_id,room_id=room_id,step_id=step_id))
             # delete
             if request.form.get(f'delete_{step_id}'):
-                print("delete", step_id)
+                #print("delete", step_id)
+                utils.delete_instruction_pair_case_step(room_id,case_id,step_id)
+                steps=utils.get_instruction_pair_case_step(room_id,case_id)
                 return render_template('admin_instruction_pair_list.html',case_id=case_id,room_id=room_id,steps=steps,device111=device111)
         
         i=0
@@ -699,29 +703,40 @@ def instruction_pair_list():
 
 @admin_blue.route("/instruction_pair", methods=['POST','GET'])
 def instruction_pair():
-    print("instruction_pair")
-    print(steps)
+    #print("instruction_pair")
+    #print(steps)
     room_id = request.args.get('room_id')
     step_id = request.args.get('step_id')
     case_id = request.args.get('case_id')
     if request.method == "POST":
-        step_text=request.form.get('step_text')
+        step_text=request.form.get('step_text') if not request.form.get('step_text')=='' else None
         img_base64=request.form.get('imgSrc')
-        step_command=request.form.get('step_command')
-        step_help=request.form.get('step_help')
-        print(step_text)
-        print(img_base64)
-        print(step_command)
-        print(step_help)
+        step_command=request.form.get('step_command') if not request.form.get('step_command')=='' else None
+        step_help=request.form.get('step_help') if not request.form.get('step_help')=='' else None
+        step_image=(img_base64.split(','))[-1] if img_base64 else None
+        #print(step_text)
+        #print(img_base64)
+        #print(step_command)
+        #print(step_help)
         confirm=request.form.get('confirm')
         if confirm:
-            steps[step_id]["text"]=step_text
-            steps[step_id]["image"]=img_base64  # debug
-            steps[step_id]["command"]=step_command
-            steps[step_id]["help"]=step_help
-            print(steps)
+            #steps[step_id]["text"]=step_text
+            #steps[step_id]["image"]=img_base64  # debug
+            #steps[step_id]["command"]=step_command
+            #steps[step_id]["help"]=step_help
+            #print(steps)
+            utils.update_instruction_pair_case_step(
+                room_name=room_id,
+                case_name=case_id,
+                step_name=step_id,
+                text=step_text,
+                image=step_image,
+                com=step_command,
+                help=step_help
+            )
             return redirect(url_for('admin.instruction_pair_list',case_id=case_id,room_id=room_id))
     
+    steps=utils.get_instruction_pair_case_step(room_id,case_id)
     return render_template('admin_instruction_pair.html',case_id=case_id,room_id=room_id,step_id=step_id,steps=steps)
 
 @admin_blue.route("/profile", methods=['POST','GET'])
