@@ -274,12 +274,18 @@ def device_list():
     #return render_template('admin_device_list.html',room_id=room_id,devices=devices_dict[room_id].getJson())
     return render_template('admin_device_list.html',room_id=room_id,devices=devices)
 
+# steps={
+#     'step 1':{'text':'', 'image':'', 'command':'', 'help':''},
+#     'step 2':{'text':'', 'image':'', 'command':'', 'help':''},
+#     'step 3':{'text':'', 'image':'', 'command':'', 'help':''},
+#     'step 4':{'text':'', 'image':'', 'command':'', 'help':''},
+#     'step 5':{'text':'', 'image':'', 'command':'', 'help':''},
+# }
+
 steps={
-    'step 1':{'text':'', 'image':'', 'command':'', 'help':''},
-    'step 2':{'text':'', 'image':'', 'command':'', 'help':''},
-    'step 3':{'text':'', 'image':'', 'command':'', 'help':''},
-    'step 4':{'text':'', 'image':'', 'command':'', 'help':''},
-    'step 5':{'text':'', 'image':'', 'command':'', 'help':''},
+    'step 1':{'text':'Find the HDMI cable underneath the conference table', 'image':'', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':''},
+    'step 2':{'text':'Find the HDMI cable underneath the conference table', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':'helpxxxxxxxx xxxxxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxx'},
+    'step 3':{'text':'Plug the HDMI cable to your laptop', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':'', 'help':''},
 }
 
 @admin_blue.route("/instruction_initial_list", methods=['POST','GET'])
@@ -690,3 +696,15 @@ def profile():
             return redirect(url_for('admin.logout'))
     
     return render_template('admin_profile.html')
+
+@admin_blue.route("/initial", methods=['POST','GET'])
+def initial():
+    print("initial")
+    print(steps)
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        next=request.form.get('next')
+        if next:
+            return redirect(url_for('admin.initial',room_id=room_id))
+    
+    return render_template('instruction_initial.html',room_id=room_id,steps=steps)
