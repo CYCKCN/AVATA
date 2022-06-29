@@ -188,8 +188,8 @@ def photo_360():
     is_editRoom=True if is_editRoom else False)
 
 
-devices_dict = {}
-from objects_admin import *
+#devices_dict = {}
+#from objects_admin import *
 
 @admin_blue.route("/device_info", methods=['POST','GET'])
 def device_info():
@@ -284,13 +284,13 @@ def device_list():
 #     'step 4':{'text':'', 'image':'', 'command':'', 'help':''},
 #     'step 5':{'text':'', 'image':'', 'command':'', 'help':''},
 # }
-
+'''
 steps={
    'step 1':{'text':'Find the HDMI cable underneath the conference table', 'image':'', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':''},
    'step 2':{'text':'Find the HDMI cable underneath the conference table', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':'helpxxxxxxxx xxxxxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxx'},
    'step 3':{'text':'Plug the HDMI cable to your laptop', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':'', 'help':''},
 }
-
+'''
 @admin_blue.route("/instruction_initial_list", methods=['POST','GET'])
 def instruction_initial_list():
     room_id = request.args.get('room_id')
@@ -579,7 +579,7 @@ def instruction_zoom():
     
     steps=utils.get_instruction_zoom_step(room_id,zoom_type)
     return render_template('admin_instruction_zoom.html',room_id=room_id,step_id=step_id,steps=steps,zoom_type=zoom_type)
-
+'''
 cases={
     'Case 1':{
         'devices':{
@@ -629,7 +629,7 @@ device111={
     'Apple':{'name':'Apple'},
     'Windows':{'name':'Windows'},
 }
-
+'''
 @admin_blue.route("/instruction_pair_main", methods=['POST','GET'])
 def instruction_pair_main():
     room_id = request.args.get('room_id')
@@ -667,7 +667,7 @@ def instruction_pair_main():
     
     return render_template('admin_instruction_pair_main.html',room_id=room_id,cases=cases)
 
-dev_choose_idx_list=set()
+#dev_choose_idx_list=set()
 @admin_blue.route("/instruction_pair_list", methods=['POST','GET'])
 def instruction_pair_list():  
     room_id = request.args.get('room_id')
