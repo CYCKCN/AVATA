@@ -256,7 +256,7 @@
         {% for k, v in device111.items() %}
             <div class="devicebox">
                 <input class="device-checkbox" type='checkbox' name="Device_{{k}}" value="device {{k}}" id="{{k}}">
-                <label class="text" for="one">{{k}}</label>
+                <label class="text" for="one">{{v.name}}</label>
             </div>
         {% endfor %}
     </div>
@@ -264,6 +264,7 @@
     {% if steps|length==0 %}
         <div class="empty-text">There is no step created so far, <br>please click “add step” to create new step for initial.</div>
     {% else %}
+    <!--<div class="empty-text">Don't forget choose involved devices before you click confirm!</div>-->
         {% for k, v in steps.items() %}
             <div class="step-div">
                 <div class="line">
