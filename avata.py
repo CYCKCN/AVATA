@@ -19,7 +19,7 @@ CURRENT_ROOM=ROOM(oscwd=os.getcwd())
 def hello():
     return 'hello'
 
-roomInfo={
+roomInfo_recent={
         0:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
         1:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
     }
@@ -27,6 +27,10 @@ roomInfo={
 roomInfo_book={
         0:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
         1:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+    }
+
+roomInfo_result={
+        0:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
     }
 
 @app.route("/login", methods=['POST','GET'])
@@ -77,7 +81,7 @@ def search():
         room_id=request.form.get('room_id')
         return redirect(url_for('room',room_id=room_id))
 
-    return render_template('search.html',room_id=room_id,roomInfo_book=roomInfo_book,roomInfo=roomInfo)
+    return render_template('search.html',room_id=room_id,roomInfo_book=roomInfo_book,roomInfo_recent=roomInfo_recent,roomInfo_result=roomInfo_result)
 
 @app.route("/room/<room_id>", methods=['POST','GET'])
 def room(room_id):

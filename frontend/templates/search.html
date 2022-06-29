@@ -163,17 +163,27 @@
 	<div class="roommain" v-if="roomid=='5554'">
 		<div class="searchsubhead">Result</div>
 		<div class="roomgroup">
-			<div class="room" v-on:click="goRoom($event, 5554)">
-				<img class="roomimg" src="{{url_for('static',filename='images/test/room5554/IMG5554.png')}}" />
-				<div class="roomtext">
-					<div class="roomname">Room 5554</div>
-					<div class="roomlift">Lift 27-28</div>
-					<div class="roomelse">
-						<div class="roomdate">August 21</div>
-						<div class="roomtime">19:00-21:00</div>
-					</div>
-				</div>
-			</div>
+			{% if roomInfo_result %}
+                {% for k, v in roomInfo_result.items() %}
+                <div class="room" v-on:click="goRoom($event, {{v.name}})">
+                    <img class="roomimg" src="../../static/images/test/room{{v.name}}/_basic_upload.png" />
+                    <div class="roomtext">
+                        <div class="roomname">Room {{v.name}}</div>
+                        <div class="roomlift">{{v.lift}}</div>
+                        <div class="roomelse">
+                            
+                            <div class="roomdate">{{v.date}}</div>
+                            <div class="roomtime">{{v.time}}</div>
+                           
+                            <!-- <div class="roomdate">TBA</div>
+                            <div class="roomtime">TBA</div> -->
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="room-empty">No Result!</div>
+            {% endif %}
 		</div>
 	</div>
 	<div class="roommain" v-else>
@@ -187,42 +197,42 @@
                         <div class="roomname">Room {{v.name}}</div>
                         <div class="roomlift">{{v.lift}}</div>
                         <div class="roomelse">
-                            <!--
+                            
                             <div class="roomdate">{{v.date}}</div>
                             <div class="roomtime">{{v.time}}</div>
-                            -->
-                            <div class="roomdate">TBA</div>
-                            <div class="roomtime">TBA</div>
+                           
+                            <!-- <div class="roomdate">TBA</div>
+                            <div class="roomtime">TBA</div> -->
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
-                <div class="room-empty">No room!</div>
+                <div class="room-empty">No Booking!</div>
             {% endif %}
 		</div>
 		<div class="searchsubhead">Recently</div>
 		<div class="roomgroup">
-			{% if roomInfo %}
-                {% for k, v in roomInfo.items() %}
+			{% if roomInfo_recent %}
+                {% for k, v in roomInfo_recent.items() %}
                 <div class="room" v-on:click="goRoom($event, {{v.name}})">
                     <img class="roomimg" src="../../static/images/test/room{{v.name}}/_basic_upload.png" />
                     <div class="roomtext">
                         <div class="roomname">Room {{v.name}}</div>
                         <div class="roomlift">{{v.lift}}</div>
                         <div class="roomelse">
-                            <!--
+                            
                             <div class="roomdate">{{v.date}}</div>
                             <div class="roomtime">{{v.time}}</div>
-                            -->
-                            <div class="roomdate">TBA</div>
-                            <div class="roomtime">TBA</div>
+                           
+                            <!-- <div class="roomdate">TBA</div>
+                            <div class="roomtime">TBA</div> -->
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
-                <div class="room-empty">No room!</div>
+                <div class="room-empty">No Room!</div>
             {% endif %}
 		</div>
 	</div>
