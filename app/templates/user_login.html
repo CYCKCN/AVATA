@@ -2,16 +2,17 @@
 
 {% block head %}
 <style>
-    #admin{
-        /* display: flex;
+    #user{
+        display: flex;
         flex-direction: column;
-        align-items: flex-start; */
+        align-items: flex-start;
         justify-content: center;
         width: 100vw;
-        height: 100vh;
+        height: 50vh;
         padding: 5vh 5vw;
     }
-    .admin-title{
+
+    .user-txt{
         width: 20vw;
         height: 10vh;
 
@@ -26,19 +27,8 @@
 
         color: #000000;
     }
-    .admin-txt{
-        margin-top: 4vh;
-        font-style: normal;
-        font-weight: 900;
-        font-size: 3vw;
-        line-height: 2vh;
-        display: flex;
-        align-items: center;
-        letter-spacing: -0.015em;
 
-        color: #000000;
-    }
-    .admin-error{
+    .user-error{
         /* font-family: 'Comfortaa'; */
         float: left;
         margin-left: 5vw;
@@ -52,106 +42,112 @@
 
         color: #000000;
     }
-    .admin-ans{
-        /* margin: 2vh 0 0vh 0; */
-        margin: auto;
+
+    .user-ans{
+        margin: 2vh 0 0vh 0;
         width: 100%;
-        height: 6vh;
+        height: 7vh;
         box-sizing: border-box;
         background: #FFFFFF;
         border: 0.5vw solid #000000;
         padding: 0 3vw;
-        font-style: normal;
-        font-weight: 500;
         font-size: 2vh;
-        color: #000000;
     }
+
     #btn-login {
-        /* margin:auto; */
-        margin-top: 8vh;
+        margin: auto;
         width: 100%;
         height: 7vh;
         
-        background: #0074BC;
-        border: 2px solid #0074BC;
+        background: #000000;
+        border: 2px solid #000000;
         border-radius: 1vw;
 
         font-style: normal;
-        font-weight: 900;
-        font-size: 3vw;
+        font-weight: 500;
+        font-size: 2vh;
         color: #FFFFFF;
     }
+
     #btn-register{
         position: relative;
-        margin-top: 4vh;
+        margin-top: 2vh;
         width: 90vw;
         height: 7vh;
+        left: 5vw;
+        top: -12vw;
         padding-top:2vh;
+
+        background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw;
+
         text-align: center;
     }
-    #btn-register a{
-        text-decoration: none;
-        font-style: normal;
-        font-weight: 900;
-        font-size: 3vw;
-        color: #0074BC;
-    }
     #btn-reset{
-        margin-top: 1vh;
+        margin-top: 4vh;
         width: 90vw;
         height: 7vh;
         left: 5vw;
         padding-top:2vh;
 
-        /* background: #000000;
-        border: 2px solid #000000; */
+        background: #000000;
+        border: 2px solid #000000;
         border-radius: 1vw;
 
         text-align: center;
     }
+
+    #btn-register a{
+        text-decoration: none;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
+    }
     #btn-reset a{
         text-decoration: none;
         font-style: normal;
-        font-weight: 900;
-        font-size: 3vw;
-        color: #0074BC;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
     }
+
     /* 去掉Google密码自动填充的丑蓝色 */
     input:-webkit-autofill {
         box-shadow: 0 0 0 32vh #fff inset;;
         -webkit-box-shadow: 0 0 0 32vh #fff inset; /**通过边框阴影遮挡住背景*/
         -webkit-text-fill-color: #000; /*自动填充内容的文本颜色*/
     }       
+
 </style>
 
 {% endblock %}
 
 {% block content %}
 
-<form method="post" id="admin-login" enctype="multipart/form-data">
-    <div id="admin">  
-        <div class="admin-title">Admin</div>
+<form method="post" id="user-login" enctype="multipart/form-data">
+    <div id="user">  
+        <div class="user-txt">User</div>
         <!--
         <input class="admin-ans" v-model="adminEmail" name="email" placeholder="">
         <input class="admin-ans" v-model="adminPwd" type="password" name="pwd" placeholder="">
         -->
-        <p class="admin-txt">EMAIL</p>
-        {{ form.email(class_='admin-ans', **{'v-model': 'adminEmail'}) }}
-        <p class="admin-txt">PASSWORD</p>
-        {{ form.password(class_='admin-ans', **{'v-model': 'adminPwd'}) }}
+        {{ form.email(class_='user-ans', **{'v-model': 'userEmail'}) }}
+        {{ form.password(class_='user-ans', **{'v-model': 'userPwd'}) }}
         {{ form.hidden_tag() }}
         <input id="btn-login" type='submit' name="login" value="LOG IN">
+        
+    </div>
         <div id="btn-register"><a href="/authen/register">REGISTER</a></p>
-        <div id="btn-reset"><a href="/authen/reset">RESET PASSWORD</a></p>
+        <div id="btn-reset"><a href="/authen/reset">FORGET PASSWORD</a></p>
         {% if not pass_right %}
-            <p class="admin-error">Password is not correct!</p>
+            <p class="user-error">Password is not correct!</p>
         {% endif %}
 
         {% if register %}
-            <p class="admin-error">User not exists! Please register.</p>
+            <p class="user-error">User not exists! Please register.</p>
         {% endif %}
-    </div>
-        
     
 </form>
 
@@ -165,7 +161,7 @@
       methods: {
     
       }
-    }).mount('#admin-login')    
+    }).mount('#user-login')    
 </script>
 
 <script>

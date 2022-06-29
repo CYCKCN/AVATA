@@ -17,7 +17,7 @@
         font-style: normal;
         font-weight: 360;
         font-size: 8vw;
-        line-height: 8vh;
+        line-height: 10vh;
         display: flex;
         align-items: center;
         letter-spacing: -0.015em;
@@ -39,11 +39,11 @@
         color: #000000;
     }
     .reset-txt{
-        margin-top: 2vh;
+        margin-top: 4vh;
         font-style: normal;
-        font-weight: 360;
-        font-size: 6vw;
-        line-height: 6vh;
+        font-weight: 900;
+        font-size: 3vw;
+        line-height: 2vh;
         display: flex;
         align-items: center;
         letter-spacing: -0.015em;
@@ -61,14 +61,14 @@
         border-radius: 1vw;
 
         font-style: normal;
-        font-weight: 500;
-        font-size: 2vh;
+        font-weight: 900;
+        font-size: 3vw;
         color: #FFFFFF;
 
         text-align: center;
     }
     .reset-submit{
-        margin-top: 6vh;
+        margin-top: 8vh;
         width: 100%;
         height: 7vh;
         
@@ -77,15 +77,15 @@
         border-radius: 1vw;
 
         font-style: normal;
-        font-weight: 500;
-        font-size: 2vh;
+        font-weight: 900;
+        font-size: 3vw;
         color: #FFFFFF;
     }
     .reset-btn a {
         text-decoration: none;
         font-style: normal;
-        font-weight: 500;
-        font-size: 2vh;
+        font-weight: 900;
+        font-size: 3vw;
         color: #FFFFFF;
     }
     .reset-error{
@@ -96,7 +96,6 @@
         line-height: 4.5vh;
         color: #000000;
     }
-
 </style>
 {% endblock %}
 
@@ -114,17 +113,14 @@
      -->
     <div class="reset">
         <p class="reset-title">Reset Password</p>
-        <p class="reset-txt">Email</p>
+        <p class="reset-txt">EMAIL</p>
         {{ form.email(class_='reset-input') }}
-        <p class="reset-txt">Password</p>
-        {{ form.password(class_='reset-input') }}
-        <p class="reset-txt">Repeat Password</p>
-        {{ form.passwordRepeat(class_='reset-input') }}
+        <p class="reset-txt">OLD PASSWORD</p>
+        {{ form.oldpassword(class_='reset-input') }}
+        <p class="reset-txt">NEW PASSWORD</p>
+        {{ form.newpassword(class_='reset-input') }}
         {{ form.hidden_tag() }}
         <br><input class="reset-submit" name="submit" type="submit" value="SUBMIT">
-        <!--<br><input name="login" type="submit" value="login">-->
-        <p class="reset-btn"><a href='{{ url_for("main") }}'>LOGIN</a></p>
-        <p class="reset-btn"><a href='{{ url_for("authen.register") }}'>REGISTER</a></p>
         {% if exist %}
             <p class="reset-error">User not exists! Please register.</p>
         {% endif %}
@@ -133,5 +129,4 @@
         {% endif %}
     </div>
 </form>
-
 {% endblock %}

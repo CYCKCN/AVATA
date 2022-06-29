@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<style>
+<style>       
     input:-webkit-autofill {
         box-shadow: 0 0 0 32vh #fff inset;;
         -webkit-box-shadow: 0 0 0 32vh #fff inset; /**通过边框阴影遮挡住背景*/
         -webkit-text-fill-color: #000; /*自动填充内容的文本颜色*/
     } 
-
     .register{
         /*
         display: flex;
@@ -28,7 +27,7 @@
         font-style: normal;
         font-weight: 360;
         font-size: 8vw;
-        line-height: 7vh;
+        line-height: 10vh;
         display: flex;
         align-items: center;
         letter-spacing: -0.015em;
@@ -36,15 +35,14 @@
         color: #000000;
     }
     .register-txt{
-        margin-top: 2vh;
+        margin-top: 4vh;
         font-style: normal;
-        font-weight: 360;
-        font-size: 6vw;
-        line-height: 6vh;
+        font-weight: 900;
+        font-size: 3vw;
+        line-height: 2vh;
         display: flex;
         align-items: center;
         letter-spacing: -0.015em;
-
         color: #000000;
     }
     .register-input{
@@ -89,7 +87,7 @@
         color: #000000;
     }
     .register-submit{
-        margin-top: 4vh;
+        margin-top: 8vh;
         width: 100%;
         height: 7vh;
         
@@ -98,8 +96,8 @@
         border-radius: 1vw;
 
         font-style: normal;
-        font-weight: 500;
-        font-size: 2vh;
+        font-weight: 900;
+        font-size: 3vw;
         color: #FFFFFF;
     }
     .register-login{
@@ -117,8 +115,8 @@
     .register-login a{
         text-decoration: none;
         font-style: normal;
-        font-weight: 500;
-        font-size: 2vh;
+        font-weight: 900;
+        font-size: 3vw;
         color: #FFFFFF;
     }
     .placehold{
@@ -142,28 +140,15 @@
 <form method="post">
     <div class="register">
         <p class="register-title">Register</p>
-        <p class="register-txt">Username</p>
-        {{ form.username(class_='register-input') }}
-        <p class="register-txt">Email</p>
+        <p class="register-txt">EMAIL</p>
         {{ form.email(class_='register-input') }}
-        <p class="register-txt">Room</p>
-        {{ form.room(class_='register-input') }}
-        <p class="register-txt">Password</p>
+        <p class="register-txt">PASSWORD</p>
         {{ form.password(class_='register-input') }}
         {{ form.hidden_tag() }}
-        <p class="register-txt">Repeat Password</p>
+        <p class="register-txt">REPEAT PASSWORD</p>
         {{ form.passwordRepeat(class_='register-input') }}
-        <p class="register-txt">Role</p>
-        {% for subfield in form.roles %}
-            <tr>
-                <td>{{ subfield(class_="register-radio") }}</td>
-                <td>{{ subfield.label(class_="register-label") }}</td>
-            </tr>
-        {% endfor %}
 
         <br><input class="register-submit" name="submit" type="submit" value="SUBMIT">
-        <!--<br><input name="login" type="submit" value="login">-->
-        <p class="register-login"><a href='{{ url_for("main") }}'>LOGIN</a></p>
         
         {% if exist %}
             <p class="register-error">User has registered, please login.</p>
@@ -178,5 +163,4 @@
     
 
 </form>
-
 {% endblock %}

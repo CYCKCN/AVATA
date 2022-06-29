@@ -3,15 +3,15 @@
 {% block head %}
 <style>
     #mainBody{
-        display: flex;
+        /* display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: flex-start; */
         justify-content: center;
+        height: 100vh;
         width: 100vw;
         padding: 5vh 5vw;
     }
-
-    .main-txt{
+    .main-title{
         width: 20vw;
         height: 10vh;
 
@@ -19,32 +19,38 @@
         font-style: normal;
         font-weight: 360;
         font-size: 8vw;
-        line-height: 10vh;
+        line-height:10vh;
         display: flex;
         align-items: center;
         letter-spacing: -0.015em;
-
         color: #000000;
     }
-
     .searchsubhead{
-        font-size: 1.5vh;
-        font-weight: 800;
+        font-weight: 900;
+        font-size: 3vw;
 
-        padding-top: 1vh;
-        padding-bottom: 2vh;
+        /* padding-top: 1vh; */
+        padding-bottom: 1vh;
+        font-style: normal;
+        margin-top: 4vh;
+        line-height: 2vh;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.015em;
+        color: #000000;
     }
-
     .searchBox {
+        margin: auto;
         width: 100%;
         height: 6vh;
-        
-        font-size: 2vh;
-        margin: 1vh 0 2vh 0;
         padding: 0 3vw;
         border: 0.5vw solid #000;
+        background: #FFFFFF;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #000000;
     }
-
     .roomgroup{
         display: flex;
         flex-direction: row;
@@ -56,14 +62,14 @@
         height: 30vh;
         width: 41vw;
         margin-right: 4vw;
-        border-radius: 2.9vw;
+        border-radius: 1vw;
         filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
         background-color: white;
     }
     .roomimg{
         width: 100%;
         height: 80%;
-        border-radius: 2.9vw 2.9vw 0 0;
+        border-radius: 1vw 1vw 0 0;
     }
     .roomtext{
         width: 100%;
@@ -97,29 +103,32 @@
         font-size: 2.4vw;
         font-weight: 300;
     }
-
     #mainFooter{
-        float: left;
+        /* float: left; */
+        position: fixed;
+        z-index: 999;
         width: 100vw;
         height: 10vh;
-        
-        left: 0;
+        bottom: 4vh;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
-        border-top: 0.1vw solid #D9D9D9;
+        /* border-top: 0.1vw solid #D9D9D9; */
     }
-
     .btnAdd{
         position: relative;
-        width: 20vw;
+        margin-top: 4vh;
+        /* padding-top:2vh; */
+        width: 90vw;
         height: 7vh;
-        top: 50%;
+        /* top: 50%;
         left: 50%;
-        transform: translateX(-50%) translateY(-50%);
-
-        background: #000000;
-        border-radius: 3.5vh;
-
+        transform: translateX(-50%) translateY(-50%); */
+        background: #0074BC;
+        border-radius: 1vh;
         font-size: 4vh;
+        text-align: center;
         color: white;
     }
     .error{
@@ -143,7 +152,6 @@
         font-size: 2vh;
         padding-top: 5vh;
     }
-
     .img_profile{
         transform: scale(10);
         position:absolute;
@@ -151,7 +159,6 @@
         width: 5vw;
         height: 5vh;
 	}
-
     #btn-profile {
         opacity: 0;
         margin: -5vh 0vw 0vh 87vw;
@@ -159,18 +166,18 @@
         z-index: 100;
         width: 7vw;
         height: 7vh;
-
-        
-        background: #000000;
+        /* background: #000000;
         border: 2px solid #000000;
-        border-radius: 1vw;
-
+        border-radius: 1vw; */
         font-style: normal;
         font-weight: 500;
         font-size: 2vh;
         color: #FFFFFF;
     }
 
+    #main-title,#profile{
+        display: inline-block;
+    }
 </style>
 
 {% endblock %}
@@ -186,7 +193,16 @@
     <div class="main">
     <!-- body -->
     <div id="mainBody">  
-        <div class="main-txt">Rooms</div>
+        <div class="main-title">Rooms</div>
+        <div class="profile">
+            <input id="btn-profile" type='submit' name="profile" value="profile">
+            <div class="img_profile">
+                <svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.2174 20.4783C17.3359 20.4783 15 22.8142 15 25.6957V27H25.4348V25.6957C25.4348 22.8142 23.0989 20.4783 20.2174 20.4783Z" stroke="black"/>
+                    <ellipse cx="20.2175" cy="15.913" rx="3.91307" ry="3.91304" stroke="black" stroke-linecap="square"/>
+                </svg>
+            </div>
+        </div>
         <div class="searchsubhead">SEARCH</div>
             <input class="searchBox" type="text" placeholder="Search all rooms" name="room_id" v-model="roomid"/>
         <div class="searchsubhead">BROWSE ALL</div>
@@ -214,21 +230,12 @@
             {% endif %}
             
         </div>
-    </div>
-    <!-- footer -->
-    <div id="mainFooter">
-        <input class="btnAdd" type="submit" name="add" value="+">
-        <div class="profile">
-            <input id="btn-profile" type='submit' name="profile" value="profile">
-            <div class="img_profile">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.2174 20.4783C17.3359 20.4783 15 22.8142 15 25.6957V27H25.4348V25.6957C25.4348 22.8142 23.0989 20.4783 20.2174 20.4783Z" stroke="black"/>
-                    <ellipse cx="20.2175" cy="15.913" rx="3.91307" ry="3.91304" stroke="black" stroke-linecap="square"/>
-                </svg>
-            </div>
+    
+        <!-- footer -->
+        <div id="mainFooter">
+            <input class="btnAdd" type="submit" name="add" value="+">
         </div>
     </div>
-    
   </div>
   <!-- auxiliary field: not show in frontend, deal with form submit to send RoomId -->
   <div id="roomId" style="display:none">
