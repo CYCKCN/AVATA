@@ -501,36 +501,41 @@ def instruction_zoom_main():
             return redirect(url_for('admin.room',room_id=room_id))
         back=request.form.get('back')
         if back:
-            return redirect(url_for('admin.instruction_pair_main',devices_obj=devices_dict[room_id],room_id=room_id))
-    
+            #return redirect(url_for('admin.instruction_pair_main',devices_obj=devices_dict[room_id],room_id=room_id))
+            return redirect(url_for('admin.instruction_pair_main',room_id=room_id))
+    utils.create_instruction_zoom(room_id)
     return render_template('admin_instruction_zoom_main.html',room_id=room_id)
 
 @admin_blue.route("/instruction_zoom_list", methods=['POST','GET'])
 def instruction_zoom_list():  
     room_id = request.args.get('room_id')
     zoom_type = request.args.get('zoom_type')
-    print("instruction_zoom_list")
-    print(steps)
+    #print("instruction_zoom_list")
+    #print(steps)
+    steps=utils.get_instruction_zoom_step(room_id,zoom_type)
 
     if request.method == "POST":
         # add
         if request.form.get(f'add-step'):
-            print("add")
+            #print("add")
             step_length = f"step {len(steps.keys())+1}"
-            new_dict = {step_length:{'text':'', 'image':'', 'command':'', 'help':''}}
-            steps.update(new_dict)
-            print(steps)
+            #new_dict = {step_length:{'text':'', 'image':'', 'command':'', 'help':''}}
+            #steps.update(new_dict)
+            #print(steps)
+            utils.add_instruction_zoom_step(room_id,zoom_type,step_length)
             return redirect(url_for('admin.instruction_zoom',room_id=room_id,step_id=step_length,zoom_type=zoom_type))
         
         for step_id in steps.keys():
             # edit
             if request.form.get(f'edit_{step_id}'):
-                print("edit", step_id)
+                #print("edit", step_id)
                 # not implemented delete function
                 return redirect(url_for('admin.instruction_zoom',room_id=room_id,step_id=step_id,zoom_type=zoom_type))
             # delete
             if request.form.get(f'delete_{step_id}'):
-                print("delete", step_id)
+                #print("delete", step_id)
+                utils.delete_instruction_zoom_step(room_id,zoom_type,step_id)
+                steps=utils.get_instruction_zoom_step(room_id,zoom_type)
                 return render_template('admin_instruction_zoom_list.html',room_id=room_id,steps=steps,zoom_type=zoom_type)
         confirm=request.form.get('confirm')
         if  confirm:
@@ -539,29 +544,40 @@ def instruction_zoom_list():
 
 @admin_blue.route("/instruction_zoom", methods=['POST','GET'])
 def instruction_zoom():
-    print("instruction_zoom")
-    print(steps)
+    #print("instruction_zoom")
+    #print(steps)
     room_id = request.args.get('room_id')
     step_id = request.args.get('step_id')
     zoom_type = request.args.get('zoom_type')
     if request.method == "POST":
-        step_text=request.form.get('step_text')
+        step_text=request.form.get('step_text') if not request.form.get('step_text')=='' else None
         img_base64=request.form.get('imgSrc')
-        step_command=request.form.get('step_command')
-        step_help=request.form.get('step_help')
-        print(step_text)
-        print(img_base64)
-        print(step_command)
-        print(step_help)
+        step_command=request.form.get('step_command') if not request.form.get('step_command')=='' else None
+        step_help=request.form.get('step_help') if not request.form.get('step_help')=='' else None
+        step_image=(img_base64.split(','))[-1] if img_base64 else None
+        #print(step_text)
+        #print(img_base64)
+        #print(step_command)
+        #print(step_help)
         confirm=request.form.get('confirm')
         if confirm:
-            steps[step_id]["text"]=step_text
-            steps[step_id]["image"]=img_base64  # debug
-            steps[step_id]["command"]=step_command
-            steps[step_id]["help"]=step_help
-            print(steps)
+            #steps[step_id]["text"]=step_text
+            #steps[step_id]["image"]=img_base64  # debug
+            #steps[step_id]["command"]=step_command
+            #steps[step_id]["help"]=step_help
+            #print(steps)
+            utils.update_instruction_zoom_step(
+                room_name=room_id,
+                zoom_type=zoom_type,
+                step_name=step_id,
+                text=step_text,
+                image=step_image,
+                com=step_command,
+                help=step_help
+            )
             return redirect(url_for('admin.instruction_zoom_list',room_id=room_id,zoom_type=zoom_type))
     
+    steps=utils.get_instruction_zoom_step(room_id,zoom_type)
     return render_template('admin_instruction_zoom.html',room_id=room_id,step_id=step_id,steps=steps,zoom_type=zoom_type)
 
 cases={

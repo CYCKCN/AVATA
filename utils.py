@@ -682,3 +682,92 @@ def undo_choose_instruction_pair_device(room_name:str,case_name:str,device_id:st
         {"_id": room["_id"]}, 
         {'$set': {f"insPair.{case_name}.devices": _dict}}
     )
+
+#------ Instruction zoom --------
+
+def create_instruction_zoom(room_name:str):
+    if room_has_attribute(room_name,'insZoom'): return True
+    _db=db['rooms']
+    _db.update_one(
+        {"roomName": room_name}, 
+        {'$set': 
+            {"insZoom": 
+                {
+                    'Video':{},
+                    'Audio':{}
+                }
+            }
+        }
+    )
+
+def get_instruction_zoom_step(room_name:str,zoom_type:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    return room['insZoom'][zoom_type]
+    
+
+def add_instruction_zoom_step(room_name:str,zoom_type:str,step_name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_zoom_type=room['insZoom'][zoom_type]
+
+    add={
+        step_name:{'text':'', 'image':'', 'command':'', 'help':''}
+    }
+    ins_zoom_type.update(add)
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': {f"insZoom.{zoom_type}": ins_zoom_type}}
+    )
+
+def delete_instruction_zoom_step(room_name:str,zoom_type:str,step_name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_zoom_type=room['insZoom'][zoom_type]
+
+    _dict={}
+    for k, v in ins_zoom_type.items():
+        if k<step_name: _dict[k]=v
+        elif k>step_name:
+            id_new=f'step {len(_dict)+1}'
+            _dict[id_new]=v
+        else:
+            img_hex=v['image']
+            if img_hex=='': continue
+            remove=f'app/static/images/test/room{room_name}/instruction/{img_hex}.png'
+            os.remove(remove)
+
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': { f'insZoom.{zoom_type}' : _dict}}
+    )
+
+def update_instruction_zoom_step(
+    room_name:str,zoom_type:str, step_name:str, 
+    text:str=None, image:str=None, com:str=None, help:str=None):
+
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_zoom=room['insZoom'][zoom_type]
+    if text==None and image==None and com==None and help==None: return True
+    if text and not ins_zoom[step_name]['text']==text: ins_zoom[step_name]['text']=text
+    if com and not ins_zoom[step_name]['command']==com: ins_zoom[step_name]['command']=com
+    if help and not ins_zoom[step_name]['help']==help: ins_zoom[step_name]['help']=help
+    if image: 
+        img_hex=uuid.uuid4().hex
+        img_hex_old=ins_zoom[step_name]['image']
+        ins_zoom[step_name]['image']=img_hex
+
+        exist=f'app/static/images/test/room{room_name}/instruction'
+        path_exist_or_mkdir(exist)
+        path=f'app/static/images/test/room{room_name}/instruction/{img_hex}.png'
+        image_decoder(image,path)
+
+        if not img_hex_old=='':
+            remove=f'app/static/images/test/room{room_name}/instruction/{img_hex_old}.png'
+            os.remove(remove)
+    
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': { f'insZoom.{zoom_type}' : ins_zoom}}
+    )
