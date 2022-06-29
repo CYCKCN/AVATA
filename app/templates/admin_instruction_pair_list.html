@@ -256,7 +256,7 @@
         {% for k, v in device111.items() %}
             <div class="devicebox">
                 <input class="device-checkbox" type='checkbox' name="Device_{{k}}" value="device {{k}}" id="{{k}}">
-                <label class="text" for="one">{{k}}</label>
+                <label class="text" for="one">{{v.name}}</label>
             </div>
         {% endfor %}
     </div>
