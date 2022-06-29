@@ -221,6 +221,7 @@ def device_info():
         deviceIP=request.form.get('p_ip')
         deviceLocX=request.form.get('dup_x')
         deviceLocY=request.form.get('dup_y')
+        print(deviceName_old,deviceName,deviceType,deviceIP,deviceLocX,deviceLocY)
 
         #save
         if point_edit and deviceName and deviceType and deviceIP:
@@ -246,12 +247,14 @@ def device_info():
                 x=float(deviceLocX),
                 y=float(deviceLocY)
             )
+            utils.choose_device_with_name(room_id, deviceName)
 
         #choose
         choose=utils.get_choose_device_with_room(room_id)
         for _, c in choose.items():
             d=request.form.get('devices_input_'+c[0])
             if d==' ': 
+                utils.clean_chosen_device(room_id)
                 utils.choose_device_with_name(room_id, c[0])
 
         #close
