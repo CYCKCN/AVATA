@@ -19,6 +19,16 @@ CURRENT_ROOM=ROOM(oscwd=os.getcwd())
 def hello():
     return 'hello'
 
+roomInfo={
+        0:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
+        1:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+    }
+
+roomInfo_book={
+        0:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
+        1:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+    }
+
 @app.route("/login", methods=['POST','GET'])
 def login():
     if request.method == "POST":
@@ -52,7 +62,8 @@ def device(room_id):
             CURRENT_ROOM.get_data_choose_devices()
             CURRENT_ROOM.get_data_personal_device(device)
             CURRENT_ROOM.set_data_instruction()
-            return redirect(url_for('instructor_choose'))
+        if confirm:
+            return redirect(url_for('initial',room_id=room_id))
 
     dic=CURRENT_ROOM.set_data_choose_devices(use_related=True)
     img=CURRENT_ROOM.image_360
@@ -66,7 +77,7 @@ def search():
         room_id=request.form.get('room_id')
         return redirect(url_for('room',room_id=room_id))
 
-    return render_template('search.html',room_id=room_id)
+    return render_template('search.html',room_id=room_id,roomInfo_book=roomInfo_book,roomInfo=roomInfo)
 
 @app.route("/room/<room_id>", methods=['POST','GET'])
 def room(room_id):
@@ -109,7 +120,7 @@ def personal_device():
         CURRENT_ROOM.get_data_personal_device(device)
         CURRENT_ROOM.set_data_instruction()
 
-        return redirect(url_for('instructor_choose'))
+        return redirect(url_for('device',room_id=CURRENT_ROOM.room_id))
 
     return render_template('personal-device.html')
 
@@ -142,6 +153,72 @@ def instruction():
 
     guide=CURRENT_ROOM.pop_guide_queue()
     return render_template('instruction.html',title="Guide of "+CURRENT_ROOM.guide_device,guide=guide)
+
+steps={
+   'step 1':{'text':'Find the HDMI cable underneath the conference table', 'image':'', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':''},
+   'step 2':{'text':'Find the HDMI cable underneath the conference table', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':'helpxxxxxxxx xxxxxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxx'},
+   'step 3':{'text':'Plug the HDMI cable to your laptop', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':'', 'help':''},
+}
+
+@app.route("/initial", methods=['POST','GET'])
+def initial():
+    print("initial")
+    print(steps)
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        next=request.form.get('next')
+        if next:
+            return redirect(url_for('turnon',room_id=CURRENT_ROOM.room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('device',room_id=CURRENT_ROOM.room_id))
+    
+    return render_template('instruction_initial.html',room_id=CURRENT_ROOM.room_id,steps=steps)
+
+@app.route("/turnon", methods=['POST','GET'])
+def turnon():
+    print("turnon")
+    print(steps)
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        next=request.form.get('next')
+        if next:
+            return redirect(url_for('pair',room_id=CURRENT_ROOM.room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('initial',room_id=CURRENT_ROOM.room_id))
+    
+    return render_template('instruction_turnon.html',room_id=CURRENT_ROOM.room_id,steps=steps)
+
+@app.route("/pair", methods=['POST','GET'])
+def pair():
+    print("pair")
+    print(steps)
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        next=request.form.get('next')
+        if next:
+            return redirect(url_for('zoom',room_id=CURRENT_ROOM.room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('turnon',room_id=CURRENT_ROOM.room_id))
+    
+    return render_template('instruction_pair.html',room_id=CURRENT_ROOM.room_id,steps=steps)
+
+@app.route("/zoom", methods=['POST','GET'])
+def zoom():
+    print("zoom")
+    print(steps)
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        next=request.form.get('next')
+        if next:
+            return redirect(url_for('search'))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('pair',room_id=CURRENT_ROOM.room_id))
+    
+    return render_template('instruction_zoom.html',room_id=CURRENT_ROOM.room_id,steps=steps)
 
 
 if __name__ == "__main__":

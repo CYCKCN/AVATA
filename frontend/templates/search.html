@@ -111,6 +111,15 @@
 		font-size: 2.4vw;
 		font-weight: 300;
 	}
+	.room-empty{
+        margin: auto;
+        text-align: center;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        padding-top: 5vh;
+    }
+
 	#searchfooter{
 		position: absolute;
 		height: 10vh;
@@ -170,42 +179,51 @@
 	<div class="roommain" v-else>
 		<div class="searchsubhead">My Booking</div>
 		<div class="roomgroup">
-			<div class="room">
-				<img class="roomimg" src="{{url_for('static',filename='images/test/room2590/IMG2590.png')}}" />
-				<div class="roomtext">
-					<div class="roomname">Room 2590</div>
-					<div class="roomlift">Lift 29-30</div>
-					<div class="roomelse">
-						<div class="roomdate">April 21</div>
-						<div class="roomtime">9:00-11:00</div>
-					</div>
-				</div>
-			</div>
+			{% if roomInfo_book %}
+                {% for k, v in roomInfo_book.items() %}
+                <div class="room" v-on:click="goRoom($event, {{v.name}})">
+                    <img class="roomimg" src="../../static/images/test/room{{v.name}}/_basic_upload.png" />
+                    <div class="roomtext">
+                        <div class="roomname">Room {{v.name}}</div>
+                        <div class="roomlift">{{v.lift}}</div>
+                        <div class="roomelse">
+                            <!--
+                            <div class="roomdate">{{v.date}}</div>
+                            <div class="roomtime">{{v.time}}</div>
+                            -->
+                            <div class="roomdate">TBA</div>
+                            <div class="roomtime">TBA</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="room-empty">No room!</div>
+            {% endif %}
 		</div>
 		<div class="searchsubhead">Recently</div>
 		<div class="roomgroup">
-			<div class="room">
-				<img class="roomimg" src="{{url_for('static',filename='images/test/room5554/IMG5554.png')}}" />
-				<div class="roomtext">
-					<div class="roomname">Room 5554</div>
-					<div class="roomlift">Lift 27-28</div>
-					<div class="roomelse">
-						<div class="roomdate">August 21</div>
-						<div class="roomtime">19:00-21:00</div>
-					</div>
-				</div>
-			</div>
-			<div class="room">
-				<img class="roomimg" src="{{url_for('static',filename='images/test/room4223/IMG4223.png')}}" />
-				<div class="roomtext">
-					<div class="roomname">Room 4223</div>
-					<div class="roomlift">Lift 23</div>
-				<div class="roomelse">
-					<div class="roomdate">September 21</div>
-					<div class="roomtime">1:00-3:00</div>
-				</div>
-				</div>
-			</div>
+			{% if roomInfo %}
+                {% for k, v in roomInfo.items() %}
+                <div class="room" v-on:click="goRoom($event, {{v.name}})">
+                    <img class="roomimg" src="../../static/images/test/room{{v.name}}/_basic_upload.png" />
+                    <div class="roomtext">
+                        <div class="roomname">Room {{v.name}}</div>
+                        <div class="roomlift">{{v.lift}}</div>
+                        <div class="roomelse">
+                            <!--
+                            <div class="roomdate">{{v.date}}</div>
+                            <div class="roomtime">{{v.time}}</div>
+                            -->
+                            <div class="roomdate">TBA</div>
+                            <div class="roomtime">TBA</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="room-empty">No room!</div>
+            {% endif %}
 		</div>
 	</div>
 	<div id="searchfooter">
