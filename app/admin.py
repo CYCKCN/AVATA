@@ -282,11 +282,11 @@ def device_list():
 #     'step 5':{'text':'', 'image':'', 'command':'', 'help':''},
 # }
 
-#steps={
-#    'step 1':{'text':'Find the HDMI cable underneath the conference table', 'image':'', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':''},
-#    'step 2':{'text':'Find the HDMI cable underneath the conference table', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':'helpxxxxxxxx xxxxxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxx'},
-#    'step 3':{'text':'Plug the HDMI cable to your laptop', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':'', 'help':''},
-#}
+steps={
+   'step 1':{'text':'Find the HDMI cable underneath the conference table', 'image':'', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':''},
+   'step 2':{'text':'Find the HDMI cable underneath the conference table', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':"print('instruction_initial_list')\r\nprint(steps)", 'help':'helpxxxxxxxx xxxxxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxxxx'},
+   'step 3':{'text':'Plug the HDMI cable to your laptop', 'image':'8bdd60db4a154e428fd47f7d857b8cf9', 'command':'', 'help':''},
+}
 
 @admin_blue.route("/instruction_initial_list", methods=['POST','GET'])
 def instruction_initial_list():
@@ -759,6 +759,54 @@ def initial():
     if request.method == "POST":
         next=request.form.get('next')
         if next:
+            return redirect(url_for('admin.turnon',room_id=room_id))
+        back=request.form.get('back')
+        if back:
             return redirect(url_for('admin.initial',room_id=room_id))
     
     return render_template('instruction_initial.html',room_id=room_id,steps=steps)
+
+@admin_blue.route("/turnon", methods=['POST','GET'])
+def turnon():
+    print("turnon")
+    print(steps)
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        next=request.form.get('next')
+        if next:
+            return redirect(url_for('admin.pair',room_id=room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.initial',room_id=room_id))
+    
+    return render_template('instruction_turnon.html',room_id=room_id,steps=steps)
+
+@admin_blue.route("/pair", methods=['POST','GET'])
+def pair():
+    print("pair")
+    print(steps)
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        next=request.form.get('next')
+        if next:
+            return redirect(url_for('admin.zoom',room_id=room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.turnon',room_id=room_id))
+    
+    return render_template('instruction_pair.html',room_id=room_id,steps=steps)
+
+@admin_blue.route("/zoom", methods=['POST','GET'])
+def zoom():
+    print("zoom")
+    print(steps)
+    room_id = request.args.get('room_id')
+    if request.method == "POST":
+        next=request.form.get('next')
+        if next:
+            return redirect(url_for('admin.zoom',room_id=room_id))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.pair',room_id=room_id))
+    
+    return render_template('instruction_zoom.html',room_id=room_id,steps=steps)

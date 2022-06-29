@@ -69,39 +69,6 @@
         color: #000000;
     }
 
-    /* .admin-step-txt{
-        float: left;
-        width: 100%;
-        margin-bottom: 0vh;
-
-        font-weight: 0;
-        font-size: 4vw;
-        line-height: 3vh;
-
-        display: flex;
-        align-items: center;
-        letter-spacing: -0.015em;
-
-        color: #000000;
-    }
-
-    .roomsubhead{
-        font-size: 2.2vh;
-        font-weight: 750;
-
-        padding-top: 1vh;
-        padding-bottom: 1vh;
-    }
-
-    .roomsubhead1{
-        font-size: 2.5vh;
-        font-weight: 750;
-
-        padding-top: 10vh;
-        padding-bottom: 1vh;
-        text-transform: uppercase;
-    } */
-
     .admin-step-txt{
         float: left;
         width: 100%;
@@ -262,7 +229,7 @@
 {% block content %}
 
 <form method="post" id="admin-instruction-initial" enctype="multipart/form-data">
-  <div id="instructionInitial">  
+  <div id="instructionInitial">
     <div class="back">
 		<input id="btn-back" type='submit' name="back" value="back">
         <div class="img_back">
@@ -271,12 +238,12 @@
                 <ellipse cx="20.2175" cy="15.913" rx="3.91307" ry="3.91304" stroke="black" stroke-linecap="square"/>
             </svg>
         </div>
-    </div>  
+    </div>    
     <div class="line">
         <div class="admin-txt">Instruction</div>
-        <div class="admin-small-txt">- Initial</div>
+        <div class="admin-small-txt">- Zoom</div>
     </div>
-    <div class="admin-mid-txt">Initial stage is to get all steps required before turning on the devices ready, e.g. how to turn on the control box.</div>
+    <div class="admin-mid-txt">Zoom stage is to get all steps required for zoom meetings ready.</div>
     <!-- instruction content part -->
     {% if steps|length==0 %}
         <div class="empty-text">There is no step.</div>
