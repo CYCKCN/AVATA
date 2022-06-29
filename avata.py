@@ -22,6 +22,10 @@ def hello():
 roomInfo_recent={
         0:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
         1:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+        2:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
+        3:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
+        4:{'name':'5554','lift':'27-28','date':'August 21','time':'19:00-21:00'},
+        5:{'name':'4223','lift':'23','date':'September 21','time':'1:00-3:00'},
     }
 
 roomInfo_book={
@@ -78,8 +82,16 @@ def device(room_id):
 def search():
     room_id=''
     if request.method == "POST":
-        room_id=request.form.get('room_id')
-        return redirect(url_for('room',room_id=room_id))
+        room_id=request.form.get('room_id') 
+        if room_id:
+            return redirect(url_for('room',room_id=room_id))      
+        btn_search=request.form.get('btn_search')
+        if btn_search:
+            return redirect(url_for('search'))
+        timetable=request.form.get('timetable')
+        if timetable:
+            pass
+        
 
     return render_template('search.html',room_id=room_id,roomInfo_book=roomInfo_book,roomInfo_recent=roomInfo_recent,roomInfo_result=roomInfo_result)
 
