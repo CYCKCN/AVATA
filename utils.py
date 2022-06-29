@@ -503,7 +503,7 @@ def add_instruction_pair_case(name:str,id:str):
     _db=db['rooms']
     room=_db.find_one({"roomName": name})
     add={
-        id:{'devices':'', 'steps':''}
+        id:{'devices':{}, 'steps':{}}
     }
     if room_has_attribute(name,'insPair'):
         ins=room['insPair']
@@ -517,6 +517,26 @@ def add_instruction_pair_case(name:str,id:str):
             {"_id": room["_id"]}, 
             {'$set': {"insPair": add}}
         )
+
+def delete_instruction_pair_case(room_name:str,case_name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_pair=room['insPair']
+
+    if not case_name in ins_pair.keys(): return False
+    _dict={}
+    for k,v in ins_pair.items():
+        if k<case_name: _dict[k]=v
+        elif k>case_name:
+            id_new=f'case {len(_dict)+1}'
+            _dict[id_new]=v
+        else:
+            steps=v['steps']
+            for i,j in steps.items():
+                img_hex=j['image']
+                if img_hex=='': continue
+                remove=f'app/static/images/test/room{room_name}/instruction/{img_hex}.png'
+                os.remove(remove)
 
 def get_instruction_pair_case_step(room_name:str,case_name:str):
     _db=db['rooms']
@@ -542,7 +562,7 @@ def add_instruction_pair_case_step(room_name:str,case_name:str,step_name:str):
     # {'$set': { f'insPair.{case_name}.steps' : ins_case}}
     _db.update_one(
         {"_id": room["_id"]}, 
-        {'$set': {"insPair": ins_pair}}
+        {'$set': { f'insPair.{case_name}.steps' : ins_case}}
     )
 
 def update_instruction_pair_case_step(
@@ -576,7 +596,7 @@ def update_instruction_pair_case_step(
     ins_pair[case_name]['steps']=ins_case
     _db.update_one(
         {"_id": room["_id"]}, 
-        {'$set': {"insPair": ins_pair}}
+        {'$set': { f'insPair.{case_name}.steps' : ins_case}}
     )
 
 def delete_instruction_pair_case_step(room_name:str,case_name:str,step_name:str):
@@ -601,7 +621,7 @@ def delete_instruction_pair_case_step(room_name:str,case_name:str,step_name:str)
     ins_pair[case_name]['steps']=_dict
     _db.update_one(
         {"_id": room["_id"]}, 
-        {'$set': {"insPair": ins_pair}}
+        {'$set': { f'insPair.{case_name}.steps' : _dict}}
     )
 
 def get_instruction_pair_case_device(room_name:str,case_name:str):
@@ -618,8 +638,42 @@ def get_instruction_pair_case_device(room_name:str,case_name:str):
 
     _dict['Apple']={'name':'Apple'}
     _dict['Windows']={'name':'Windows'}
-    
+
     return _dict
 
+def get_instruction_pair_case_chosen_device(room_name:str,case_name:str):
+    _db=db['devices']
+    room=_db.find_one({"roomName": room_name})
+    ins_pair=room['insPair']
+    ins_device=ins_pair[case_name]['devices']
+    return ins_device
 
+def choose_instruction_pair_device(room_name:str,case_name:str,device_id:str,device_name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_pair=room['insPair']
+    ins_device=ins_pair[case_name]['devices']
 
+    _dict={}
+    _dict[device_id]={'name':device_name}
+    ins_device.update(_dict)
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': {f"insPair.{case_name}.devices": ins_device}}
+    )
+
+def undo_choose_instruction_pair_device(room_name:str,case_name:str,device_id:str,device_name:str):
+    _db=db['rooms']
+    room=_db.find_one({"roomName": room_name})
+    ins_pair=room['insPair']
+    ins_device=ins_pair[case_name]['devices']
+
+    _dict=ins_device.copy()
+    for k,v in ins_device.items():
+        if device_name==v['name']:
+            _dict.pop(k)
+    
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': {f"insPair.{case_name}.devices": _dict}}
+    )

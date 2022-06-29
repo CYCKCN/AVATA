@@ -617,26 +617,29 @@ device111={
 @admin_blue.route("/instruction_pair_main", methods=['POST','GET'])
 def instruction_pair_main():
     room_id = request.args.get('room_id')
-    print("instruction_pair_main")
+    #print("instruction_pair_main")
+    cases=utils.get_instruction_pair_case(room_id)
 
     if request.method == "POST":
         # add
         if request.form.get(f'add-step'):
-            print("add")
+            #print("add")
             case_length = f"case {len(cases.keys())+1}"
-            new_dict = {case_length:{'devices':'', 'steps':''}}
-            cases.update(new_dict)
-            print(cases)
+            #new_dict = {case_length:{'devices':'', 'steps':''}}
+            #cases.update(new_dict)
+            #print(cases)
+            utils.add_instruction_pair_case(room_id,case_length)
             return redirect(url_for('admin.instruction_pair_list',room_id=room_id,case_id=case_length))
         
         for case_id in cases.keys():
             # edit
             if request.form.get(f'edit_{case_id}'):
-                print("edit", case_id)
+                #print("edit", case_id)
                 return redirect(url_for('admin.instruction_pair_list',room_id=room_id,case_id=case_id))
             # delete
             if request.form.get(f'delete_{case_id}'):
-                print("delete", case_id)
+                #print("delete", case_id)
+                utils.delete_instruction_pair_case(room_id,case_id)
                 return render_template('admin_instruction_pair_main.html',room_id=room_id,cases=cases)
         confirm=request.form.get('confirm')
         if  confirm:
@@ -654,7 +657,10 @@ def instruction_pair_list():
     case_id = request.args.get('case_id')
     #print("instruction_turnon_list")
     #print(steps)
+    cases=utils.get_instruction_pair_case(room_id)
     steps=utils.get_instruction_pair_case_step(room_id,case_id)
+    device111=utils.get_instruction_pair_case_device(room_id,case_id)
+    #choose_dev=utils.get_instruction_pair_case_chosen_device(room_id,case_id)
 
     if request.method == "POST":
         # add
@@ -679,7 +685,7 @@ def instruction_pair_list():
                 utils.delete_instruction_pair_case_step(room_id,case_id,step_id)
                 steps=utils.get_instruction_pair_case_step(room_id,case_id)
                 return render_template('admin_instruction_pair_list.html',case_id=case_id,room_id=room_id,steps=steps,device111=device111)
-        
+        '''
         i=0
         for k, v in device111.items():
             device_temp=request.form.get(f'Device_{k}')
@@ -688,21 +694,38 @@ def instruction_pair_list():
             elif i in dev_choose_idx_list:
                 dev_choose_idx_list.remove(i)
             i+=1
-        print(dev_choose_idx_list)
+        '''
+        
+        '''
+        for i, k, v in enumerate(device111.items()):
+            device_temp=request.form.get(f'Device_{k}')
+            if device_temp:
+                dev_choose_idx_list.add(i)
+            elif i in dev_choose_idx_list:
+                dev_choose_idx_list.remove(i)
+        '''
+        #print(dev_choose_idx_list)
+        
         
         confirm=request.form.get('confirm')
         if confirm:
-            i=0
             for k, v in device111.items():
-                choose_devices = cases[case_id]['devices']
-                if i in dev_choose_idx_list:
-                    choose_devices.update({k:v})
-                elif choose_devices.get(k):
-                    cases[case_id]['devices'].pop(k)
-                i+=1
-            print(cases)
+                device_temp=request.form.get(f'Device_{k}')
+                if device_temp:
+                    utils.choose_instruction_pair_device(room_id,case_id,k,v['name'])
+                else:
+                    utils.undo_choose_instruction_pair_device(room_id,case_id,k,v['name'])
+
+            #print(cases)
+            #choose_dev=utils.get_instruction_pair_case_chosen_device(room_id,case_id)
             return redirect(url_for('admin.instruction_pair_main',room_id=room_id))
-    return render_template('admin_instruction_pair_list.html',case_id=case_id,room_id=room_id,steps=steps,device111=device111,choose_dev=cases[case_id]['devices'])
+    #return render_template('admin_instruction_pair_list.html',case_id=case_id,room_id=room_id,steps=steps,device111=device111,choose_dev=cases[case_id]['devices'])
+    return render_template('admin_instruction_pair_list.html',
+                        case_id=case_id,
+                        room_id=room_id,
+                        steps=steps,
+                        device111=device111,
+                        choose_dev=cases[case_id]['devices'])
 
 @admin_blue.route("/instruction_pair", methods=['POST','GET'])
 def instruction_pair():
