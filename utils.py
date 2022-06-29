@@ -615,6 +615,10 @@ def get_instruction_pair_case_device(room_name:str,case_name:str):
             'name':device['deviceName']
         }
         _dict[f'Device {len(_dict)+1}']=_d
+
+    _dict['Apple']={'name':'Apple'}
+    _dict['Windows']={'name':'Windows'}
+    
     return _dict
 
 
