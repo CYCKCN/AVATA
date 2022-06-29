@@ -640,6 +640,7 @@ def instruction_pair_main():
             if request.form.get(f'delete_{case_id}'):
                 #print("delete", case_id)
                 utils.delete_instruction_pair_case(room_id,case_id)
+                cases=utils.get_instruction_pair_case(room_id)
                 return render_template('admin_instruction_pair_main.html',room_id=room_id,cases=cases)
         confirm=request.form.get('confirm')
         if  confirm:
@@ -684,7 +685,12 @@ def instruction_pair_list():
                 #print("delete", step_id)
                 utils.delete_instruction_pair_case_step(room_id,case_id,step_id)
                 steps=utils.get_instruction_pair_case_step(room_id,case_id)
-                return render_template('admin_instruction_pair_list.html',case_id=case_id,room_id=room_id,steps=steps,device111=device111)
+                return render_template('admin_instruction_pair_list.html',
+                            case_id=case_id,
+                            room_id=room_id,
+                            steps=steps,
+                            device111=device111,
+                            choose_dev=cases[case_id]['devices'])
         '''
         i=0
         for k, v in device111.items():

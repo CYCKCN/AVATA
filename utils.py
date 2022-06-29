@@ -538,6 +538,11 @@ def delete_instruction_pair_case(room_name:str,case_name:str):
                 remove=f'app/static/images/test/room{room_name}/instruction/{img_hex}.png'
                 os.remove(remove)
 
+    _db.update_one(
+        {"_id": room["_id"]}, 
+        {'$set': {"insPair": _dict}}
+    )
+
 def get_instruction_pair_case_step(room_name:str,case_name:str):
     _db=db['rooms']
     room=_db.find_one({"roomName": room_name})
