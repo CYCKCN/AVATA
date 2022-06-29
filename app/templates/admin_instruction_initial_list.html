@@ -58,7 +58,6 @@
 
         font-weight: 100;
         font-size: 4vw;
-        line-height: 0vh;
         /* identical to box height */
 
         display: flex;
@@ -67,7 +66,7 @@
 
         color: #000000;
 
-        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        margin-bottom: 4vh;
     }
 
     .line-step{
@@ -267,13 +266,11 @@
                     <input class="btn-delete" type='submit' name="delete_{{k}}" value="delete">
                     <input class="btn-edit" type='submit' name="edit_{{k}}" value="edit">
                 </div>
-                <div class="line-step">
-                    {% if v.text %}
-                        <div class="admin-step-txt">{{v.text}}</div>
-                    {% else %}
-                        <div class="admin-step-txt">none</div> 
-                    {% endif %}
-                </div>
+                {% if v.text %}
+                    <div class="admin-step-txt">{{v.text}}</div>
+                {% else %}
+                    <div class="admin-step-txt">none</div> 
+                {% endif %}
             </div>
         {% endfor %}
     {% endif %}
