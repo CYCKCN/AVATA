@@ -796,6 +796,9 @@ def profile():
         logout=request.form.get('logout')
         if logout:
             return redirect(url_for('admin.logout'))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('admin.main'))
     
     return render_template('admin_profile.html')
 
