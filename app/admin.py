@@ -152,11 +152,10 @@ def photo_360():
     is_editRoom = request.args.get('is_editRoom')
     if request.method == "POST":
         continue_=request.form.get('continue')
-        img360_base64=request.form.get('img360Src')
-        room360Image=(img360_base64.split(','))[-1] if img360_base64 else None
+        
         #if len(room360Image)==0:
         #    return redirect(url_for('admin.photo_360',is_addRoom=True))
-        utils.add_room_360image_with_name(room_id,room360Image)
+        
 
         #if is_addRoom and continue_:
         #    return redirect(url_for('admin.device_info',room_id=room_id,is_addRoom=True))
@@ -165,6 +164,9 @@ def photo_360():
         #    return redirect(url_for('admin.device_info',room_id=room_id,is_editRoom=True))
 
         if continue_:
+            img360_base64=request.form.get('img360Src')
+            room360Image=(img360_base64.split(','))[-1] if img360_base64 else None
+            utils.add_room_360image_with_name(room_id,room360Image)
             return redirect(url_for('admin.device_info',room_id=room_id))
 
         back=request.form.get('back')

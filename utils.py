@@ -127,7 +127,7 @@ def add_room_360image_with_name(name:str,image:str=None):
     exist=f'app/static/images/test/room{name}'
     path_exist_or_mkdir(exist)
 
-    if not room_has_attribute(name,'room360Image'): return False
+    #if not room_has_attribute(name,'room360Image'): return False
     path=f'app/static/images/test/room{name}/_360_upload.png'
     image_decoder(image,path)
 
