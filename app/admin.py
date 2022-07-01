@@ -16,7 +16,7 @@ def enter():
 @admin_blue.route("/logout", methods=['GET'])
 def logout():  
     logout_user()
-    return render_template('admin_logout.html')
+    return redirect(url_for('main'))
 
 @admin_blue.route("/login", methods=['POST','GET'])
 def login():
