@@ -139,13 +139,13 @@
         <input id="btn-login" type='submit' name="login" value="LOG IN">
         
     </div>
-        <div id="btn-register"><a href="/authen/register">REGISTER</a></p>
-        <div id="btn-reset"><a href="/authen/reset">FORGET PASSWORD</a></p>
+        <div id="btn-register"><a href="/auth/register">REGISTER</a></p>
+        <div id="btn-reset"><a href="/auth/reset">FORGET PASSWORD</a></p>
         {% if not pass_right %}
             <p class="user-error">Password is not correct!</p>
         {% endif %}
 
-        {% if register %}
+        {% if not register %}
             <p class="user-error">User not exists! Please register.</p>
         {% endif %}
     
