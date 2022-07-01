@@ -119,11 +119,16 @@ def delete_room_with_name(name:str):
     _db=db['rooms']
     _db.delete_one({'roomName':name})
     path=f'app/static/images/test/room{name}'
+
     path_exist_or_mkdir(path)
     shutil.rmtree(path)
+
+    db['devices'].delete_many({'roomName':name})
+
     return True
 
 def add_room_360image_with_name(name:str,image:str=None):
+    #print(name,len(image),room_is_exist(name))
     if name==None: return False
     if image==None: return True
     if not room_is_exist(name): return False
@@ -134,6 +139,7 @@ def add_room_360image_with_name(name:str,image:str=None):
     #if not room_has_attribute(name,'room360Image'): return False
     path=f'app/static/images/test/room{name}/_360_upload.png'
     image_decoder(image,path)
+    #print(len(image),os.path.exists(path))
 
     _db=db['rooms']
     _db.update_one(

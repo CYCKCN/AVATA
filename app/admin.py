@@ -49,7 +49,7 @@ def main():
         btn_profile=request.form.get('profile')
 
         if add:
-            return redirect(url_for('admin.basic_info',is_addRoom=True))
+            return redirect(url_for('admin.basic_info',room_id=room_id,is_addRoom=True))
 
         if btn_profile and room_id=='':
 
@@ -117,9 +117,8 @@ def basic_info():
 
             #roomLoc
             roomLoc=request.form.get('room_loc')
-
             utils.create_room_with_name_image_loc(roomName, roomImage, roomLoc)
-            return redirect(url_for('admin.photo_360',room_id=room_id,is_addRoom=True))
+            return redirect(url_for('admin.photo_360',room_id=roomName,is_addRoom=True))
         
         if is_editRoom and continue_:
             roomName = request.form.get('room_id') if request.form.get('room_id') else None
