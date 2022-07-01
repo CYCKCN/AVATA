@@ -807,6 +807,7 @@ def profile():
     
     return render_template('admin_profile.html')
 
+'''
 @admin_blue.route("/initial", methods=['POST','GET'])
 def initial():
     print("initial")
@@ -866,3 +867,4 @@ def zoom():
             return redirect(url_for('admin.pair',room_id=room_id))
     
     return render_template('instruction_zoom.html',room_id=room_id,steps=steps)
+'''
