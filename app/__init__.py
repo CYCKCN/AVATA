@@ -53,12 +53,12 @@ db = connection("AVATA")
 #roomdb = RoomDB(db)
 
 from app import routes
-from .user import user_blue
+from .user import user
 from .admin import admin_blue
 #from .authen import authen_blue
 from .auth import auth
 
-app.register_blueprint(user_blue, url_prefix='/user')
+app.register_blueprint(user, url_prefix='/user')
 app.register_blueprint(admin_blue, url_prefix='/admin')
 #app.register_blueprint(authen_blue)
 app.register_blueprint(auth, url_prefix='/auth')
