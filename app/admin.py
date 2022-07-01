@@ -52,6 +52,7 @@ def main():
             return redirect(url_for('admin.basic_info',is_addRoom=True))
 
         if btn_profile and room_id=='':
+
             return redirect(url_for('admin.profile'))
         
         if not utils.room_is_exist(room_id):
