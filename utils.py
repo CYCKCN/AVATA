@@ -1,5 +1,6 @@
 import os
 import uuid
+import shutil
 from app import db
 from app.img_trans import *
 
@@ -117,6 +118,9 @@ def delete_room_with_name(name:str):
     if not room_is_exist(name): return False
     _db=db['rooms']
     _db.delete_one({'roomName':name})
+    path=f'app/static/images/test/room{name}'
+    path_exist_or_mkdir(path)
+    shutil.rmtree(path)
     return True
 
 def add_room_360image_with_name(name:str,image:str=None):

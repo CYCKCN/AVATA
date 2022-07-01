@@ -205,12 +205,12 @@
             </div>
         </div>
         <div class="searchsubhead">SEARCH</div>
-            <input class="searchBox" type="text" placeholder="Search all rooms" name="room_id" v-model="roomid"/>
+            <input class="searchBox" type="text" placeholder="Search all rooms" name="room_id"/>
         <div class="searchsubhead">BROWSE ALL</div>
         <div class="roomgroup">
             {% if roomInfo %}
                 {% for k, v in roomInfo.items() %}
-                <div class="room" v-on:click="goRoom($event, {{v.name}})">
+                <div class="room" v-on:click="goRoom($event, '{{v.name}}')">
                     <img class="roomimg" src="../../static/images/test/room{{v.name}}/_basic_upload.png" />
                     <div class="roomtext">
                         <div class="roomname">Room {{v.name}}</div>
@@ -227,7 +227,7 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <div class="room-empty">Not room now! Please create one!</div>
+                <div class="room-empty">No room now! Please create one!</div>
             {% endif %}
             
         </div>
@@ -253,6 +253,7 @@
       delimiters: ['{[', ']}'],
       methods: {
         goRoom: function (event, roomid) {
+            console.log(roomid)
             var form = document.getElementById("admin-main");
             var roomDiv = document.getElementById("roomId");
 

@@ -61,6 +61,7 @@ def main():
             return redirect(url_for('admin.room',room_id=room_id))
         
     roomInfo=utils.get_all_room_basic()
+    print(roomInfo)
     return render_template('admin_main.html',
     roomInfo=roomInfo,
     error=error if error else '')
