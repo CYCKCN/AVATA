@@ -1,6 +1,18 @@
-from joblib import delayed
 from pymongo.mongo_client import MongoClient
-from object import Account, Device, Room
+from .object import Account, Device, Room, time, format_data, compare_date_and_time, sort_bookInfo_list
+from werkzeug.security import generate_password_hash, check_password_hash
+from functools import cmp_to_key
+
+def connection(dbname):
+    # mongodb+srv://shaunxu:Xyz20010131@cluster0.llrsd.mongodb.net/myFirstDatabase?retryWrites=true"&"w=majority
+    addr = "mongodb+srv://shaunxu:Xyz20010131@cluster0.llrsd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    client = MongoClient(addr)
+    db = client[dbname]
+    return db
+
+def Convert(lst):
+    res_dct = { str(i) : lst[i] for i in range(0, len(lst)) }
+    return res_dct
 
 class AccountDB():
     def __init__(self, db):
@@ -18,14 +30,30 @@ class AccountDB():
 
     def login(self, accountEmail, accountPw, loginID):
         account = self.db.find_one({"accountEmail": accountEmail})
+        # print(account["accountID"])
         if account is None:
-            return "Err: Not Registered! Try Login as GUEST!"
-        elif account["accountPw"] != accountPw:
+            return "Err: Not Registered!"
+        elif check_password_hash(account["accountPw"], accountPw) == False:
+            # print(account["accountPw"])
+            # print(accountPw)
             return "Err: Wrong Password!"
-        elif account["accountID"] != loginID:
+        elif account["accountID"] != 'ADMIN' and loginID == 'ADMIN':
             return "Err: You Are Not Authorized!"
         else:
             return "Info: Login successfully!"
+
+    def register(self, accountEmail, accountPw):
+        accountID = "GUEST"
+        if "ust" in accountEmail: accountID = "USER"
+        newAccount = Account(accountEmail, generate_password_hash(accountPw), accountID)
+        self.db.insert_one(newAccount.__dict__)
+        return "Info: Registered As " + accountID
+
+    def checkAccountPw(self, accountEmail):
+        account = self.db.find_one({"accountEmail": accountEmail})
+        if account is None:
+            return "Err: Not Registered!"
+        return account["accountPw"]
     
     def checkAccountID(self, accountEmail):
         account = self.db.find_one({"accountEmail": accountEmail})
@@ -38,7 +66,31 @@ class AccountDB():
         if account is None:
             return "Err: Not Registered!"
         self.db.update_one({"accountEmail": accountEmail}, {'$set': {'accountID': "ADMIN"}})
-        return 
+        return "Info: Update Successfully!"
+    
+    def updateRoom(self, accountEmail, roomName):
+        account = self.db.find_one({"accountEmail": accountEmail})
+        if account is None:
+            return "Err: Not Registered!"
+        self.db.update_one({"accountEmail": accountEmail}, {'$set': {'room': roomName}})
+        return "Info: Update Successfully!"
+    
+    def updatePersonal(self, accountEmail, personal):
+        account = self.db.find_one({"accountEmail": accountEmail})
+        if account is None:
+            return "Err: Not Registered!"
+        self.db.update_one({"accountEmail": accountEmail}, {'$set': {'personal': personal}})
+        return "Info: Update Successfully!"
+    
+    def updateDevice(self, accountEmail, device):
+        account = self.db.find_one({"accountEmail": accountEmail})
+        if account is None:
+            return "Err: Not Registered!"
+        self.db.update_one({"accountEmail": accountEmail}, {'$set': {'device': device}})
+        return "Info: Update Successfully!"
+    
+    def findUser(self, accountEmail):
+        return self.db.find_one({"accountEmail": accountEmail})
 
 class DeviceDB():
     def __init__(self, db):
@@ -47,35 +99,40 @@ class DeviceDB():
     def cleardb(self):
         self.db.delete_many({})
 
-    def addDevice(self, deviceID, roomName, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY):
-        device = self.db.find_one({"deviceID": deviceID, "roomName": roomName})
+    def addDevice(self, roomName, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY):
+        device = self.db.find_one({"roomName": roomName, "deviceLocX": deviceLocX, "deviceLocY": deviceLocY})
         
         if device:
             self.db.update_one({"_id": device["_id"]}, \
                 {'$set': {"deviceName": deviceName, "deviceType": deviceType, "deviceIP": deviceIP, "deviceLocX": deviceLocX, "deviceLocY": deviceLocY}})
             return "Info: Edit Device Successfully!"
         else:
-            newDevice = Device(deviceID, roomName, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY)
+            newDevice = Device(roomName, deviceName, deviceType, deviceIP, deviceLocX, deviceLocY)
             self.db.insert_one(newDevice.__dict__)
             return "Info: Add Device Successfully!"
             
-    def delDevice(self, deviceID, roomName):
-        device = self.db.find_one({"deviceID": deviceID, "roomName": roomName})
+    def delDevice(self, roomName, deviceName):
+        device = self.db.find_one({"deviceName": deviceName, "roomName": roomName})
         if device is None:
             return "Err: Device Invalid!"
-        self.db.update_many({"deviceID": {'$gt': device["deviceID"]}}, {'$inc': {"deviceID": -1}})
         self.db.delete_one({"_id": device["_id"]})
         return "Info: Delete Successfully!"
     
-    def checkDeviceList(self, roomName):
+    def checkDeviceList(self, roomName, V, U):
         devices = self.db.find({"roomName": roomName})
-        return devices
+        deviceInfo_list = []
+        for device in devices:
+            deviceInfo = {}
+            deviceInfo['name'] = device["deviceName"]
+            deviceInfo['v'] = str(int(int(device['deviceLocX'])/V*100))+'%'
+            deviceInfo['u'] = str(int(int(device['deviceLocY'])/U*100))+'%'
+            deviceInfo_list.append(deviceInfo)
+        return Convert(deviceInfo_list)
     
-    def printDeviceList(self, roomName):
-        devices = self.checkDeviceList(roomName)
-        for dev in devices:
-            print("Device ID: " + str(dev["deviceID"]) + "\nDevice Name: " + dev["deviceName"] + "\nDevice Type: " + dev["deviceName"] + "\nDevice IP" + dev["deviceIP"] + "\n")
-
+    # def printDeviceList(self, roomName):
+    #     devices = self.checkDeviceList(roomName)
+    #     for dev in devices:
+    #         print("Device ID: " + str(dev["deviceID"]) + "\nDevice Name: " + dev["deviceName"] + "\nDevice Type: " + dev["deviceName"] + "\nDevice IP" + dev["deviceIP"] + "\n")
 
 class RoomDB():
     def __init__(self, db):
@@ -83,6 +140,78 @@ class RoomDB():
 
     def cleardb(self):
         self.db.delete_many({})
+    
+    def checkRoomAvailable(self, roomName, date):
+        room = self.db.find_one({"roomName": roomName})
+        bookTime = room["bookTime"]
+        if bookTime.get(date) is None:
+            bookTime[date] = []
+            self.db.update_one({"roomName": roomName}, {'$set': {'bookTime': bookTime}})
+        return bookTime
+        # for t in time:
+        #     if t in bookTime[date]: continue
+        #     time_data = date + " " + t[:2] + ':' + t[2:] + ':00'
+            # print(time_data)
+            #print(datetime.strptime(time_data, format_data))
+
+    def setRoomBookByUser(self, roomName, date, accountEmail, ft, tt):
+        self.checkRoomAvailable(roomName, date)
+        room = self.db.find_one({"roomName": roomName})
+        bookTime = room["bookTime"]
+        # ft, tt, user = map(str, input("from time & to time & use id: 0800 0900 ust.hk\n").split())
+        for i in range(time.index(ft), time.index(tt)):
+            if time[i] in bookTime[date]: 
+                print("Not Available Time")
+                return "Err: Time Not Available!"
+        for i in range(time.index(ft), time.index(tt)): 
+            bookTime[date].append(time[i])
+        self.db.update_one({"roomName": roomName}, {'$set': {'bookTime': bookTime}})
+        bookBy = room['bookBy']
+        if bookBy.get(accountEmail) is None: 
+            bookBy[accountEmail] = [[date, ft, tt]]
+        else:
+            booklist = []
+            booklist = bookBy[accountEmail]
+            booklist.append([date, ft, tt])
+            # print(booklist)
+            bookBy[accountEmail] = sorted(booklist, key=cmp_to_key(compare_date_and_time))
+            # print(bookBy[accountEmail])
+            # bookBy[accountEmail] = booklist
+        self.db.update_one({"roomName": roomName}, {'$set': {'bookBy': bookBy}})
+        return "Info: Book Successully!"
+
+    def checkUserBooking(self, accountEmail):
+        room_list = self.db.find({})
+        bookInfo_list = []
+        for room in room_list:
+            bookBy = room['bookBy']
+            if bookBy.get(accountEmail):
+                bookInfo = {}
+                bookInfo['name'] = room['roomName']
+                bookInfo['lift'] = room['roomLoc']
+                bookInfo['date'] = bookBy[accountEmail][0][0]
+                bookInfo['time'] = bookBy[accountEmail][0][1:]
+                bookInfo_list.append(bookInfo)
+        bookInfo_list = sorted(bookInfo_list, key=cmp_to_key(sort_bookInfo_list))
+        return Convert(bookInfo_list)
+
+    def checkSearchRoom(self, roomName, accountEmail):
+        print(roomName)
+        room_list = self.db.find({"roomName": {'$regex': roomName}})
+        roomInfo_list = []
+        for room in room_list:
+            roomInfo = {}
+            roomInfo['name'] = room['roomName']
+            roomInfo['lift'] = room['roomLoc']
+            bookBy = room['bookBy']
+            if bookBy.get(accountEmail):
+                roomInfo['date'] = bookBy[accountEmail][0][0]
+                roomInfo['time'] = bookBy[accountEmail][0][1:]
+            else:
+                roomInfo['date'] = ""
+                roomInfo['time'] = ""
+            roomInfo_list.append(roomInfo)
+        return Convert(roomInfo_list)        
 
     def addRoom(self, roomName, roomImg, roomLoc):
         room = self.db.find_one({"roomName": roomName})
@@ -106,9 +235,9 @@ class RoomDB():
         self.db.update_one({"roomName": roomName}, {"room360Img": room360Img})
         return "Info: Upload Successfully!"
 
-    def checkRoomList(self, roomName):
-        rooms = self.db.find({"roomName": {'$regex': roomName}})
-        return rooms
+    # def checkRoomList(self):
+    #     rooms = self.db.find({})
+    #     return rooms
     
     def printRoomList(self):
         rooms = self.checkRoomList("")
@@ -143,16 +272,24 @@ class RoomDB():
         self.db.update_one({"_id": room["_id"]}, {'$set': {"insInitial": roomInsInitialStep}})
     
     def checkInsInitialStepList(self, roomName):
+        print("*****" + roomName)
         room = self.db.find_one({"roomName": roomName})
         roomInsInitialStep = room["insInitial"]
-        return roomInsInitialStep
-
-    def printInsInitialStepList(self, roomName):
-        roomInsInitialStep = self.checkInsInitialStepList(roomName)
+        step_list = {}
         for i in range(0, len(roomInsInitialStep)):
-            print("Step " + str(i) + ": " + roomInsInitialStep[i]['text'] + " " + roomInsInitialStep[i]['image'] + " " + roomInsInitialStep[i]['command'] + " " + roomInsInitialStep[i]['help'])
-        print('')
-        return 
+            step = {}
+            step['text'] = roomInsInitialStep[i]['text']
+            step['image'] = roomInsInitialStep[i]['image']
+            step['command'] = roomInsInitialStep[i]['command']
+            step_list[i] = step
+        return step_list
+
+    # def printInsInitialStepList(self, roomName):
+    #     roomInsInitialStep = self.checkInsInitialStepList(roomName)
+    #     for i in range(0, len(roomInsInitialStep)):
+    #         print("Step " + str(i) + ": " + roomInsInitialStep[i]['text'] + " " + roomInsInitialStep[i]['image'] + " " + roomInsInitialStep[i]['command'] + " " + roomInsInitialStep[i]['help'])
+    #     print('')
+    #     return 
 
     def insTurnonInit(self, room, deviceList):
         roomInsTurnonStep = {}
@@ -316,3 +453,9 @@ class RoomDB():
         for i in range(0, len(roomInsZoomList["audio"])):
             print("Step: " + str(i))
             print(roomInsZoomList["audio"][i])
+        return
+
+db = connection("AVATA")
+accountdb = AccountDB(db)
+devicedb = DeviceDB(db)
+roomdb = RoomDB(db)
