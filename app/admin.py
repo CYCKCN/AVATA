@@ -46,12 +46,12 @@ def main():
     if request.method == "POST":
         room_id=request.form.get('room_id') if not request.form.get('room_id')=='' else request.form.get('roomid')
         add=request.form.get('add')
+        btn_profile=request.form.get('profile')
 
         if add:
             return redirect(url_for('admin.basic_info',is_addRoom=True))
 
-        btn_profile=request.form.get('profile')
-        if btn_profile:
+        if btn_profile and room_id=='':
             return redirect(url_for('admin.profile'))
         
         if not utils.room_is_exist(room_id):
@@ -59,9 +59,10 @@ def main():
 
         if room_id:
             return redirect(url_for('admin.room',room_id=room_id))
+            
         
     roomInfo=utils.get_all_room_basic()
-    print(roomInfo)
+    #print(roomInfo)
     return render_template('admin_main.html',
     roomInfo=roomInfo,
     error=error if error else '')
