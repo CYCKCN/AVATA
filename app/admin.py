@@ -46,11 +46,12 @@ def main():
     if request.method == "POST":
         room_id=request.form.get('room_id') if not request.form.get('room_id')=='' else request.form.get('roomid')
         add=request.form.get('add')
+        btn_profile=request.form.get('profile')
 
         if add:
             return redirect(url_for('admin.basic_info',is_addRoom=True))
 
-        btn_profile=request.form.get('profile')
+        
         if btn_profile:
             return redirect(url_for('admin.profile'))
         
