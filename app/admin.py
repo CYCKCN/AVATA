@@ -1,12 +1,13 @@
 import os
 from flask import Blueprint, render_template, redirect, url_for, request
-from .authen import check_login
+#from .authen import check_login
+from .auth import check_login, check_admin
 from .img_trans import *
 #from app import accountdb, devicedb, roomdb
 import utils
 from flask_login import logout_user
 
-admin_blue=Blueprint('admin',__name__,url_prefix='/admin')
+admin_blue=Blueprint('admin',__name__)
 
 @admin_blue.route('/')
 def enter():
@@ -30,7 +31,8 @@ def login():
     return render_template('admin_login.html')
 
 @admin_blue.route("/main", methods=['POST','GET'])
-@check_login #plz use wrapper function @check_login where you want user to login
+#@check_login #plz use wrapper function @check_login where you want user to login
+@check_admin
 def main():
     '''
     roomInfo={
@@ -52,7 +54,6 @@ def main():
             return redirect(url_for('admin.basic_info',room_id=room_id,is_addRoom=True))
 
         if btn_profile and room_id=='':
-
             return redirect(url_for('admin.profile'))
         
         if not utils.room_is_exist(room_id):
@@ -69,7 +70,7 @@ def main():
     error=error if error else '')
 
 @admin_blue.route("/room/<room_id>", methods=['POST','GET'])
-@check_login 
+#@check_login 
 def room(room_id):
     error=request.args.get('error')
     

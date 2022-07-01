@@ -4,6 +4,10 @@ from flask import Flask
 from flask_mongoengine import MongoEngine
 from flask_user import UserManager, UserMixin
 
+from flask_login import LoginManager
+from .database.object import User
+from .database.db import accountdb, connection
+
 '''
 print("##")
 from .models import ConfigClass
@@ -22,24 +26,26 @@ class ConfigClass(object):
     USER_ENABLE_USERNAME = True  
     USER_REQUIRE_RETYPE_PASSWORD = False  
 
-    #USER_LOGIN_TEMPLATE = 'login.html'
-    #USER_REGISTER_TEMPLATE = 'register.html'
-
-    #USER_LOGIN_URL = '/authen/login'
-    #USER_REGISTER_URL = '/authen/register'
-
-    #USER_UNAUTHENTICATED_ENDPOINT = 'authen.login'
-
 app = Flask(__name__)
 app.config.from_object(ConfigClass)
 
-mongo = MongoEngine(app)
+login_manager = LoginManager()
+login_manager.login_view = "main"
+login_manager.init_app(app)
 
-from .models import User
+@login_manager.user_loader
+def load_user(user_id):
+    account = accountdb.findUser(user_id)
+    if not account: return None
+    return User(email=account["accountEmail"], room=account["room"], personal=account["personal"], dev=account["device"])
 
-user_manager = UserManager(app, mongo, User)
+#mongo = MongoEngine(app)
 
-from .database import connection#, AccountDB, DeviceDB, RoomDB
+#from .models import User
+
+#user_manager = UserManager(app, mongo, User)
+
+#from .database import connection#, AccountDB, DeviceDB, RoomDB
 
 db = connection("AVATA")
 #accountdb = AccountDB(db)
@@ -49,8 +55,10 @@ db = connection("AVATA")
 from app import routes
 from .user import user_blue
 from .admin import admin_blue
-from .authen import authen_blue
+#from .authen import authen_blue
+from .auth import auth
 
-app.register_blueprint(user_blue)
-app.register_blueprint(admin_blue)
-app.register_blueprint(authen_blue)
+app.register_blueprint(user_blue, url_prefix='/user')
+app.register_blueprint(admin_blue, url_prefix='/admin')
+#app.register_blueprint(authen_blue)
+app.register_blueprint(auth, url_prefix='/auth')
