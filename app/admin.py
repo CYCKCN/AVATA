@@ -807,6 +807,13 @@ def profile():
     
     return render_template('admin_profile.html')
 
+@admin_blue.route("/guest-invite", methods=['POST','GET'])
+def guest_invite():
+    if request.method == "POST":
+        pass
+
+    return render_template('guest-invite.html')
+
 '''
 @admin_blue.route("/initial", methods=['POST','GET'])
 def initial():

@@ -24,41 +24,43 @@
     }
     /* 页面的CSS:2.主要部分 */
     #el-ckb{
-        transform: translateY(-150%) scale(5, 5);
-        margin: 0 0 0 15%;
+        transform: translateY(-255%) scale(5, 5);
+        margin: 0 0 0 5%;
     }
     #el-text{
-        transform: translateY(-5%);
-        padding: 0 0 0 12%;
+        font-size: 4vw;
+        transform: translateY(-21%);
+        padding: 0 0 0 10%;
     }
     /* 页面的CSS:3.右侧按钮部分 */
     .per-dev{
-        position: absolute;
+        position: fixed;
         height: 5vh;
         width: 5vh;
         left: 85%;
-        top: 5%;
+        top: 10%;
     }
     .confirm{
-        position: absolute;
+        position: fixed;
         height: 5vh;
         width: 5vh;
         right: 7%;
         left: 85%;
         bottom: 7%;
+        opacity: 0;
     }
     .per-dev-txt{
-        position: absolute;
+        position: fixed;
         font-size: 2.8vw;
-        left: 84.5%;
+        left: 83%;
         width: 10vw;
         line-height: 1.8vh;
-        top: 10.3%;
+        top: 16%;
         color: white;
         text-align: center;
     }
     .confirm-txt{
-        position: absolute;
+        position: fixed;
         font-size: 3vw;
         left: 84.5%;
         bottom: 4.5%;
@@ -73,7 +75,7 @@
         width: 5vh;
         top: 88%;
         left: 85%;
-        position: absolute;
+        position: fixed;
     }
     /* 彈窗CSS */
     #overlay {
@@ -123,12 +125,12 @@
         left: 10%;
     }
     .subbtn input{
-        width: 60vw;
-        height: 6.5vh;
+        width: 50vw;
+        height: 6vh;
         font-size: 2.5vh;
         background-color: white;
         border: 0.8vw solid #0074BC;
-        border-radius: 3.25vh;
+        border-radius: 1vh;
     }
 
 </style>
@@ -305,11 +307,11 @@ class LocateInput extends HTMLInputElement{
       //parentDiv.style.left=obj.u;
       parentDiv.style.top=v;
       parentDiv.style.left=u;
-      parentDiv.style.width='500px';
-      parentDiv.style.height='125px';
+      parentDiv.style.width='400px';
+      parentDiv.style.height='100px';
       parentDiv.style.padding='10px 20px';
       parentDiv.style.border='7px solid #0074BC' ;
-      parentDiv.style.borderRadius='5.5rem';
+      parentDiv.style.borderRadius='1vh';
       parentDiv.style.backgroundColor='#F5F5F5';
       parentDiv.style.fontSize='4em';
     }
