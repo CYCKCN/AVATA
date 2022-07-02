@@ -301,6 +301,35 @@ th,td{
     color: #FFFFFF;
 }
 
+.delete-img{
+    transform: scale(4);
+    position: absolute;
+    width:100%;
+    height: 100%;
+    z-index: 5;
+    margin: 0vh 0vw 0vh 20vw;
+}
+.delete{
+    position: absolute;
+    width:12vw;
+    height:12vw;
+    right:10vw;
+    bottom: 10vw;
+    background-color:rgba(0, 0, 0, 0);
+    
+}
+.delete input{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width:100%;
+    height: 100%;
+    appearance: none;
+    opacity: 0;
+    z-index: 100;
+    margin: -8.4vh 0vw 0vh 2vw;
+}
+
 </style>
 {% endblock %}
 
@@ -350,6 +379,15 @@ th,td{
             </tr>
         {% endfor %}
         </table>
+    </div>
+
+    <div class="delete">
+        <input type="submit" class="per-dev" name="delete" value="delete">
+        <div class="delete-img">
+            <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.5 0C10.0736 0 0 10.0736 0 22.5C0 34.9264 10.0736 45 22.5 45C34.9264 45 45 34.9264 45 22.5C45 10.0736 34.9264 0 22.5 0ZM19.0091 8.41279H25.9909V10.5661H34.1318V14.5294H10.8682V10.5661H19.0091V8.41279ZM12.1179 17.5452H32.8821V36.5872H12.1179V17.5452Z" fill="#0074BC"/>
+            </svg>
+        </div>
     </div>
 
     <div id="mainFooter">
