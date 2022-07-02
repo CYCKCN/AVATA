@@ -63,7 +63,7 @@
         height: 30vh;
         width: 41vw;
         margin-right: 4vw;
-        border-radius: 5vw;
+        border-radius: 1vw;
         filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
         background-color: white;
     }
@@ -212,6 +212,32 @@
         font-size: 2vh;
         color: #FFFFFF;
     }
+    .img_profile{
+        transform: scale(10);
+        position:absolute;
+        margin: 13vh 0vw 0vh 104vw;
+        width: 5vw;
+        height: 5vh;
+	}
+    #btn-profile {
+        opacity: 0;
+        margin: -8vh 0vw 0vh 85vw;
+        position:absolute;
+        z-index: 100;
+        width: 7vw;
+        height: 7vh;
+        /* background: #000000;
+        border: 2px solid #000000;
+        border-radius: 1vw; */
+        font-style: normal;
+        font-weight: 500;
+        font-size: 2vh;
+        color: #FFFFFF;
+    }
+
+    #main-title,#profile{
+        display: inline-block;
+    }
 
 </style>
 
@@ -229,6 +255,15 @@
     <!-- body -->
     <div id="mainBody">  
         <div class="main-title">Rooms</div>
+        <div class="profile">
+            <input id="btn-profile" type='submit' name="profile" value="profile">
+            <div class="img_profile">
+                <svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.2174 20.4783C17.3359 20.4783 15 22.8142 15 25.6957V27H25.4348V25.6957C25.4348 22.8142 23.0989 20.4783 20.2174 20.4783Z" stroke="black"/>
+                    <ellipse cx="20.2175" cy="15.913" rx="3.91307" ry="3.91304" stroke="black" stroke-linecap="square"/>
+                </svg>
+            </div>
+        </div>
         <div class="searchsubhead">SEARCH</div>
             <input class="searchBox" type="text" placeholder="Search all rooms" name="room_id" v-model="roomid"/>
         <div class="roommain" v-if="roomid=='5554'">

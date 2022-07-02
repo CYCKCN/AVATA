@@ -31,10 +31,12 @@ def search():
         room_id = request.form.get('room_id') 
         btn_search=request.form.get('btn_search')
         timetable=request.form.get('timetable')
+        btn_profile=request.form.get('profile')
 
         # roomInfo_result = roomdb.checkSearchRoom(room_id, current_user.email)
         # return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
-
+        if btn_profile and room_id=='':
+            return redirect(url_for('user.profile'))
         if room_id:
             return redirect(url_for('user.room', room_id="5554")) 
         # print(btn_search)
@@ -248,3 +250,18 @@ def zoom():
             return redirect(url_for('user.pair'))
     
     return render_template('instruction_zoom.html',room_id=current_user.room,steps=steps)
+
+@user.route("/profile", methods=['POST','GET'])
+def profile():
+    if request.method == "POST":
+        btn_profile=request.form.get('profile')
+        if btn_profile:
+            return redirect(url_for('user.search'))
+        logout=request.form.get('logout')
+        if logout:
+            return redirect(url_for('admin.logout'))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('user.search'))
+    
+    return render_template('user_profile.html')
