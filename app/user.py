@@ -21,33 +21,63 @@ def main():
 @user.route("/search", methods=['POST','GET'])
 @check_login
 def search():
-    room_id = ''
+    show_result=request.args.get('show_result') if request.args.get('show_result') else False
+    search_room_id=request.args.get('search_room_id') if request.args.get('search_room_id') else None
+    #room_id = ''
     roomInfo_book = roomdb.checkUserBooking(current_user.email)
-    # print(current_user.email)
-    # print(roomInfo_book)
-    roomInfo_result = {}
+    #print(current_user.email)
+    #print(roomInfo_book)
+    if show_result and search_room_id:
+        roomInfo_result = roomdb.checkSearchRoom(search_room_id, current_user.email)
     # account = accountdb.findUser(current_user.get_id)
     if request.method == "POST":
-        room_id = request.form.get('room_id') 
+        #room_id = request.form.get('room_id') 
+
         btn_search=request.form.get('btn_search')
         timetable=request.form.get('timetable')
         btn_profile=request.form.get('profile')
 
+        room_id_text=request.form.get('room_id') #from user input
+        room_id_click=request.form.get('roomid') #from auxiliary field
+
+        #print(btn_search)
+        #print(timetable)
+        #print(btn_profile)
+        #print(room_id_text)
+        #print(room_id_click)
+
+        if timetable: return 'timetable'
+
+        if btn_profile and room_id_text=='':
+            return redirect(url_for('user.profile'))
+
+        if not room_id_click=='' and room_id_text=='': #click room
+            return redirect(url_for('user.room', room_id=room_id_click)) 
+
+        if room_id_click=='' and not room_id_text=='': #input text search
+
+            return redirect(url_for('user.room', room_id=room_id_click))
+        
+
         # roomInfo_result = roomdb.checkSearchRoom(room_id, current_user.email)
         # return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
-        if btn_profile and room_id=='':
-            return redirect(url_for('user.profile'))
-        if room_id:
-            return redirect(url_for('user.room', room_id="5554")) 
         if timetable:
             return redirect(url_for('user.timetable')) 
+        #if btn_profile and room_id=='':
+        #    return redirect(url_for('user.profile'))
+        #if room_id:
+        #    return redirect(url_for('user.room', room_id="5554")) 
         # print(btn_search)
         # if btn_search:
         #     return redirect(url_for('search'))
         #     roomInfo_result = roomdb.checkSearchRoom(room_id, current_user.email)
         #     return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
 
-    return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
+    return render_template('search.html',
+                    roomInfo_book=roomInfo_book, 
+                    roomInfo_result=roomInfo_result,
+                    show_result=show_result
+                )
 
 @user.route("/room/<room_id>", methods=['POST','GET'])
 @check_login
@@ -71,6 +101,11 @@ def room(room_id):
 @user.route("/device/<room_id>", methods=['POST','GET'])
 @check_login
 def device(room_id):
+
+    if current_user.identity == "GUEST":
+        # check booking time!
+        pass
+
     img = url_for('static',filename='images/test/'+room_id+'/360-1.jpg')
     # image = cv2.imread(img)
     # V, U, _ = image.shape
@@ -112,7 +147,10 @@ def device(room_id):
 @user.route("/booking/<room_name>", methods=['POST','GET'])
 @check_login
 def booking(room_name):
-    # return "In Progress"
+    
+    if current_user.identity == "GUEST":
+        return "Sorry You are Not Authorized For Booking!"
+
     today_date = get_today_date()
     time_list = [t[:2] + ' : ' + t[2:] for t in time]
     week, access_date = get_booking_week()
@@ -127,11 +165,14 @@ def booking(room_name):
         elif request.form.get('home'):
             return redirect(url_for('user.search'))
         elif request.form.get('confirm'):
-            # CURRENT_ROOM.get_booking_result()
+            booking_email = ""
             booking_period = []
             myself=request.form.get(f'myself')
             guest=request.form.get(f'guest')
             guestemail=request.form.get('guestemail')
+            if myself == "For Myself": booking_email = current_user.email
+            if guest == "Invite Guest": booking_email = guestemail
+            if booking_email == "": return "Err: Wrong Email Received!"
             for k, v in occupy.items():
                 t,d=k
                 if v=='y': continue
@@ -140,7 +181,7 @@ def booking(room_name):
                     clock=t.replace(' : ','')
                     booking_period.append(clock)
             booking_period.append(time[time.index(booking_period[-1]) + 1])
-            roomdb.setRoomBookByUser(room_name, time_data, current_user.email, booking_period[0], booking_period[-1])
+            roomdb.setRoomBookByUser(room_name, time_data, booking_email, booking_period[0], booking_period[-1])
                     # self.db_bookroom(self.db['rooms'],self.db_roomone['_id'],time_data,clock)
             return redirect(url_for('user.room',room_id=room_name))
         elif request.form.get('delete'):
@@ -149,6 +190,7 @@ def booking(room_name):
     return render_template('booking.html', room_id=room_name,time=time_list,week=week,month=month,year=year,occupy=occupy)
 
 @user.route("/initial", methods=['POST','GET'])
+@check_login
 def initial():
     # print("initial")
     # print(current_user.room)
@@ -166,6 +208,7 @@ def initial():
     return render_template('instruction_initial.html',room_id=current_user.room, steps=steps)
 
 @user.route("/turnon", methods=['POST','GET'])
+@check_login
 def turnon():
     # print("turnon")
     # print(current_user.room)
@@ -183,6 +226,7 @@ def turnon():
     return render_template('instruction_turnon.html', room_id=current_user.room, steps=steps)
 
 @user.route("/pair", methods=['POST','GET'])
+@check_login
 def pair():
     # print("pair")
     # print(current_user.room)
@@ -199,6 +243,7 @@ def pair():
     return render_template('instruction_pair.html', room_id=current_user.room,steps=steps)
 
 @user.route("/zoom", methods=['POST','GET'])
+@check_login
 def zoom():
     # print("zoom")
     # print(current_user.room)
