@@ -23,30 +23,19 @@ def main():
 def search():
     show_result=True if request.args.get('show_result') else False
     search_room_id=request.args.get('search_room_id') if request.args.get('search_room_id') else None
-    #room_id = ''
     roomInfo_book = roomdb.checkUserBooking(current_user.email)
-    #print(current_user.email)
-    #print(roomInfo_book)
     
     roomInfo_result = \
         roomdb.checkSearchRoom(search_room_id, current_user.email) \
         if show_result and search_room_id else {}
-    # account = accountdb.findUser(current_user.get_id)
-    if request.method == "POST":
-        #room_id = request.form.get('room_id') 
 
+    if request.method == "POST":
         btn_search=request.form.get('btn_search')
         timetable=request.form.get('timetable')
         btn_profile=request.form.get('profile')
 
         room_id_text=request.form.get('room_id') #from user input
         room_id_click=request.form.get('roomid') #from auxiliary field
-
-        #print(btn_search)
-        #print(timetable)
-        #print(btn_profile)
-        #print(room_id_text)
-        #print(room_id_click)
 
         if timetable:
             return redirect(url_for('user.timetable')) 
@@ -60,20 +49,6 @@ def search():
         if room_id_click=='' and not room_id_text=='': #input text search
 
             return redirect(url_for('user.search', show_result=True,search_room_id=room_id_text))
-        
-
-        # roomInfo_result = roomdb.checkSearchRoom(room_id, current_user.email)
-        # return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
-        
-        #if btn_profile and room_id=='':
-        #    return redirect(url_for('user.profile'))
-        #if room_id:
-        #    return redirect(url_for('user.room', room_id="5554")) 
-        # print(btn_search)
-        # if btn_search:
-        #     return redirect(url_for('search'))
-        #     roomInfo_result = roomdb.checkSearchRoom(room_id, current_user.email)
-        #     return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
 
     return render_template('search.html',
                     roomInfo_book=roomInfo_book, 
