@@ -124,9 +124,12 @@ def booking(room_name):
             return redirect(url_for('user.room', room_id=room_name))
         elif request.form.get('home'):
             return redirect(url_for('user.search'))
-        elif request.form.get('book'):
+        elif request.form.get('confirm'):
             # CURRENT_ROOM.get_booking_result()
             booking_period = []
+            myself=request.form.get(f'myself')
+            guest=request.form.get(f'guest')
+            guestemail=request.form.get('guestemail')
             for k, v in occupy.items():
                 t,d=k
                 if v=='y': continue
@@ -138,7 +141,8 @@ def booking(room_name):
             roomdb.setRoomBookByUser(room_name, time_data, current_user.email, booking_period[0], booking_period[-1])
                     # self.db_bookroom(self.db['rooms'],self.db_roomone['_id'],time_data,clock)
             return redirect(url_for('user.room',room_id=room_name))
-
+        elif request.form.get('delete'):
+            pass
     
     return render_template('booking.html', room_id=room_name,time=time_list,week=week,month=month,year=year,occupy=occupy)
 
