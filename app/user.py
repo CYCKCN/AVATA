@@ -143,6 +143,7 @@ def booking(room_name):
     return render_template('booking.html', room_id=room_name,time=time_list,week=week,month=month,year=year,occupy=occupy)
 
 @user.route("/initial", methods=['POST','GET'])
+@check_login
 def initial():
     # print("initial")
     # print(current_user.room)
@@ -160,6 +161,7 @@ def initial():
     return render_template('instruction_initial.html',room_id=current_user.room, steps=steps)
 
 @user.route("/turnon", methods=['POST','GET'])
+@check_login
 def turnon():
     # print("turnon")
     # print(current_user.room)
@@ -177,6 +179,7 @@ def turnon():
     return render_template('instruction_turnon.html', room_id=current_user.room, steps=steps)
 
 @user.route("/pair", methods=['POST','GET'])
+@check_login
 def pair():
     # print("pair")
     # print(current_user.room)
@@ -193,6 +196,7 @@ def pair():
     return render_template('instruction_pair.html', room_id=current_user.room,steps=steps)
 
 @user.route("/zoom", methods=['POST','GET'])
+@check_login
 def zoom():
     # print("zoom")
     # print(current_user.room)
