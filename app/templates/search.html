@@ -273,7 +273,7 @@
 			<div class="roomgroup">
 				{% if roomInfo_result %}
 					{% for k, v in roomInfo_result.items() %}
-					<div class="room" v-on:click="goRoom($event, {{v.name}})">
+					<div class="room" v-on:click="goRoom($event, '{{v.name}}')">
 						<img class="roomimg" src="../../static/images/test/room{{v.name}}/_basic_upload.png" />
 						<div class="roomtext">
 							<div class="roomname">Room {{v.name}}</div>
@@ -299,7 +299,7 @@
 			<div class="roomgroup">
 				{% if roomInfo_book %}
 					{% for k, v in roomInfo_book.items() %}
-					<div class="room" v-on:click="goRoom($event, {{v.name}})">
+					<div class="room" v-on:click="goRoom($event, '{{v.name}}')">
 						<img class="roomimg" src="../../static/images/test/room{{v.name}}/_basic_upload.png" />
 						<div class="roomtext">
 							<div class="roomname">Room {{v.name}}</div>
@@ -362,18 +362,18 @@
       delimiters: ['{[', ']}'],
       methods: {
         goRoom: function (event, roomid) {
+			//console.log(event, roomid)
+			//var form = document.getElementById("admin-main");
+			//form.submit();
+
 			console.log(event, roomid)
-			var form = document.getElementById("admin-main");
-			form.submit();
+            var form = document.getElementById("search");
+            var roomDiv = document.getElementById("roomId");
 
-			// console.log(event, roomid)
-            // var form = document.getElementById("search");
-            // var roomDiv = document.getElementById("roomId");
-
-            // roomDiv.children[0].setAttribute('value', roomid);
-            // console.log(roomDiv.children[0].value)
+            roomDiv.children[0].setAttribute('value', roomid);
+            console.log(roomDiv.children[0].value)
             
-            // form.submit();
+            form.submit();
         },
       }
     }).mount('#admin-main')    
