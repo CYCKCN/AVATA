@@ -39,6 +39,8 @@ def search():
             return redirect(url_for('user.profile'))
         if room_id:
             return redirect(url_for('user.room', room_id="5554")) 
+        if timetable:
+            return redirect(url_for('user.timetable')) 
         # print(btn_search)
         # if btn_search:
         #     return redirect(url_for('search'))
@@ -211,3 +213,37 @@ def zoom():
             return redirect(url_for('user.pair'))
     
     return render_template('instruction_zoom.html',room_id=current_user.room,steps=steps)
+
+@user.route("/profile", methods=['POST','GET'])
+def profile():
+    if request.method == "POST":
+        btn_profile=request.form.get('profile')
+        if btn_profile:
+            return redirect(url_for('user.search'))
+        logout=request.form.get('logout')
+        if logout:
+            return redirect(url_for('admin.logout'))
+        back=request.form.get('back')
+        if back:
+            return redirect(url_for('user.search'))
+
+    return render_template('user_profile.html') 
+
+@user.route("/timetable", methods=['POST','GET'])
+@check_login
+def timetable():
+    # return "In Progress"
+    today_date = get_today_date()
+    time_list = [t[:2] + ' : ' + t[2:] for t in time]
+    week, access_date = get_booking_week()
+    month = MONTH_ABBR[today_date[1]]
+    year = today_date[0]
+    # print(occupy)
+
+    if request.method == "POST":
+        if request.form.get('btn_search'):
+            return redirect(url_for('user.search'))
+        if request.form.get('profile'):
+            return redirect(url_for('user.profile'))
+    
+    return render_template('timetable.html', time=time_list,week=week,month=month,year=year)

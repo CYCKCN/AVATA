@@ -280,7 +280,7 @@ th,td{
 {% block content %}
 <form method="post">
     <div class="header">
-        <p class="header-name">Room 5554</p>
+        <p class="header-name">Room {{room_id}}</p>
         <div class="header-back">
             <img src="{{url_for('static',filename='back.png')}}">
             <input type="submit" name="back" value=" "> 
