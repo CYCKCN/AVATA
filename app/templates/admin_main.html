@@ -57,11 +57,12 @@
         flex-wrap: wrap;
         justify-content: flex-start;
         align-items: stretch;
+        padding: 0% 0% 20% 0%;
     }
     .room{
-        height: 30vh;
+        height: 25vh;
         width: 41vw;
-        margin-right: 4vw;
+        margin: 0vh 2vw 2vh 2vw;
         border-radius: 1vw;
         filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
         background-color: white;
@@ -104,21 +105,26 @@
         font-weight: 300;
     }
     #mainFooter{
-        float: left;
-        /* position: fixed; */
+        position: fixed;
+        z-index: 999;
+        width: 100vw;
+        height: 10vh;
+        bottom: 4vh;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        /* float: left;
         z-index: 999;
         width: 100vw;
         height: 10vh;
         bottom: 4vh;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
-
-        /* border-top: 0.1vw solid #D9D9D9; */
+        align-items: center; */
     }
     .btnAdd{
         position: relative;
-        margin-top: 4vh;
+        margin-top: 6vh;
         margin-bottom: 3vh;
         /* padding-top:2vh; */
         width: 90vw;
