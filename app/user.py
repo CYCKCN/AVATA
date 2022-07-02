@@ -21,31 +21,61 @@ def main():
 @user.route("/search", methods=['POST','GET'])
 @check_login
 def search():
-    room_id = ''
+    show_result=request.args.get('show_result') if request.args.get('show_result') else False
+    search_room_id=request.args.get('search_room_id') if request.args.get('search_room_id') else None
+    #room_id = ''
     roomInfo_book = roomdb.checkUserBooking(current_user.email)
-    # print(current_user.email)
-    # print(roomInfo_book)
-    roomInfo_result = {}
+    #print(current_user.email)
+    #print(roomInfo_book)
+    if show_result and search_room_id:
+        roomInfo_result = roomdb.checkSearchRoom(search_room_id, current_user.email)
     # account = accountdb.findUser(current_user.get_id)
     if request.method == "POST":
-        room_id = request.form.get('room_id') 
+        #room_id = request.form.get('room_id') 
+
         btn_search=request.form.get('btn_search')
         timetable=request.form.get('timetable')
         btn_profile=request.form.get('profile')
 
+        room_id_text=request.form.get('room_id') #from user input
+        room_id_click=request.form.get('roomid') #from auxiliary field
+
+        #print(btn_search)
+        #print(timetable)
+        #print(btn_profile)
+        #print(room_id_text)
+        #print(room_id_click)
+
+        if timetable: return 'timetable'
+
+        if btn_profile and room_id_text=='':
+            return redirect(url_for('user.profile'))
+
+        if not room_id_click=='' and room_id_text=='': #click room
+            return redirect(url_for('user.room', room_id=room_id_click)) 
+
+        if room_id_click=='' and not room_id_text=='': #input text search
+
+            return redirect(url_for('user.room', room_id=room_id_click))
+        
+
         # roomInfo_result = roomdb.checkSearchRoom(room_id, current_user.email)
         # return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
-        if btn_profile and room_id=='':
-            return redirect(url_for('user.profile'))
-        if room_id:
-            return redirect(url_for('user.room', room_id="5554")) 
+        #if btn_profile and room_id=='':
+        #    return redirect(url_for('user.profile'))
+        #if room_id:
+        #    return redirect(url_for('user.room', room_id="5554")) 
         # print(btn_search)
         # if btn_search:
         #     return redirect(url_for('search'))
         #     roomInfo_result = roomdb.checkSearchRoom(room_id, current_user.email)
         #     return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
 
-    return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
+    return render_template('search.html',
+                    roomInfo_book=roomInfo_book, 
+                    roomInfo_result=roomInfo_result,
+                    show_result=show_result
+                )
 
 @user.route("/room/<room_id>", methods=['POST','GET'])
 @check_login
