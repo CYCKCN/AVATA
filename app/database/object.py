@@ -74,11 +74,12 @@ def get_booking_week():
     return booking, access_date
 
 class User(UserMixin):
-    def __init__(self, email, room="", personal="", dev=[]):
+    def __init__(self, email, identity="", room="", personal="", dev=[]):
         self.email = email
         self.room = room
         self.personal = personal
         self.dev = dev
+        self.identity = identity
 
     @staticmethod
     def is_authenticated():

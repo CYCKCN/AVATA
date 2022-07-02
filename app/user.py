@@ -69,6 +69,11 @@ def room(room_id):
 @user.route("/device/<room_id>", methods=['POST','GET'])
 @check_login
 def device(room_id):
+
+    if current_user.identity == "GUEST":
+        # check booking time!
+        pass
+
     img = url_for('static',filename='images/test/'+room_id+'/360-1.jpg')
     # image = cv2.imread(img)
     # V, U, _ = image.shape
@@ -110,7 +115,10 @@ def device(room_id):
 @user.route("/booking/<room_name>", methods=['POST','GET'])
 @check_login
 def booking(room_name):
-    # return "In Progress"
+    
+    if current_user.identity == "GUEST":
+        return "Sorry You are Not Authorized For Booking!"
+
     today_date = get_today_date()
     time_list = [t[:2] + ' : ' + t[2:] for t in time]
     week, access_date = get_booking_week()
@@ -125,11 +133,14 @@ def booking(room_name):
         elif request.form.get('home'):
             return redirect(url_for('user.search'))
         elif request.form.get('confirm'):
-            # CURRENT_ROOM.get_booking_result()
+            booking_email = ""
             booking_period = []
             myself=request.form.get(f'myself')
             guest=request.form.get(f'guest')
             guestemail=request.form.get('guestemail')
+            if myself == "For Myself": booking_email = current_user.email
+            if guest == "Invite Guest": booking_email = guestemail
+            if booking_email == "": return "Err: Wrong Email Received!"
             for k, v in occupy.items():
                 t,d=k
                 if v=='y': continue
@@ -138,7 +149,7 @@ def booking(room_name):
                     clock=t.replace(' : ','')
                     booking_period.append(clock)
             booking_period.append(time[time.index(booking_period[-1]) + 1])
-            roomdb.setRoomBookByUser(room_name, time_data, current_user.email, booking_period[0], booking_period[-1])
+            roomdb.setRoomBookByUser(room_name, time_data, booking_email, booking_period[0], booking_period[-1])
                     # self.db_bookroom(self.db['rooms'],self.db_roomone['_id'],time_data,clock)
             return redirect(url_for('user.room',room_id=room_name))
         elif request.form.get('delete'):

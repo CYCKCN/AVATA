@@ -4,6 +4,7 @@ from flask import Blueprint, request, redirect, render_template, url_for
 from functools import wraps
 # from .model import RegisterForm, LoginForm, ResetForm,User
 from flask_login import LoginManager, login_user, logout_user, current_user
+from numpy import identity
 
 from .database.db import accountdb, devicedb, roomdb
 from .database.object import User, LoginForm

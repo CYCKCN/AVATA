@@ -37,7 +37,7 @@ login_manager.init_app(app)
 def load_user(user_id):
     account = accountdb.findUser(user_id)
     if not account: return None
-    return User(email=account["accountEmail"], room=account["room"], personal=account["personal"], dev=account["device"])
+    return User(email=account["accountEmail"], room=account["room"], identity=account["accountID"], personal=account["personal"], dev=account["device"])
 
 #mongo = MongoEngine(app)
 
