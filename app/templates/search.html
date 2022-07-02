@@ -271,7 +271,7 @@
         
         {% if show_result %}
         <div class="roommain">
-			<div class="searchsubhead">RESULTS</div>
+			<div class="searchsubhead">SEARCH RESULTS</div>
 			<div class="roomgroup">
 				{% if roomInfo_result %}
 					{% for k, v in roomInfo_result.items() %}
@@ -292,7 +292,7 @@
 					</div>
 					{% endfor %}
 				{% else %}
-					<div class="room-empty">No Result!</div>
+					<div class="room-empty">The room you searched is nonexistent! Please make sure the room name!</div>
 				{% endif %}
 			</div>
 		</div>
