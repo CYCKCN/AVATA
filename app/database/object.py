@@ -1,8 +1,9 @@
+from os import access
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
 import wtforms
 from wtforms.validators import InputRequired, Email, Length, Regexp
-import datetime
+from datetime import datetime
 from calendar import monthrange
 
 time = ["0800", "0830", "0900", "0930", "1000", "1030", "1100", "1130", "1200", "1230", "1300", "1330", "1400", "1430", "1500",
@@ -55,6 +56,7 @@ def get_today_date():
 
 def get_booking_week():
     booking={}
+    access_date = []
     today_date = get_today_date()
     _,month_days=monthrange(today_date[0],today_date[1])
     for i in range(7):
@@ -62,8 +64,14 @@ def get_booking_week():
         day=today_date[2]+i
         if day>month_days: day=day-month_days
         booking[WEEK_ABBR[week]]=day
+
+        if today_date[2]+i>month_days: #didn't consider next year
+            date="{:d}/{:0>2d}/{:0>2d}".format(today_date[0], today_date[1]+1, today_date[2]+i-month_days)
+        else:
+            date="{:d}/{:0>2d}/{:0>2d}".format(today_date[0], today_date[1], today_date[2]+i)
+        access_date.append(date)
     
-    return booking
+    return booking, access_date
 
 class User(UserMixin):
     def __init__(self, email, room="", personal="", dev=[]):

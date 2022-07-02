@@ -82,6 +82,7 @@ def adminlogin():
 @check_login
 def logout():
     logout_user()
+    accountdb.logout(current_user.email)
     return redirect(url_for('main'))
 
 @auth.route('/register', methods=['GET', 'POST'])

@@ -41,6 +41,11 @@ class AccountDB():
             return "Err: You Are Not Authorized!"
         else:
             return "Info: Login successfully!"
+        
+
+    def logout(self, accountEmail):
+        self.db.update_one({"accountEmail": accountEmail}, {'$set': {'room': "", 'personal': "", "device": []} })
+        return "Info: Logout Successfully!"
 
     def register(self, accountEmail, accountPw):
         accountID = "GUEST"
@@ -137,16 +142,32 @@ class DeviceDB():
 class RoomDB():
     def __init__(self, db):
         self.db = db["room"]
+        self.access_date = []
 
     def cleardb(self):
         self.db.delete_many({})
     
-    def checkRoomAvailable(self, roomName, date):
+    def checkRoomAvailable(self, roomName, date=None, extend_access_date=None, get_occupy=False):
+        print(roomName)
         room = self.db.find_one({"roomName": roomName})
         bookTime = room["bookTime"]
-        if bookTime.get(date) is None:
-            bookTime[date] = []
-            self.db.update_one({"roomName": roomName}, {'$set': {'bookTime': bookTime}})
+        if date:
+            if bookTime.get(date) is None:
+                bookTime[date] = []
+                self.db.update_one({"roomName": roomName}, {'$set': {'bookTime': bookTime}})
+        if extend_access_date: self.access_date.extend(extend_access_date)
+        if get_occupy:
+            occupy = {}
+            for t in time:
+                for d in self.access_date:
+                    _t=t[:2]+' : '+t[2:]
+                    _d=int(d.split('/')[2])
+                    if not bookTime.get(d) is None and t in bookTime[d]:
+                        occupy[(_t,_d)]='y'
+                    else:
+                        occupy[(_t,_d)]='n'
+            return occupy
+
         return bookTime
         # for t in time:
         #     if t in bookTime[date]: continue
