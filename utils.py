@@ -422,6 +422,7 @@ def delete_instruction_init_step(name:str, id:str):
 
 #------ Instruction turnon --------
 
+
 def get_instruction_turnon_step(room_name:str,device_name:str):
     _db=db['devices']
     device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
@@ -498,7 +499,87 @@ def delete_instruction_turnon_step(room_name:str,device_name:str, id:str):
         {"_id": device["_id"]}, 
         {'$set': {"insTurnon": _dict}}
     )
+'''
 
+def get_instruction_turnon_step(room_name:str,device_name:str):
+    _db=db['rooms']
+    room=find_room_with_name(room_name)
+    if room_has_attribute(room_name,'insTurnon'):
+        ins=room['insTurnon']
+        if device_name in ins.keys():
+            return ins[device_name]
+
+    return {}
+
+def add_instruction_turnon_step(room_name:str,device_name:str,id:str):
+    _db=db['devices']
+    device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
+    add={
+        id:{'text':'', 'image':'', 'command':'', 'help':''}
+    }
+    if device_has_attribute(room_name,device_name,'insTurnon'):
+        ins=device['insTurnon']
+        ins.update(add)
+        _db.update_one(
+            {"_id": device["_id"]}, 
+            {'$set': {"insTurnon": ins}}
+        )
+    else:
+        _db.update_one(
+            {"_id": device["_id"]}, 
+            {'$set': {"insTurnon": add}}
+        )
+
+def update_instruction_turnon_step(
+    room_name:str,device_name:str, id:str, 
+    text:str=None, image:str=None, com:str=None, help:str=None):
+
+    _db=db['devices']
+    device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
+    ins=device['insTurnon']
+    if text==None and image==None and com==None and help==None: return True
+    if text and not ins[id]['text']==text: ins[id]['text']=text
+    if com and not ins[id]['command']==com: ins[id]['command']=com
+    if help and not ins[id]['help']==help: ins[id]['help']=help
+    if image: 
+        img_hex=uuid.uuid4().hex
+        img_hex_old=ins[id]['image']
+        ins[id]['image']=img_hex
+
+        exist=f'app/static/images/test/room{room_name}/instruction'
+        path_exist_or_mkdir(exist)
+        path=f'app/static/images/test/room{room_name}/instruction/{img_hex}.png'
+        image_decoder(image,path)
+
+        if not img_hex_old=='':
+            remove=f'app/static/images/test/room{room_name}/instruction/{img_hex_old}.png'
+            os.remove(remove)
+    _db.update_one(
+        {"_id": device["_id"]}, 
+        {'$set': {"insTurnon": ins}}
+    )
+
+def delete_instruction_turnon_step(room_name:str,device_name:str, id:str):
+    _db=db['devices']
+    device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
+    ins=device['insTurnon']
+    _dict={}
+    for k, v in ins.items():
+        if k<id: _dict[k]=v
+        elif k>id:
+            id_new=f'step {len(_dict)+1}'
+            _dict[id_new]=v
+        else:
+            img_hex=v['image']
+            if img_hex=='': continue
+            remove=f'app/static/images/test/room{room_name}/instruction/{img_hex}.png'
+            os.remove(remove)
+
+    _db.update_one(
+        {"_id": device["_id"]}, 
+        {'$set': {"insTurnon": _dict}}
+    )
+'''
 #------ Instruction pair --------
 
 def get_instruction_pair_case(name:str):
