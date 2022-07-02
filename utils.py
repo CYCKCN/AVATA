@@ -14,7 +14,7 @@ def path_exist_or_mkdir(path:str):
 
 def find_room_with_name(name:str):
     #用name找room 找不到返回false
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({'roomName':name})
     if room: return room
     else: return False
@@ -22,12 +22,12 @@ def find_room_with_name(name:str):
 def room_is_exist(name:str):
     #检查room存不存在 存在true不存在false name不合法false
     if name==None:  return False
-    _db=db['rooms']
+    _db=db['room']
     if _db.find_one({'roomName':name}): return True
     else: return False
 
 def room_has_attribute(name:str,attr:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({'roomName':name,attr:{'$exists': True}})
     if room: return True
     else: return False
@@ -45,7 +45,7 @@ def create_room_with_name_image_loc(name:str, image:str, loc:str):
     path=f'app/static/images/test/room{name}/_basic_upload.png'
     image_decoder(image,path)
 
-    _db=db['rooms']
+    _db=db['room']
     _dict={
         'roomName':name,
         'roomImage':'_basic_upload',
@@ -63,7 +63,7 @@ def update_room_with_name_image_loc(room_id:str ,name:str=None, image:str=None, 
     if not room_is_exist(room_id): return False
     if room_is_exist(name): return False
     if name==None and image==None and loc==None: return True
-    _db=db['rooms']
+    _db=db['room']
     room=find_room_with_name(room_id)
     _dict={}
     if name: _dict['roomName']=name
@@ -94,7 +94,7 @@ def download_room_basic_image_with_name(name:str):
 
 def get_all_room_basic():
     #date和time还没有加 后面记得加
-    _db=db['rooms']
+    _db=db['room']
     if _db.count_documents({})==0: return False
 
     rooms=_db.find({})
@@ -116,14 +116,14 @@ def get_all_room_basic():
 def delete_room_with_name(name:str):
     if name==None: return False
     if not room_is_exist(name): return False
-    _db=db['rooms']
+    _db=db['room']
     _db.delete_one({'roomName':name})
     path=f'app/static/images/test/room{name}'
 
     path_exist_or_mkdir(path)
     shutil.rmtree(path)
 
-    db['devices'].delete_many({'roomName':name})
+    db['device'].delete_many({'roomName':name})
 
     return True
 
@@ -141,7 +141,7 @@ def add_room_360image_with_name(name:str,image:str=None):
     image_decoder(image,path)
     #print(len(image),os.path.exists(path))
 
-    _db=db['rooms']
+    _db=db['room']
     _db.update_one(
         {'roomName':name},
         {'$set':{'room360Image':'_360_upload'}}
@@ -167,14 +167,14 @@ def download_room_360image_with_name(name:str):
 
 #old version
 def device_is_exist(room:str,id:int):
-    _db=db['devices']
+    _db=db['device']
     device=_db.find_one({'roomName':room,'deviceId':id})
     if device: return True
     else: return False
 
 def create_device_with_room_id_name_type_x_y_id(
     room:str,name:str,type:str,x:float,y:float,ip:str):
-    _db=db['devices']
+    _db=db['device']
     _dict={
         'roomName':room,
         'deviceId':-1,
@@ -190,7 +190,7 @@ def create_device_with_room_id_name_type_x_y_id(
 
 
 def update_device_with_name_type_x_y_id(room:str,id:int,name:str=None,type:str=None,x:float=None,y:float=None,ip:str=None):
-    _db=db['devices']
+    _db=db['device']
     #if not device_is_exist(room,id): return False
     if name==None and name==None and type==None and x==None and y==None and ip==None: return True
     _dict={}
@@ -208,7 +208,7 @@ def update_device_with_name_type_x_y_id(room:str,id:int,name:str=None,type:str=N
 
 def choose_a_device_with_room_id(room:str,id:int):
     #if not device_is_exist(room,id): return False
-    _db=db['devices']
+    _db=db['device']
     _db.update_many(
         {'roomName':room},
         {'$set':{'chosen':False}}
@@ -221,13 +221,13 @@ def choose_a_device_with_room_id(room:str,id:int):
 
 
 def find_device_with_room_id(room:str,id:int):
-    _db=db['devices']
+    _db=db['device']
     device=_db.find_one({'roomName':room,'deviceId':id})
     if device: return device
     else: return False
 
 def delete_device_with_room_id(room:str, id:int):
-    _db=db['devices']
+    _db=db['device']
     if not device_is_exist(room,id): return False
     device=find_device_with_room_id(room,id)
     _db.update_many({"deviceID": {'$gt': device["deviceID"]}}, {'$inc': {"deviceID": -1}})
@@ -235,7 +235,7 @@ def delete_device_with_room_id(room:str, id:int):
     return True
     
 def delete_device_with_room_name(room:str, name:str):
-    _db=db['devices']
+    _db=db['device']
     device=_db.find_one({'roomName':room,'deviceName':name})
     if device==None: return False
     _db.update_many({"deviceID": {'$gt': device["deviceID"]}}, {'$inc': {"deviceID": -1}})
@@ -243,7 +243,7 @@ def delete_device_with_room_name(room:str, name:str):
     return True
 
 def clean_choose_device_with_room(room:str):
-    _db=db['devices']
+    _db=db['device']
     _db.update_many(
         {'roomName':room},
         {'$set':{'chosen':False}}
@@ -252,13 +252,13 @@ def clean_choose_device_with_room(room:str):
 
 #new version: remove id
 def device_has_attribute(room_name:str,device_name:str,attr:str):
-    _db=db['devices']
+    _db=db['device']
     device=_db.find_one({'roomName':room_name,'deviceName':device_name ,attr:{'$exists': True}})
     if device: return True
     else: return False
 
 def udpate_device_with_name_type_ip(room:str, old_name:str, new_name:str, type:str, ip:str):
-    _db=db['devices']
+    _db=db['device']
     exist=_db.find_one({'roomName':room,'deviceName':new_name})
     if exist: return False
     _db.update_one(
@@ -270,12 +270,12 @@ def udpate_device_with_name_type_ip(room:str, old_name:str, new_name:str, type:s
     return True
 
 def delete_device_with_name(room:str, name:str):
-    _db=db['devices']
+    _db=db['device']
     _db.delete_one({'roomName':room, 'deviceName':name})
     return True
 
 def create_device_with_name_type_ip(room:str, name:str, type:str, ip:str, x:float, y:float):
-    _db=db['devices']
+    _db=db['device']
     exist=_db.find_one({'roomName':room,'deviceName':name})
     if exist: return False
     _db.insert_one({
@@ -290,7 +290,7 @@ def create_device_with_name_type_ip(room:str, name:str, type:str, ip:str, x:floa
     return True
 
 def choose_device_with_name(room:str, name:str):
-    _db=db['devices']
+    _db=db['device']
     _db.update_one(
         {'roomName':room, 'deviceName':name},
         {'$set':{'chosen':True}}
@@ -298,7 +298,7 @@ def choose_device_with_name(room:str, name:str):
     return True
 
 def get_all_devices_with_room(name:str):
-    _db=db['devices']
+    _db=db['device']
 
     _dict={}
     if _db.count_documents({'roomName':name})==0: return _dict
@@ -316,7 +316,7 @@ def get_all_devices_with_room(name:str):
     return _dict
 
 def get_choose_device_with_room(room:str):
-    _db=db['devices']
+    _db=db['device']
     _dict={}
     if _db.count_documents({'roomName':room})==0: return _dict
     devices=_db.find({'roomName':room})
@@ -333,7 +333,7 @@ def get_devices_and_chosen_devices(room:str):
     return devices, devices_choose
 
 def clean_chosen_device(room:str):
-    _db=db['devices']
+    _db=db['device']
     _db.update_many(
         {'roomName':room},
         {'$set':{'chosen':False}}
@@ -344,7 +344,7 @@ def clean_chosen_device(room:str):
 
 #------ Instruction init --------
 def get_instruction_init_step(name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": name})
     if room_has_attribute(name,'insInitial'):
         return room['insInitial']
@@ -352,7 +352,7 @@ def get_instruction_init_step(name:str):
         return {}
 
 def add_instruction_init_step(name:str,id:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": name})
     add={
         id:{'text':'', 'image':'', 'command':'', 'help':''}
@@ -374,7 +374,7 @@ def update_instruction_init_step(
     name:str, id:str, 
     text:str=None, image:str=None, com:str=None, help:str=None):
 
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": name})
     ins=room['insInitial']
     if text==None and image==None and com==None and help==None: return True
@@ -400,7 +400,7 @@ def update_instruction_init_step(
     )
     
 def delete_instruction_init_step(name:str, id:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": name})
     ins=room['insInitial']
     _dict={}
@@ -422,9 +422,10 @@ def delete_instruction_init_step(name:str, id:str):
 
 #------ Instruction turnon --------
 
-
+#old version: storage in devices
+'''
 def get_instruction_turnon_step(room_name:str,device_name:str):
-    _db=db['devices']
+    _db=db['device']
     device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
     if device_has_attribute(room_name,device_name,'insTurnon'):
         return device['insTurnon']
@@ -432,7 +433,7 @@ def get_instruction_turnon_step(room_name:str,device_name:str):
         return {}
 
 def add_instruction_turnon_step(room_name:str,device_name:str,id:str):
-    _db=db['devices']
+    _db=db['device']
     device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
     add={
         id:{'text':'', 'image':'', 'command':'', 'help':''}
@@ -454,7 +455,7 @@ def update_instruction_turnon_step(
     room_name:str,device_name:str, id:str, 
     text:str=None, image:str=None, com:str=None, help:str=None):
 
-    _db=db['devices']
+    _db=db['device']
     device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
     ins=device['insTurnon']
     if text==None and image==None and com==None and help==None: return True
@@ -480,7 +481,7 @@ def update_instruction_turnon_step(
     )
 
 def delete_instruction_turnon_step(room_name:str,device_name:str, id:str):
-    _db=db['devices']
+    _db=db['device']
     device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
     ins=device['insTurnon']
     _dict={}
@@ -501,8 +502,9 @@ def delete_instruction_turnon_step(room_name:str,device_name:str, id:str):
     )
 '''
 
+#new version: storage in rooms
 def get_instruction_turnon_step(room_name:str,device_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=find_room_with_name(room_name)
     if room_has_attribute(room_name,'insTurnon'):
         ins=room['insTurnon']
@@ -512,31 +514,31 @@ def get_instruction_turnon_step(room_name:str,device_name:str):
     return {}
 
 def add_instruction_turnon_step(room_name:str,device_name:str,id:str):
-    _db=db['devices']
-    device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
+    _db=db['room']
+    room=find_room_with_name(room_name)
     add={
         id:{'text':'', 'image':'', 'command':'', 'help':''}
     }
-    if device_has_attribute(room_name,device_name,'insTurnon'):
-        ins=device['insTurnon']
+    if room_has_attribute(room_name,'insTurnon'):
+        ins=room['insTurnon'][device_name]
         ins.update(add)
         _db.update_one(
-            {"_id": device["_id"]}, 
-            {'$set': {"insTurnon": ins}}
+            {"_id": room["_id"]}, 
+            {'$set': {f"insTurnon.{device_name}": ins}}
         )
     else:
         _db.update_one(
-            {"_id": device["_id"]}, 
-            {'$set': {"insTurnon": add}}
+            {"_id": room["_id"]}, 
+            {'$set': {f"insTurnon.{device_name}": add}}
         )
 
 def update_instruction_turnon_step(
     room_name:str,device_name:str, id:str, 
     text:str=None, image:str=None, com:str=None, help:str=None):
 
-    _db=db['devices']
-    device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
-    ins=device['insTurnon']
+    _db=db['room']
+    room=find_room_with_name(room_name)
+    ins=room['insTurnon'][device_name]
     if text==None and image==None and com==None and help==None: return True
     if text and not ins[id]['text']==text: ins[id]['text']=text
     if com and not ins[id]['command']==com: ins[id]['command']=com
@@ -555,14 +557,14 @@ def update_instruction_turnon_step(
             remove=f'app/static/images/test/room{room_name}/instruction/{img_hex_old}.png'
             os.remove(remove)
     _db.update_one(
-        {"_id": device["_id"]}, 
-        {'$set': {"insTurnon": ins}}
+        {"_id": room["_id"]}, 
+        {'$set': {f"insTurnon.{device_name}": ins}}
     )
 
 def delete_instruction_turnon_step(room_name:str,device_name:str, id:str):
-    _db=db['devices']
-    device=_db.find_one({"roomName": room_name, 'deviceName':device_name})
-    ins=device['insTurnon']
+    _db=db['room']
+    room=find_room_with_name(room_name)
+    ins=room['insTurnon'][device_name]
     _dict={}
     for k, v in ins.items():
         if k<id: _dict[k]=v
@@ -576,14 +578,14 @@ def delete_instruction_turnon_step(room_name:str,device_name:str, id:str):
             os.remove(remove)
 
     _db.update_one(
-        {"_id": device["_id"]}, 
-        {'$set': {"insTurnon": _dict}}
+        {"_id": room["_id"]}, 
+        {'$set': {f"insTurnon.{device_name}": _dict}}
     )
-'''
+
 #------ Instruction pair --------
 
 def get_instruction_pair_case(name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": name})
     if room_has_attribute(name,'insPair'):
         return room['insPair']
@@ -591,7 +593,7 @@ def get_instruction_pair_case(name:str):
         return {}
 
 def add_instruction_pair_case(name:str,id:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": name})
     add={
         id:{'devices':{}, 'steps':{}}
@@ -610,7 +612,7 @@ def add_instruction_pair_case(name:str,id:str):
         )
 
 def delete_instruction_pair_case(room_name:str,case_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_pair=room['insPair']
 
@@ -635,14 +637,14 @@ def delete_instruction_pair_case(room_name:str,case_name:str):
     )
 
 def get_instruction_pair_case_step(room_name:str,case_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_pair=room['insPair']
     ins_case=ins_pair[case_name]['steps']
     return ins_case
 
 def add_instruction_pair_case_step(room_name:str,case_name:str,step_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_pair=room['insPair']
     ins_case=ins_pair[case_name]['steps']
@@ -665,7 +667,7 @@ def update_instruction_pair_case_step(
     room_name:str,case_name:str,step_name:str,
     text:str=None, image:str=None, com:str=None, help:str=None):
 
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_pair=room['insPair']
     ins_case=ins_pair[case_name]['steps']
@@ -696,7 +698,7 @@ def update_instruction_pair_case_step(
     )
 
 def delete_instruction_pair_case_step(room_name:str,case_name:str,step_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_pair=room['insPair']
     ins_case=ins_pair[case_name]['steps']
@@ -721,7 +723,7 @@ def delete_instruction_pair_case_step(room_name:str,case_name:str,step_name:str)
     )
 
 def get_instruction_pair_case_device(room_name:str,case_name:str):
-    _db=db['devices']
+    _db=db['device']
 
     _dict={}
     devices=_db.find({'roomName':room_name},{'deviceName':1})
@@ -738,14 +740,14 @@ def get_instruction_pair_case_device(room_name:str,case_name:str):
     return _dict
 
 def get_instruction_pair_case_chosen_device(room_name:str,case_name:str):
-    _db=db['devices']
+    _db=db['device']
     room=_db.find_one({"roomName": room_name})
     ins_pair=room['insPair']
     ins_device=ins_pair[case_name]['devices']
     return ins_device
 
 def choose_instruction_pair_device(room_name:str,case_name:str,device_id:str,device_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_pair=room['insPair']
     ins_device=ins_pair[case_name]['devices']
@@ -759,7 +761,7 @@ def choose_instruction_pair_device(room_name:str,case_name:str,device_id:str,dev
     )
 
 def undo_choose_instruction_pair_device(room_name:str,case_name:str,device_id:str,device_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_pair=room['insPair']
     ins_device=ins_pair[case_name]['devices']
@@ -778,7 +780,7 @@ def undo_choose_instruction_pair_device(room_name:str,case_name:str,device_id:st
 
 def create_instruction_zoom(room_name:str):
     if room_has_attribute(room_name,'insZoom'): return True
-    _db=db['rooms']
+    _db=db['room']
     _db.update_one(
         {"roomName": room_name}, 
         {'$set': 
@@ -792,13 +794,13 @@ def create_instruction_zoom(room_name:str):
     )
 
 def get_instruction_zoom_step(room_name:str,zoom_type:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     return room['insZoom'][zoom_type]
     
 
 def add_instruction_zoom_step(room_name:str,zoom_type:str,step_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_zoom_type=room['insZoom'][zoom_type]
 
@@ -812,7 +814,7 @@ def add_instruction_zoom_step(room_name:str,zoom_type:str,step_name:str):
     )
 
 def delete_instruction_zoom_step(room_name:str,zoom_type:str,step_name:str):
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_zoom_type=room['insZoom'][zoom_type]
 
@@ -837,7 +839,7 @@ def update_instruction_zoom_step(
     room_name:str,zoom_type:str, step_name:str, 
     text:str=None, image:str=None, com:str=None, help:str=None):
 
-    _db=db['rooms']
+    _db=db['room']
     room=_db.find_one({"roomName": room_name})
     ins_zoom=room['insZoom'][zoom_type]
     if text==None and image==None and com==None and help==None: return True
