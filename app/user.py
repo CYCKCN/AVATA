@@ -21,14 +21,16 @@ def main():
 @user.route("/search", methods=['POST','GET'])
 @check_login
 def search():
-    show_result=request.args.get('show_result') if request.args.get('show_result') else False
+    show_result=True if request.args.get('show_result') else False
     search_room_id=request.args.get('search_room_id') if request.args.get('search_room_id') else None
     #room_id = ''
     roomInfo_book = roomdb.checkUserBooking(current_user.email)
     #print(current_user.email)
     #print(roomInfo_book)
-    if show_result and search_room_id:
-        roomInfo_result = roomdb.checkSearchRoom(search_room_id, current_user.email)
+    
+    roomInfo_result = \
+        roomdb.checkSearchRoom(search_room_id, current_user.email) \
+        if show_result and search_room_id else {}
     # account = accountdb.findUser(current_user.get_id)
     if request.method == "POST":
         #room_id = request.form.get('room_id') 
@@ -46,7 +48,8 @@ def search():
         #print(room_id_text)
         #print(room_id_click)
 
-        if timetable: return 'timetable'
+        if timetable:
+            return redirect(url_for('user.timetable')) 
 
         if btn_profile and room_id_text=='':
             return redirect(url_for('user.profile'))
@@ -56,13 +59,12 @@ def search():
 
         if room_id_click=='' and not room_id_text=='': #input text search
 
-            return redirect(url_for('user.room', room_id=room_id_click))
+            return redirect(url_for('user.search', show_result=True,search_room_id=room_id_text))
         
 
         # roomInfo_result = roomdb.checkSearchRoom(room_id, current_user.email)
         # return render_template('search.html', room_id=room_id, roomInfo_book=roomInfo_book, roomInfo_result=roomInfo_result)
-        if timetable:
-            return redirect(url_for('user.timetable')) 
+        
         #if btn_profile and room_id=='':
         #    return redirect(url_for('user.profile'))
         #if room_id:
