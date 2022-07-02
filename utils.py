@@ -49,7 +49,9 @@ def create_room_with_name_image_loc(name:str, image:str, loc:str):
     _dict={
         'roomName':name,
         'roomImage':'_basic_upload',
-        'roomLoc':loc
+        'roomLoc':loc,
+        'bookBy':{},
+        'bookTime':{}
     }
     _db.insert_one(_dict)
     return True

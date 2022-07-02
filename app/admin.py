@@ -393,7 +393,7 @@ def instruction_turnon_main():
                                     ))
         confirm=request.form.get('confirm')
         if confirm:
-            return redirect(url_for('admin.instruction_pair_main',devices=devices,room_id=room_id))
+            return redirect(url_for('admin.instruction_pair_main',room_id=room_id))
             #return redirect(url_for('admin.instruction_pair_main',devices_obj=devices_dict[room_id],room_id=room_id))
         back=request.form.get('back')
         if back:
