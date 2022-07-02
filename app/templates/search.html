@@ -247,7 +247,7 @@
 
 {% block content %}
 
-<form method="post" id="admin-main" enctype="multipart/form-data">
+<form method="post" id="search" enctype="multipart/form-data">
     {% if not error=='' %}
     <div class="error">
         {{error}}
@@ -268,7 +268,7 @@
         </div>
         <div class="searchsubhead">SEARCH</div>
             <input class="searchBox" type="text" placeholder="Search all rooms" name="room_id" v-model="roomid"/>
-        <div class="roommain" v-if="roomid=='5554'">
+        <div class="roommain" v-if="roomid">
 			<div class="searchsubhead">RESULTS</div>
 			<div class="roomgroup">
 				{% if roomInfo_result %}
@@ -363,7 +363,7 @@
       methods: {
         goRoom: function (event, roomid) {
 			console.log(event, roomid)
-			var form = document.getElementById("admin-main");
+			var form = document.getElementById("search");
 			form.submit();
 
 			// console.log(event, roomid)
@@ -376,7 +376,7 @@
             // form.submit();
         },
       }
-    }).mount('#admin-main')    
+    }).mount('#search')    
 </script>
 
 <script>
