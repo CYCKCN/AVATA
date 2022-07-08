@@ -1,3 +1,4 @@
+from fileinput import filename
 import os
 import cv2
 from flask import Flask
@@ -7,6 +8,8 @@ from .auth import check_login
 from .database.db import accountdb, devicedb, roomdb
 from .database.object import PERSONAL_TYPE, get_today_date, time, MONTH_ABBR, get_booking_week
 from flask_login import current_user
+
+#import utils
 
 # from test_data import ROOM, MONTH_ABBR
 
@@ -83,7 +86,8 @@ def device(room_id):
         # check booking time!
         pass
 
-    img = url_for('static',filename='images/test/'+room_id+'/360-1.jpg')
+    #img = url_for('static',filename='images/test/'+room_id+'/360-1.jpg')
+    img=url_for('static',filename=f'images/test/room{room_id}/_360_upload.png')
     # image = cv2.imread(img)
     # V, U, _ = image.shape
     # print(V, U)
