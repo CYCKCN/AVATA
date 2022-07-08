@@ -183,8 +183,8 @@ def create_device_with_room_id_name_type_x_y_id(
         'deviceName':name,
         'deviceType':type,
         'deviceIP':ip,
-        'deviceX':x,
-        'deviceY':y,
+        'deviceLocX':x,
+        'deviceLocY':y,
         'chosen':False
     }
     _db.insert_one(_dict)
@@ -199,8 +199,8 @@ def update_device_with_name_type_x_y_id(room:str,id:int,name:str=None,type:str=N
     _dict['deviceId']=id
     if name: _dict['deviceName']=name
     if type: _dict['deviceType']=type
-    if x: _dict['deviceX']=x
-    if y: _dict['deviceY']=y
+    if x: _dict['deviceLocX']=x
+    if y: _dict['deviceLocY']=y
     if ip: _dict['deviceIP']=ip
     _db.update_one(
         {'roomName':room, 'deviceId':id},
@@ -285,8 +285,8 @@ def create_device_with_name_type_ip(room:str, name:str, type:str, ip:str, x:floa
         'deviceName':name,
         'deviceType':type,
         'deviceIP':ip,
-        'deviceX':x,
-        'deviceY':y,
+        'deviceLocX':x,
+        'deviceLocY':y,
         'chosen':False
     })
     return True
@@ -311,8 +311,8 @@ def get_all_devices_with_room(name:str):
             'name':device['deviceName'],
             'type':device['deviceType'],
             'ip':device['deviceIP'],
-            'x':device['deviceX'],
-            'y':device['deviceY']
+            'x':device['deviceLocX'],
+            'y':device['deviceLocY']
         }
         _dict[len(_dict)]=_d
     return _dict
@@ -323,6 +323,14 @@ def get_choose_device_with_room(room:str):
     if _db.count_documents({'roomName':room})==0: return _dict
     devices=_db.find({'roomName':room})
     for device in devices:
+        if not device_has_attribute(room,device['deviceName'],'chosen'):
+            _db.update_one(
+                {'roomName':room, 'deviceName':device['deviceName']},
+                {'$set':{'chosen':False}}
+            )
+            _dict[len(_dict)]=[device['deviceName'], 0]
+            continue
+
         if device['chosen']:
             _dict[len(_dict)]=[device['deviceName'], 1]
         else:
