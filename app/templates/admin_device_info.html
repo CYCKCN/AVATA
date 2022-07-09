@@ -204,6 +204,10 @@
         padding: 0 1vw;
         border: 0.2vw solid #000;
     }
+
+    .opt_value{
+        font-size: 0.5vh;
+    }
 </style>
 
 {% endblock %}
@@ -233,8 +237,13 @@
             </div>
             <div id="create-div6">
                 <p id="point-text2" class="menu-label" >Type: </p>
-                <!-- <input id="point-text22" type="text" name="p_type" value="microphone"> -->
                 <input class="menu-input" id="point-text21" type="text" name="p_type" value="none">
+                <!-- <select class="menu-input" id="point-text21" name="p_type">
+                    <option class="opt_value" value="" selected>None</option>
+                    <option class="opt_value" value="Microphone">Microphone</option>
+                    <option class="opt_value" value="Projector">Projector</option>
+                    <option class="opt_value" value="Screener">Screener</option>
+                </select> -->
             </div>
             <div id="point-image0">
                 <p class="menu-label" id="point-text3">IP: </p>
@@ -327,7 +336,16 @@
             menu_point.style.left = obj.x+'vw'
             menu_point.style.top= eval((obj.y+5)/2)+'vh'
             menu_point.children[0].children[1].value=obj.name;  // Name
-            menu_point.children[1].children[1].value = obj.type;  // Type
+            
+            menu_point.children[1].children[1].value=obj.type;  // Type
+            //$("#point-text21").html("<option class='opt_value' value='none'>None</option>");
+            // const type_list = ['none', 'Microphone', 'Projector', 'Screener'];
+            // for(var i=0; i<type_list.length; i++){
+            //     $("#dimId").append("<option value='"+result.data[i].dim_Id+"'>"+result.data[i].dim_Name+"</option>");
+            // }
+            console.log(obj.type);
+		    //$("#point-text21").val(obj.type);//第二步：把拿到的回显的数据传入到回显函数进行显示。
+            
             // menu_point.children[2].children[2].setAttribute('src', obj.device_img);  // Device_img
             menu_point.children[8].value=obj.name; // auxiliary field
             menu_point.children[11].value=i;

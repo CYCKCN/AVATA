@@ -226,7 +226,8 @@ def device_info():
         deviceIP=request.form.get('p_ip')
         deviceLocX=request.form.get('dup_x')
         deviceLocY=request.form.get('dup_y')
-        #print(deviceName_old,deviceName,deviceType,deviceIP,deviceLocX,deviceLocY)
+        # print(deviceName_old,deviceName,deviceType,deviceIP,deviceLocX,deviceLocY)
+        print(deviceType)
 
         #save
         if point_edit and deviceName and deviceType and deviceIP:
