@@ -195,6 +195,11 @@ def photo_360():
 
 #devices_dict = {}
 #from objects_admin import *
+type_dict={
+    0:{'name':'Microphone'},
+    1:{'name':'Projector'},
+    2:{'name':'Screener'},
+}
 
 @admin_blue.route("/device_info", methods=['POST','GET'])
 def device_info():
@@ -270,7 +275,7 @@ def device_info():
     #print(devices)
     #print(devices_choose)
     #return render_template('admin_device_info.html',room_id=room_id,devices=devices_dict[room_id].getJson(),devices_choose=devices_dict[room_id].chooseDevice())
-    return render_template('admin_device_info.html',room_id=room_id,devices=devices,devices_choose=devices_choose)
+    return render_template('admin_device_info.html',room_id=room_id,devices=devices,devices_choose=devices_choose,type_dict=type_dict)
 
 @admin_blue.route("/device_list", methods=['GET','POST'])
 def device_list():
