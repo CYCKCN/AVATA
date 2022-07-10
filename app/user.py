@@ -9,7 +9,7 @@ from .database.db import accountdb, devicedb, roomdb
 from .database.object import PERSONAL_TYPE, get_today_date, time, MONTH_ABBR, get_booking_week
 from flask_login import current_user
 
-#import utils
+import utils
 
 # from test_data import ROOM, MONTH_ABBR
 
@@ -92,7 +92,8 @@ def device(room_id):
     # V, U, _ = image.shape
     # print(V, U)
 
-    dic = devicedb.checkDeviceList(room_id, 1002, 2014) # should be shape of 360 image
+    #dic = devicedb.checkDeviceList(room_id, 1002, 2014) # should be shape of 360 image
+    dic=utils.get_all_device_user(room_id)
     # print(current_user.room)
     # print(current_user.email)
     # print(dic)
@@ -123,7 +124,7 @@ def device(room_id):
     # dic=CURRENT_ROOM.set_data_choose_devices(use_related=True)
     
     #print(dic)
-    return render_template('device.html', dic=dic, img=img)
+    return render_template('device.html', dic=dic, img=img, room_id=room_id)
 
 @user.route("/booking/<room_name>", methods=['POST','GET'])
 @check_login
