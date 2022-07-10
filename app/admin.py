@@ -243,6 +243,7 @@ def device_info():
                 type=deviceType,
                 ip=deviceIP
             )
+            utils.clean_chosen_device(room_id)
         
         #delete
         if point_delete and deviceName:
@@ -255,8 +256,8 @@ def device_info():
                 name=deviceName,
                 type=deviceType,
                 ip=deviceIP,
-                x=float(deviceLocX),
-                y=float(deviceLocY)
+                x=round(float(deviceLocX),1),
+                y=round(float(deviceLocY),1)
             )
             utils.choose_device_with_name(room_id, deviceName)
 
