@@ -10,6 +10,10 @@ def path_exist_or_mkdir(path:str):
         os.makedirs(path)
     return True
 
+#-----------------------------------------
+#-------------- admin flow ---------------
+#-----------------------------------------
+
 #------------ Room utils ---------------
 
 def find_room_with_name(name:str):
@@ -874,3 +878,24 @@ def update_instruction_zoom_step(
         {"_id": room["_id"]}, 
         {'$set': { f'insZoom.{zoom_type}' : ins_zoom}}
     )
+
+#-----------------------------------------
+#-------------- user flow ---------------
+#-----------------------------------------
+
+import cv2
+def get_all_device_user(name:str):
+    _db=db['device']
+    devices=_db.find({"roomName": name})
+    path=f'app/static/images/test/room{name}/_360_upload.png'
+    img=cv2.imread(path)
+    img_u=img.shape[1]
+    img_v=img.shape[0]
+    _dict={}
+    for device in devices:
+        deviceInfo = {}
+        deviceInfo['name'] = device["deviceName"]
+        deviceInfo['v'] = str(round(device['deviceLocX']/img_u*100,1))+'%'
+        deviceInfo['u'] = str(round(device['deviceLocY']/img_v*100,1))+'%'
+        _dict[len(_dict)]=deviceInfo
+    return _dict
