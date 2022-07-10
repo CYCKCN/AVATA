@@ -283,19 +283,19 @@
     {% else %}
         {% for k, v in steps.items() %}
             <div class="roomsubhead1">Step {{k}}</div>
-            {% if not v.text=='' %}
+            {% if v.text %}
                 <div class="roomsubhead">Text</div>
                 <div class="admin-step-txt">{{v.text}}</div>
             {% endif %}
-            {% if not v.image=='' %}
+            {% if v.image %}
                 <div class="roomsubhead">Image</div>
                 <img id="room-photo{{k}}" class="roomImg" src="../../static/images/test/room{{room_id}}/instruction/{{v.image}}.png">
             {% endif %}
-            {% if not v.command=='' %}
+            {% if v.command %}
                 <div class="roomsubhead">Command</div>
                 <div class="admin-step-txt">{{v.command}}</div>
             {% endif %}
-            {% if not v.help=='' %}
+            {% if v.help %}
                 <div class="roomsubhead">Help</div>
                 <div class="admin-step-txt">{{v.help}}</div>
             {% endif %}
