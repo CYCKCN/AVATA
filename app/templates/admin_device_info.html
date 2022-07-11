@@ -301,14 +301,14 @@
     var choose_obj = JSON.parse('{{ devices_choose | tojson | safe}}')
     console.log(objs)
     console.log(choose_obj)
-
+    const imgDiv = document.getElementById('image')
     for (let i = 0; i < Object.keys(objs).length; i++) {
         var obj=objs[i]
         let sonDiv=document.createElement("div") // ball
         sonDiv.id='point_'+i
         sonDiv.style.position='absolute'
-        sonDiv.style.top=obj.y / 2+'vh'
-        sonDiv.style.left=obj.x +'vw'
+        sonDiv.style.top=obj.y *imgDiv.clientHeight / document.body.clientHeight+'vh'
+        sonDiv.style.left=obj.x *imgDiv.clientWidth / document.body.clientWidth+'vw'
         sonDiv.style.transform='translate(-50%,-50%)'
         sonDiv.style.border='1vh solid #0074BC'
         sonDiv.style.height='10vw'
@@ -336,8 +336,8 @@
             if(menu_point.style.display=='none')
                 menu_point.style.display='block';
             menu_point.style.position='absolute'
-            menu_point.style.left = obj.x+'vw'
-            menu_point.style.top= eval((obj.y+5)/2)+'vh'
+            menu_point.style.left = sonDiv.style.left
+            menu_point.style.top= sonDiv.style.top
             menu_point.children[0].children[1].value=obj.name;  // Name
             
             // menu_point.children[1].children[1].value=obj.type;  // Type
@@ -367,6 +367,7 @@
     const slider = document.getElementById('device-scroll')
     const add_btn = document.getElementById('btn-add')
     const del_btn = document.getElementById('device-button6')
+
     let point = document.getElementById("point-menu")
     let isDown = false;
     let isAddProcess = false;
@@ -443,8 +444,8 @@
             slider.scrollTop = scrollTop - walkY;
         }
         if(isAddProcess){
-            x = e.offsetX / document.body.clientWidth * 100;
-            y = e.offsetY * 2 / document.body.clientHeight * 100;
+            x = e.offsetX / imgDiv.clientWidth * 100;
+            y = e.offsetY / imgDiv.clientHeight * 100;
         }
     });
 </script>
