@@ -235,6 +235,8 @@ def device_info():
         print(deviceType)
 
         #save
+        #print(point_edit, deviceName, deviceType, deviceIP)
+        #print(point_edit and deviceName and deviceType and deviceIP)
         if point_edit and deviceName and deviceType and deviceIP:
             utils.udpate_device_with_name_type_ip(
                 room=room_id,

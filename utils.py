@@ -887,15 +887,17 @@ import cv2
 def get_all_device_user(name:str):
     _db=db['device']
     devices=_db.find({"roomName": name})
-    path=f'app/static/images/test/room{name}/_360_upload.png'
-    img=cv2.imread(path)
-    img_u=img.shape[1]
-    img_v=img.shape[0]
+    #path=f'app/static/images/test/room{name}/_360_upload.png'
+    #img=cv2.imread(path)
+    #img_u=img.shape[1]
+    #img_v=img.shape[0]
     _dict={}
     for device in devices:
         deviceInfo = {}
         deviceInfo['name'] = device["deviceName"]
-        deviceInfo['v'] = str(round(device['deviceLocX']/img_u*100,1))+'%'
-        deviceInfo['u'] = str(round(device['deviceLocY']/img_v*100,1))+'%'
+        #deviceInfo['v'] = str(round(device['deviceLocX']/img_u*100,1))+'%'
+        #deviceInfo['u'] = str(round(device['deviceLocY']/img_v*100,1))+'%'
+        deviceInfo['v'] = str(device['deviceLocY'])+'%'
+        deviceInfo['u'] = str(device['deviceLocX'])+'%'
         _dict[len(_dict)]=deviceInfo
     return _dict
