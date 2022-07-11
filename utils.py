@@ -883,7 +883,7 @@ def update_instruction_zoom_step(
 #-------------- user flow ---------------
 #-----------------------------------------
 
-import cv2
+#import cv2
 def get_all_device_user(name:str):
     _db=db['device']
     devices=_db.find({"roomName": name})
@@ -901,3 +901,28 @@ def get_all_device_user(name:str):
         deviceInfo['u'] = str(device['deviceLocX'])+'%'
         _dict[len(_dict)]=deviceInfo
     return _dict
+
+def get_all_occupy_user(email:str,time,access_date):
+    _db=db['room']
+    rooms=_db.find(
+        {f'bookBy.{email}': {'$exists':True}},
+        {'bookBy':1, 'roomName':1}
+    )
+    for room in rooms:
+        bookTime=room["bookTime"]
+        occupy = {}
+        for t in time:
+            for d in access_date:
+                _t=t[:2]+' : '+t[2:]
+                _d=int(d.split('/')[2])
+                if not bookTime.get(d) is None and t in bookTime[d]:
+                    occupy[(_t,_d)]=room["roomName"]
+                    #if (_t,_d) in occupy.keys() and not occupy[(_t,_d)]=='n':
+                    #    occupy[(_t,_d)]='Conflict'
+                    #else:
+                    #    occupy[(_t,_d)]=room["roomName"]
+                else:
+                    if (_t,_d) in occupy.keys():
+                        continue
+                    else:
+                        occupy[(_t,_d)]='n'
