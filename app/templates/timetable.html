@@ -136,6 +136,11 @@ form{
     appearance: none;
     background-color:#cccccc;
 }
+.occupy:checked{
+    background-color:#FFD400;
+    opacity: 0.8;
+}
+
 th,td{
     border: 0.5px solid rgb(197, 197, 197);
 }
@@ -331,6 +336,15 @@ th,td{
     z-index: 100;
     margin: -8.4vh 0vw 0vh 2vw;
 }
+table label{
+    position: absolute;
+    transform: translateX(-10.5vw);
+    text-align: center;
+    font-size: 3.2vw;
+    color: white;
+    font-style: normal;
+    font-weight: 500;
+}
 
 </style>
 {% endblock %}
@@ -375,7 +389,12 @@ th,td{
             {% for w, d in week.items() %}
                 <td>
                     <!-- <input type="checkbox" name="time-{{d}}-{{t}}" value=" " class="unoccupy"> -->
-                    <input type="checkbox" name="time-{{d}}-{{t}}" value=" " class="occupy" disabled>
+                    {% if occupy[t,d]=='n' %}
+                    <input type="checkbox" name="time-{{d}}-{{t}}" value=" " class="unoccupy" disabled>
+                    {% else %}
+                    <input type="checkbox" id="time-{{d}}-{{t}}" name="time-{{d}}-{{t}}" value=" " class="occupy" >
+                    <label for="time-{{d}}-{{t}}">{{occupy[t,d]}}</label>
+                    {% endif %}
                 </td>
             {% endfor %}
             </tr>

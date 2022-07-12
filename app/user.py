@@ -165,7 +165,7 @@ def booking(room_name):
             booking_period.append(time[time.index(booking_period[-1]) + 1])
             roomdb.setRoomBookByUser(room_name, time_data, booking_email, booking_period[0], booking_period[-1])
                     # self.db_bookroom(self.db['rooms'],self.db_roomone['_id'],time_data,clock)
-            return redirect(url_for('user.room',room_id=room_name))
+            return redirect(url_for('user.booking',room_name=room_name))
     
     return render_template('booking.html', room_id=room_name,time=time_list,week=week,month=month,year=year,occupy=occupy)
 
@@ -263,7 +263,9 @@ def timetable():
     week, access_date = get_booking_week()
     month = MONTH_ABBR[today_date[1]]
     year = today_date[0]
-    # print(occupy)
+    occupy=utils.get_all_occupy_user(current_user.email,time,access_date)
+    print(occupy)
+    #print(utils.find_room_with_name('4223'))
 
     if request.method == "POST":
         if request.form.get('btn_search'):
@@ -273,4 +275,4 @@ def timetable():
         if request.form.get('delete'):
             pass
     
-    return render_template('timetable.html', time=time_list,week=week,month=month,year=year)
+    return render_template('timetable.html', time=time_list,week=week,month=month,year=year,occupy=occupy)

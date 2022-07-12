@@ -905,12 +905,14 @@ def get_all_device_user(name:str):
 def get_all_occupy_user(email:str,time,access_date):
     _db=db['room']
     rooms=_db.find(
-        {f'bookBy.{email}': {'$exists':True}},
-        {'bookBy':1, 'roomName':1}
+        {},
+        {'bookBy':1, 'bookTime':1, 'roomName':1}
     )
+    occupy = {}
     for room in rooms:
         bookTime=room["bookTime"]
-        occupy = {}
+        bookBy=room["bookBy"]
+        if not email in bookBy.keys(): continue
         for t in time:
             for d in access_date:
                 _t=t[:2]+' : '+t[2:]
@@ -926,3 +928,4 @@ def get_all_occupy_user(email:str,time,access_date):
                         continue
                     else:
                         occupy[(_t,_d)]='n'
+    return occupy
