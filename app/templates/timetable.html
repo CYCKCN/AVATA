@@ -392,7 +392,7 @@ table label{
                     {% if occupy[t,d]=='n' %}
                     <input type="checkbox" name="time-{{d}}-{{t}}" value=" " class="unoccupy" disabled>
                     {% else %}
-                    <input type="checkbox" id="time-{{d}}-{{t}}" name="time-{{d}}-{{t}}" value=" " class="occupy" >
+                    <input type="checkbox" id="time-{{d}}-{{t}}" name="time-{{d}}-{{t}}" value="{{occupy[t,d]}}" class="occupy" >
                     <label for="time-{{d}}-{{t}}">{{occupy[t,d]}}</label>
                     {% endif %}
                 </td>

@@ -264,7 +264,7 @@ def timetable():
     month = MONTH_ABBR[today_date[1]]
     year = today_date[0]
     occupy=utils.get_all_occupy_user(current_user.email,time,access_date)
-    print(occupy)
+    #print(occupy)
     #print(utils.find_room_with_name('4223'))
 
     if request.method == "POST":
