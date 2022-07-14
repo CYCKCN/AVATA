@@ -282,7 +282,7 @@
         <div class="empty-text">There is no step.</div>
     {% else %}
         {% for k, v in steps.items() %}
-            <div class="roomsubhead1">Step {{k}}</div>
+            <div class="roomsubhead1">{{k}}</div>
             {% if v.text %}
                 <div class="roomsubhead">Text</div>
                 <div class="admin-step-txt">{{v.text}}</div>

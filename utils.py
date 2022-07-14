@@ -534,12 +534,24 @@ def add_instruction_turnon_step(room_name:str,device_name:str,id:str):
         id:{'text':'', 'image':'', 'command':'', 'help':''}
     }
     if room_has_attribute(room_name,'insTurnon'):
+        '''
         ins=room['insTurnon'][device_name]
         ins.update(add)
         _db.update_one(
             {"_id": room["_id"]}, 
             {'$set': {f"insTurnon.{device_name}": ins}}
         )
+        '''
+        insTurnon=room['insTurnon']
+        if device_name in insTurnon.keys():
+            ins=insTurnon[device_name]
+        else: ins={}
+        ins.update(add)
+        _db.update_one(
+            {"_id": room["_id"]}, 
+            {'$set': {f"insTurnon.{device_name}": ins}}
+        )
+        
     else:
         _db.update_one(
             {"_id": room["_id"]}, 
@@ -929,3 +941,71 @@ def get_all_occupy_user(email:str,time,access_date):
                     else:
                         occupy[(_t,_d)]='n'
     return occupy
+
+def get_all_initial_user(name:str):
+    if not room_has_attribute(name,'insInitial'): return {}
+    room=find_room_with_name(name)
+    ins=room["insInitial"]
+    if len(ins)==0: return {}
+    steps={}
+    for i, (k, v) in enumerate(ins.items()):
+        step={}
+        step['text'] = v['text']
+        step['image'] = v['image']
+        step['command'] = v['command']
+        steps[f'Step {i+1}']=step
+    return steps
+
+def get_all_turnon_user(name:str):
+    if not room_has_attribute(name,'insTurnon'): return {}
+    room=find_room_with_name(name)
+    steps={}
+    ins=room["insTurnon"]
+    for i, (device_id, device_content) in enumerate(ins.items()):
+        for j, (step_id, step_content) in enumerate(device_content.items()):
+            step={}
+            step['text'] = step_content['text']
+            step['image'] = step_content['image']
+            step['command'] = step_content['command']
+            steps[f'{device_id} - Step {j+1}']=step
+    return steps
+
+def get_all_pair_user(name:str):
+    if not room_has_attribute(name,'insPair'): return {}
+    room=find_room_with_name(name)
+    steps={}
+    ins=room["insPair"]
+    for i, (case_id, case_content) in enumerate(ins.items()):
+        case_devices=case_content['devices']
+        case_steps=case_content['steps']
+        case_key='Case - '
+        for k, (device_id, device_content) in enumerate(case_devices.items()):
+            case_key+=device_content['name']+' '
+        for j, (step_id, step_content) in enumerate(case_steps.items()):
+            step={}
+            step['text'] = step_content['text']
+            step['image'] = step_content['image']
+            step['command'] = step_content['command']
+            steps[f'{case_key}- Step {j+1}']=step
+    return steps
+
+def get_all_zoom_user(name:str):
+    if not room_has_attribute(name,'insZoom'): return {}
+    room=find_room_with_name(name)
+    steps={}
+    video=room["insZoom"]["Video"]
+    audio=room["insZoom"]["Audio"]
+    for i, (k, v) in enumerate(video.items()):
+        step={}
+        step['text'] = v['text']
+        step['image'] = v['image']
+        step['command'] = v['command']
+        steps[f'Video Step {i+1}']=step
+    for i, (k, v) in enumerate(audio.items()):
+        step={}
+        step['text'] = v['text']
+        step['image'] = v['image']
+        step['command'] = v['command']
+        steps[f'Audio Step {i+1}']=step
+    return steps
+    

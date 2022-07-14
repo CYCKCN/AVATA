@@ -1,4 +1,3 @@
-from fileinput import filename
 import os
 import cv2
 from flask import Flask
@@ -175,8 +174,9 @@ def initial():
     # print("initial")
     # print(current_user.room)
     # print(current_user.email)
-    steps = roomdb.checkInsInitialStepList(current_user.room)
+    #steps = roomdb.checkInsInitialStepList(current_user.room)
     # print(steps)
+    steps=utils.get_all_initial_user(current_user.room)
     if request.method == "POST":
         next=request.form.get('next')
         if next:
@@ -193,8 +193,9 @@ def turnon():
     # print("turnon")
     # print(current_user.room)
     # print(current_user.email)
-    steps = roomdb.checkInsInitialStepList(current_user.room)
+    #steps = roomdb.checkInsInitialStepList(current_user.room)
     # print(steps)
+    steps=utils.get_all_turnon_user(current_user.room)
     if request.method == "POST":
         next=request.form.get('next')
         if next:
@@ -211,7 +212,8 @@ def pair():
     # print("pair")
     # print(current_user.room)
     # print(current_user.email)
-    steps = roomdb.checkInsInitialStepList(current_user.room)
+    #steps = roomdb.checkInsInitialStepList(current_user.room)
+    steps=utils.get_all_pair_user(current_user.room)
     if request.method == "POST":
         next=request.form.get('next')
         if next:
@@ -228,7 +230,8 @@ def zoom():
     # print("zoom")
     # print(current_user.room)
     # print(current_user.email)
-    steps = roomdb.checkInsInitialStepList(current_user.room)
+    #steps = roomdb.checkInsInitialStepList(current_user.room)
+    steps=utils.get_all_zoom_user(current_user.room)
     if request.method == "POST":
         next=request.form.get('next')
         if next:
