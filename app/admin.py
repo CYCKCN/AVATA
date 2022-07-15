@@ -199,6 +199,7 @@ type_dict={
     0:{'name':'Microphone'},
     1:{'name':'Projector'},
     2:{'name':'Screener'},
+    3:{'name':'Camera'}
 }
 
 @admin_blue.route("/device_info", methods=['POST','GET'])
